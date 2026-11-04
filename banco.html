@@ -1,0 +1,1703 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banco de ejercicios de rigidez</title>
+<style>
+/* Concepto: cuaderno de taller de análisis estructural. Barra lateral con el índice de ejercicios,
+   enunciado con figura a la derecha y pasos numerados con casillas tipo matriz. */
+:root {
+  --paper: #f3f5f7; --surface: #ffffff; --surface-2: #eef1f4; --ink: #18212b; --muted: #5a6574; --line: #d3d9e0;
+  --accent: #0d6b7a; --accent-ink: #ffffff; --accent-soft: #e0f0f2; --load: #c2410c;
+  --ok: #1d7a4b; --ok-soft: #e3f3ea; --bad: #b42318; --bad-soft: #fbe9e7; --warn: #9a5b00; --warn-soft: #fbf1df;
+  --f-display: "Arial Narrow", "Segoe UI", Arial, sans-serif;
+  --f-body: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #11161c; --surface: #18202a; --surface-2: #1f2933; --ink: #e5eaf0; --muted: #9aa5b3; --line: #2e3a47;
+  --accent: #4fb6c6; --accent-ink: #0b1a1e; --accent-soft: #163239; --load: #f28b4f;
+  --ok: #4cc58b; --ok-soft: #133226; --bad: #f2786d; --bad-soft: #3a1c1a; --warn: #e3a64a; --warn-soft: #36290f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #11161c; --surface: #18202a; --surface-2: #1f2933; --ink: #e5eaf0; --muted: #9aa5b3; --line: #2e3a47;
+  --accent: #4fb6c6; --accent-ink: #0b1a1e; --accent-soft: #163239; --load: #f28b4f;
+  --ok: #4cc58b; --ok-soft: #133226; --bad: #f2786d; --bad-soft: #3a1c1a; --warn: #e3a64a; --warn-soft: #36290f; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--f-body); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 48px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; letter-spacing: 0.01em; text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: 30px; } h2 { font-size: 30px; } h3 { font-size: 21px; }
+p { margin: 0; }
+.eyebrow { font: 600 12px/1.3 var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.small { font-size: 13px; color: var(--muted); }
+code { font-family: var(--f-mono); font-size: 0.92em; background: var(--surface-2); padding: 1px 4px; border-radius: 3px; }
+i.ov { text-decoration: overline; }
+.ss { display: inline-flex; flex-direction: column; vertical-align: middle; line-height: 1; font-size: 0.72em; margin-left: 1px; }
+.ss sup, .ss sub { position: static; line-height: 1.05; }
+sub, sup { font-size: 0.72em; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Encabezado */
+.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; padding-block: 22px 18px; border-bottom: 2px solid var(--ink); margin-bottom: 22px; }
+.top .brand { display: grid; gap: 4px; }
+.who { display: grid; gap: 4px; min-width: 0; }
+.who label { font: 600 12px var(--f-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.who .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.who input { font: 500 16px var(--f-mono); padding: 7px 10px; width: 15ch; border: 1.5px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--ink); }
+.who .hint { font-size: 12.5px; color: var(--muted); max-width: 34ch; }
+
+/* Distribución */
+.layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 28px; align-items: start; }
+.side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); display: grid; gap: 16px; }
+.nav-group { display: grid; gap: 2px; }
+.nav-h { font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 0 10px 4px; }
+.nav-item { display: grid; gap: 1px; padding: 7px 10px; border-radius: var(--r); color: var(--ink); text-decoration: none; border-left: 3px solid transparent; }
+.nav-item:hover { background: var(--surface-2); }
+.nav-item[aria-current="page"] { background: var(--surface); border-left-color: var(--accent); box-shadow: 0 1px 0 var(--line); }
+.nav-item span:first-child { font-weight: 500; }
+.nav-tag { font-size: 12px; color: var(--muted); }
+#nav-select { display: none; font: 500 15px var(--f-body); padding: 9px 10px; border-radius: var(--r); border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); width: 100%; }
+.side-note { font-size: 12.5px; color: var(--muted); padding: 0 10px; }
+main { min-width: 0; display: grid; gap: 20px; }
+
+/* Cabecera del ejercicio */
+.exhead { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: flex-end; }
+.exhead-t { display: grid; gap: 4px; }
+.exhead-r { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.tag { font: 600 12px var(--f-body); letter-spacing: 0.04em; padding: 4px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.variant { display: flex; align-items: center; gap: 8px; }
+.var-n { font: 500 14px var(--f-mono); }
+.prog { display: flex; align-items: center; gap: 12px; }
+.prog-bar { flex: 1; height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.prog-bar span { display: block; height: 100%; background: var(--ok); transition: width .3s; }
+.prog-t { font: 500 13px var(--f-mono); color: var(--muted); white-space: nowrap; }
+
+/* Botones */
+.btn { font: 500 14px var(--f-body); padding: 7px 14px; border-radius: var(--r); border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.btn:hover:not(:disabled) { border-color: var(--accent); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-quiet { border-color: transparent; background: transparent; color: var(--muted); }
+.btn-sm { padding: 5px 10px; font-size: 13px; }
+
+/* Enunciado */
+.enun { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 20px; }
+.enun-text { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.enun-fig { margin: 0; min-width: 0; }
+.fig { width: 100%; height: auto; display: block; }
+.tblwrap { overflow-x: auto; }
+.tbl { border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tbl th { font: 600 12px var(--f-body); color: var(--muted); text-align: left; padding: 4px 12px 4px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 4px 12px 4px 0; border-bottom: 1px solid var(--surface-2); font-family: var(--f-mono); font-size: 13.5px; white-space: nowrap; }
+
+/* Figuras */
+.fig-bar { stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; }
+.fig-bar-beam { stroke-width: 4.4; }
+.fig-beam { stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
+.fig-node { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+.fig-sup { fill: var(--surface); stroke: var(--ink); stroke-width: 1.6; }
+.fig-ground { stroke: var(--ink); stroke-width: 1.8; }
+.fig-hatch { stroke: var(--muted); stroke-width: 1; }
+.fig-load { stroke: var(--load); stroke-width: 2; fill: none; }
+.fig-load-fill { fill: var(--load); }
+.fig-axis { stroke: var(--muted); stroke-width: 1.4; }
+.fig-spring { stroke: var(--ink); stroke-width: 2; fill: none; stroke-linejoin: round; }
+.fig-txt { fill: var(--ink); font: 13px var(--f-body); }
+.fig-txt .sub { font-size: 10px; }
+.fig-nodetxt { fill: var(--ink); font: 700 15px var(--f-body); }
+.fig-loadtxt { fill: var(--load); font: 600 13px var(--f-mono); }
+.fig-dim { stroke: var(--muted); stroke-width: 1; fill: none; }
+.fig-dimtxt { fill: var(--muted); font: 12px var(--f-mono); }
+
+/* Pasos */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; display: grid; gap: 12px; border-left: 4px solid var(--line); }
+.step[data-state="ok"] { border-left-color: var(--ok); }
+.step[data-state="bad"] { border-left-color: var(--bad); }
+.step-h { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.step-n { font: 600 13px var(--f-mono); color: var(--accent); }
+.step-h h3 { flex: 1; min-width: 12ch; }
+.chip { font: 600 12px var(--f-body); padding: 3px 9px; border-radius: 999px; background: var(--surface-2); color: var(--muted); }
+.step[data-state="ok"] .chip { background: var(--ok-soft); color: var(--ok); }
+.step[data-state="bad"] .chip { background: var(--bad-soft); color: var(--bad); }
+.intro { max-width: 78ch; }
+.fields { display: flex; flex-wrap: wrap; gap: 14px 28px; }
+.field { display: grid; gap: 6px; min-width: 0; max-width: 100%; }
+.flabel { font: 500 13.5px var(--f-body); color: var(--muted); }
+.flabel .u { font-family: var(--f-mono); font-size: 12.5px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.fb-ok { color: var(--ok); font-weight: 600; }
+.fb-list { margin: 0; padding-left: 18px; color: var(--bad); display: grid; gap: 2px; }
+.sol { border-top: 1px dashed var(--line); padding-top: 12px; display: grid; gap: 10px; overflow-x: auto; }
+.sol-h { font: 600 12px var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.sol ul { margin: 0; padding-left: 18px; }
+.eq { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; font-family: var(--f-body); }
+.eq b { font-family: var(--f-mono); }
+
+/* Matrices */
+.mx { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; overflow-x: auto; padding-bottom: 2px; }
+.mx-pre { white-space: nowrap; }
+.mx-t { border-collapse: separate; border-spacing: 0; font: 13.5px var(--f-mono); font-variant-numeric: tabular-nums; }
+.mx-t thead th { font: 500 12.5px var(--f-body); color: var(--muted); padding: 0 6px 3px; text-align: center; }
+.mx-t th.rl { font: 500 13px var(--f-body); color: var(--muted); padding: 2px 8px 2px 0; text-align: right; white-space: nowrap; }
+.mx-t td.c { padding: 3px 9px; text-align: right; white-space: nowrap; }
+.mx-t td.L { border-left: 2px solid var(--ink); }
+.mx-t td.R { border-right: 2px solid var(--ink); }
+.mx-t tbody tr:first-child td.L { background: linear-gradient(var(--ink), var(--ink)) left top / 7px 2px no-repeat; }
+.mx-t tbody tr:last-child td.L { background: linear-gradient(var(--ink), var(--ink)) left bottom / 7px 2px no-repeat; }
+.mx-t tbody tr:first-child td.R { background: linear-gradient(var(--ink), var(--ink)) right top / 7px 2px no-repeat; }
+.mx-t tbody tr:last-child td.R { background: linear-gradient(var(--ink), var(--ink)) right bottom / 7px 2px no-repeat; }
+.mx-t tbody tr:only-child td.L { background: linear-gradient(var(--ink), var(--ink)) left top / 7px 2px no-repeat, linear-gradient(var(--ink), var(--ink)) left bottom / 7px 2px no-repeat; }
+.mx-t tbody tr:only-child td.R { background: linear-gradient(var(--ink), var(--ink)) right top / 7px 2px no-repeat, linear-gradient(var(--ink), var(--ink)) right bottom / 7px 2px no-repeat; }
+.mx-t td.hi { color: var(--accent); font-weight: 600; }
+.mx-t td.unit { font: 12.5px var(--f-mono); color: var(--muted); padding-left: 8px; white-space: nowrap; }
+.mx-in td.c { padding: 3px 4px; }
+.mx-in td.L { padding-left: 7px; } .mx-in td.R { padding-right: 7px; }
+input.cell { width: 9.5ch; font: 500 14px var(--f-mono); text-align: right; padding: 5px 6px; border: 1.5px solid var(--line); border-radius: 4px; background: var(--paper); color: var(--ink); }
+input.cell:focus { border-color: var(--accent); outline: none; background: var(--surface); }
+input.cell.ok { border-color: var(--ok); background: var(--ok-soft); }
+input.cell.bad { border-color: var(--bad); background: var(--bad-soft); }
+input.cell.empty { border-color: var(--warn); background: var(--warn-soft); }
+
+/* Paneles */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 18px; }
+.panel summary { cursor: pointer; font: 600 19px var(--f-display); letter-spacing: 0.01em; }
+.panel[open] summary { margin-bottom: 12px; }
+.notation { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 28px; font-size: 14px; }
+.notation h4 { font: 600 13px var(--f-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin: 0 0 4px; }
+.notation ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.exp { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+.exp > div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.exp-h { font: 600 14px var(--f-body); }
+.exp textarea { width: 100%; font: 12.5px/1.5 var(--f-mono); padding: 8px; border: 1px solid var(--line); border-radius: var(--r); background: var(--paper); color: var(--ink); resize: vertical; }
+.exp .btn { justify-self: start; }
+.key { display: grid; gap: 10px; margin-top: 10px; }
+.key-h { font-weight: 600; font-size: 14px; }
+.key-vals { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 13px var(--f-mono); }
+.kv .kl { font-family: var(--f-body); color: var(--muted); }
+
+@media (max-width: 1020px) { .enun { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .side { position: static; }
+  #nav { display: none; }
+  #nav-select { display: block; }
+  .side-note { padding: 0; }
+  h1 { font-size: 26px; } h2 { font-size: 26px; }
+}
+@media (max-width: 520px) { input.cell { width: 7.5ch; font-size: 13.5px; } .step { padding: 14px 12px; } .enun { padding: 14px; } }
+@media (prefers-reduced-motion: reduce) { .prog-bar span { transition: none; } }
+/* Rounding compatibility is visible but never earns a correct step. */
+input.cell.rounding { background:#fff3d4; border-color:#946000; color:#623f00; }
+.step[data-state="rounding"] [data-chip] { background:#fff3d4; color:#623f00; }
+</style>
+<link rel="stylesheet" href="./bank-sheet.css">
+<link rel="stylesheet" href="./bank-blocks.css">
+<link rel="stylesheet" href="./bank-free-sheet.css">
+<link rel="stylesheet" href="./bank-visual.css">
+<link rel="stylesheet" href="./bank-operational.css">
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./bank-reading.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><a href="index.html">Volver al libro</a><p class="eyebrow">Estructuras I · Corte 3 · Método matricial de rigidez</p><h1>Banco de ejercicios de rigidez</h1></div>
+    <div class="who">
+      <label for="alias">Alias de práctica</label>
+      <div class="row"><input id="alias" placeholder="Ej.: PUENTE" maxlength="64" autocomplete="off" spellcheck="false" aria-describedby="alias-hint">
+        <span class="hint" id="alias-hint">Use un alias inventado, no su nombre ni código personal. El alias determina los datos de práctica. Se guarda con las respuestas solo en este navegador; no se envían datos. Sin alias se usan datos de ejemplo.</span></div>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="side">
+      <select id="nav-select" aria-label="Ejercicio"></select>
+      <nav id="nav" aria-label="Tipos de ejercicio"></nav>
+      <p class="side-note">Cada tipo permite practicar con distintas variantes. Use “Siguiente” para practicar con otros datos.</p>
+    </aside>
+    <div class="bank-content" style="min-width:0; display:grid; gap:20px;">
+      <main id="main"></main>
+      <details class="panel" id="notacion">
+        <summary>Notación y convenciones</summary>
+        <div class="notation">
+          <div><h4>Coordenadas generales</h4><ul>
+            <li>Fuerzas <i>X</i>, <i>Y</i> y momentos <i>M</i>; desplazamientos <i>u</i>, <i>v</i> y giros <i>θ</i>.</li>
+            <li>Positivos: <i>X</i> y <i>u</i> hacia la derecha, <i>Y</i> y <i>v</i> hacia arriba, <i>M</i> y <i>θ</i> en sentido antihorario.</li>
+            <li>{<i>F</i>} = [<i>K</i>]{<i>δ</i>}.</li></ul></div>
+          <div><h4>Coordenadas locales</h4><ul>
+            <li>La barra superior indica local: <i class="ov">F</i>, <i class="ov">δ</i>, [<i class="ov">K</i>].</li>
+            <li><i class="ov">X</i> va a lo largo del elemento, del nudo <i>i</i> al nudo <i>j</i>. <i>φ</i> se mide en sentido antihorario desde <i>X</i> hasta <i class="ov">X</i>.</li>
+            <li><i>c</i> = cos <i>φ</i>, <i>s</i> = sen <i>φ</i>; {<i class="ov">δ</i>} = [<i>T</i>]{<i>δ</i>}, {<i class="ov">F</i>} = [<i>T</i>]{<i>F</i>}, [<i>K</i>] = [<i>T</i>]<sup>T</sup>[<i class="ov">K</i>][<i>T</i>].</li></ul></div>
+          <div><h4>Partición (lámina 241)</h4><ul>
+            <li><i>n</i>: GDL libres; <i>a</i>: GDL de los apoyos.</li>
+            <li>{<i>δ</i><sub>n</sub>} = [<i>K</i><sub>nn</sub>]<sup>−1</sup>({<i>F</i><sub>n</sub>} − {<i>F</i><span class="ss"><sup>F</sup><sub>n</sub></span>}).</li>
+            <li>{<i>F</i><sub>a</sub>} = {<i>F</i><span class="ss"><sup>F</sup><sub>a</sub></span>} + [<i>K</i><sub>an</sub>]{<i>δ</i><sub>n</sub>}, con {<i>δ</i><sub>a</sub>} = 0.</li></ul></div>
+          <div><h4>Fuerzas en los elementos</h4><ul>
+            <li><i>S</i><sub>ij</sub>: fuerza axial de una barra o resorte. Positivo es tensión.</li>
+            <li><i>Y</i><span class="ss"><sup>F</sup><sub>ij</sub></span>, <i>M</i><span class="ss"><sup>F</sup><sub>ij</sub></span>: fuerzas del tramo con ambos extremos empotrados, en el extremo <i>i</i>.</li>
+            <li>[<i>F</i>]<sub>ij</sub> = [<i>F</i>]<sup>F</sup><sub>ij</sub> + [<i>K</i>]<sub>ij</sub>{<i>δ</i>}<sub>ij</sub>.</li></ul></div>
+          <div><h4>Cómo escribir las respuestas</h4><ul>
+            <li>Acepta coma o punto decimal y operaciones simples: <code>−30/6480</code>, <code>2*sqrt(2)</code>, <code>1.5e-3</code>.</li>
+            <li>Escriba o pegue la matriz completa en «Respuesta como bloque». Revise la vista previa; «Comprobar» aplica el bloque y verifica el paso. La edición por casillas es opcional.</li>
+            <li>Tolerancia general de 1 % por casilla; algunos datos geométricos y coeficientes usan una tolerancia menor. Los números de código deben ser exactos y los ceros se comprueban aparte. Conserve al menos cuatro cifras significativas; si hay cancelación, conserve más cifras hasta el resultado final.</li>
+            <li>Verde: correcto. Ámbar: un recálculo con cuatro, cinco o seis cifras reproduce un resultado cercano al suyo; es compatible con redondeo, no una prueba de que todo su procedimiento esté bien. No completa el paso ni aumenta el progreso. Rojo: no coincide con la referencia ni con esos recálculos.</li>
+            <li>En el editor de bloque, Enter crea una fila. En una casilla individual, Enter comprueba el paso.</li></ul></div>
+        </div>
+      </details>
+    </div>
+    <aside id="bank-sheet" hidden aria-label="Tarjetas matriciales anteriores"></aside>
+    <aside id="bank-free-sheet" hidden aria-label="Hoja libre junto al ejercicio"></aside>
+  </div>
+</div>
+
+<script type="module">
+import { parseVal, judge, parsePastedGrid, numericInputError } from './bank-validation.mjs';
+import { generateWithRounding } from './bank-rounding.mjs';
+import { mountBankSheet } from './bank-sheet.mjs';
+import { mountBankFreeSheet } from './bank-free-sheet.mjs';
+import { parseResponseBlock, responseTSV, numericTableColumns, escapeBlockHTML } from './bank-blocks.mjs';
+/* Núcleo numérico y utilidades. Sin dependencias ni acceso al DOM. */
+(function (G) {
+  'use strict';
+
+  /* ---------- Generador pseudoaleatorio reproducible ---------- */
+  function hashStr(s) {
+    let h = 2166136261 >>> 0;
+    for (const ch of String(s)) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function makeRng(seed) {
+    const r = mulberry32(hashStr(seed));
+    const api = {
+      next: r,
+      int: (a, b) => a + Math.floor(r() * (b - a + 1)),
+      pick: (arr) => arr[Math.floor(r() * arr.length)],
+      step: (a, b, s) => a + s * Math.floor(r() * (Math.round((b - a) / s) + 1)),
+      sign: () => (r() < 0.5 ? -1 : 1),
+      nz: (a, b, s) => { // valor no nulo entre ±a y ±b
+        const m = api.step(a, b, s); return api.sign() * m;
+      }
+    };
+    return api;
+  }
+
+  /* ---------- Álgebra lineal ---------- */
+  const zeros = (n, m) => Array.from({ length: n }, () => Array(m).fill(0));
+  const matmul = (A, B) => A.map(r => B[0].map((_, j) => r.reduce((s, a, k) => s + a * B[k][j], 0)));
+  const matvec = (A, x) => A.map(r => r.reduce((s, a, k) => s + a * x[k], 0));
+  const transpose = (A) => A[0].map((_, j) => A.map(r => r[j]));
+  const sub = (A, rows, cols) => rows.map(i => cols.map(j => A[i][j]));
+  const cleanV = (v) => (Math.abs(v) < 1e-10 ? 0 : v);
+  const cleanM = (M) => M.map(r => r.map(cleanV));
+
+  function solve(A, b) {
+    const n = A.length;
+    const M = A.map((r, i) => [...r, b[i]]);
+    const scale = Math.max(...A.map(r => Math.max(...r.map(Math.abs))));
+    for (let c = 0; c < n; c++) {
+      let p = c;
+      for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      if (Math.abs(M[p][c]) < 1e-9 * scale) throw new Error('Matriz singular');
+      [M[c], M[p]] = [M[p], M[c]];
+      for (let r = 0; r < n; r++) {
+        if (r === c) continue;
+        const f = M[r][c] / M[c][c];
+        if (f === 0) continue;
+        for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k];
+      }
+    }
+    return M.map((r, i) => r[n] / r[i]);
+  }
+  // Comprueba que la matriz simétrica sea definida positiva (Cholesky)
+  function isPD(A) {
+    const n = A.length; const L = zeros(n, n);
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j <= i; j++) {
+        let s = A[i][j];
+        for (let k = 0; k < j; k++) s -= L[i][k] * L[j][k];
+        if (i === j) { if (s <= 1e-9 * Math.abs(A[i][i])) return false; L[i][i] = Math.sqrt(s); }
+        else L[i][j] = s / L[j][j];
+      }
+    }
+    return true;
+  }
+
+  /* ---------- Elementos ---------- */
+  function trussElem(xi, yi, xj, yj, EA) {
+    const dx = xj - xi, dy = yj - yi, L = Math.hypot(dx, dy);
+    const c = cleanV(dx / L), s = cleanV(dy / L), k = EA / L;
+    let phi = Math.atan2(dy, dx) * 180 / Math.PI; if (phi < 0) phi += 360; phi = cleanV(phi);
+    const T = [[c, s, 0, 0], [-s, c, 0, 0], [0, 0, c, s], [0, 0, -s, c]];
+    const Kl = [[k, 0, -k, 0], [0, 0, 0, 0], [-k, 0, k, 0], [0, 0, 0, 0]];
+    const Kg = cleanM([[c * c, c * s, -c * c, -c * s], [c * s, s * s, -c * s, -s * s],
+      [-c * c, -c * s, c * c, c * s], [-c * s, -s * s, c * s, s * s]].map(r => r.map(v => v * k)));
+    return { dx, dy, L, c, s, k, phi, T, Kl, Kg };
+  }
+  function beamK(EI, L) {
+    const a = 12 * EI / L ** 3, b = 6 * EI / L ** 2, c = 4 * EI / L, e = 2 * EI / L;
+    return [[a, b, -a, b], [b, c, -b, e], [-a, -b, a, -b], [b, e, -b, c]];
+  }
+  // Fuerzas de empotramiento [Yij, Mij, Yji, Mji]; cargas hacia abajo positivas en magnitud.
+  function fixedEnd(L, loads) {
+    let Yi = 0, Mi = 0, Yj = 0, Mj = 0;
+    for (const q of loads || []) {
+      if (q.type === 'w') {
+        Yi += q.w * L / 2; Yj += q.w * L / 2; Mi += q.w * L * L / 12; Mj -= q.w * L * L / 12;
+      } else if (q.type === 'P') {
+        const a = q.a, b = L - a;
+        const mi = q.P * a * b * b / (L * L), mj = -q.P * a * a * b / (L * L);
+        const yi = (q.P * b + mi + mj) / L;
+        Mi += mi; Mj += mj; Yi += yi; Yj += q.P - yi;
+      }
+    }
+    return [Yi, Mi, Yj, Mj];
+  }
+  function frameElem(xi, yi, xj, yj, E, A, I, loads) {
+    const dx = xj - xi, dy = yj - yi, L = Math.hypot(dx, dy);
+    const c = cleanV(dx / L), s = cleanV(dy / L);
+    const a = E * A / L, b = 12 * E * I / L ** 3, cc = 6 * E * I / L ** 2, d = 4 * E * I / L, e = 2 * E * I / L;
+    const Kl = [[a, 0, 0, -a, 0, 0], [0, b, cc, 0, -b, cc], [0, cc, d, 0, -cc, e],
+      [-a, 0, 0, a, 0, 0], [0, -b, -cc, 0, b, -cc], [0, cc, e, 0, -cc, d]];
+    const R = [[c, s, 0], [-s, c, 0], [0, 0, 1]];
+    const T = zeros(6, 6);
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) { T[i][j] = R[i][j]; T[i + 3][j + 3] = R[i][j]; }
+    const Kg = cleanM(matmul(matmul(transpose(T), Kl), T));
+    const fe = fixedEnd(L, loads);
+    const FfL = [0, fe[0], fe[1], 0, fe[2], fe[3]];
+    const FfG = cleanM([matvec(transpose(T), FfL)])[0];
+    let phi = Math.atan2(dy, dx) * 180 / Math.PI; if (phi < 0) phi += 360;
+    return { L, c, s, phi, coef: { a, b, c: cc, d, e }, Kl, T, Kg, FfL, FfG };
+  }
+
+  /* ---------- Ensamblaje y solución ---------- */
+  // els: [{code:[...], Kg, FfG}] ; Fnod: cargas nodales aplicadas ; restr: booleano por GDL
+  function assembleSolve(nd, els, Fnod, restr) {
+    const K = zeros(nd, nd), Ff = Array(nd).fill(0);
+    const contrib = Array.from({ length: nd }, () => Array.from({ length: nd }, () => []));
+    els.forEach((el, ie) => {
+      el.code.forEach((gi, a) => {
+        Ff[gi] += (el.FfG ? el.FfG[a] : 0);
+        el.code.forEach((gj, b) => {
+          const v = el.Kg[a][b];
+          K[gi][gj] += v;
+          if (v !== 0) contrib[gi][gj].push({ el: ie, v });
+        });
+      });
+    });
+    const free = [], rest = [];
+    for (let i = 0; i < nd; i++) (restr[i] ? rest : free).push(i);
+    const Knn = sub(K, free, free), Kan = sub(K, rest, free);
+    const Fn = free.map(g => Fnod[g]), Ffn = free.map(g => Ff[g]);
+    const rhs = Fn.map((f, i) => f - Ffn[i]);
+    const pd = isPD(Knn);
+    const dn = pd ? solve(Knn, rhs) : null;
+    const d = Array(nd).fill(0);
+    if (dn) free.forEach((g, k) => { d[g] = dn[k]; });
+    const Kd = matvec(K, d);
+    const Fa = rest.map(g => Kd[g] + Ff[g]);          // fuerza total en el apoyo (lámina 241)
+    const R = rest.map((g, k) => Fa[k] - Fnod[g]);     // reacción del apoyo
+    return { K: cleanM(K), Ff, contrib, free, rest, Knn, Kan, Fn, Ffn, rhs, dn, d, Fa, R, pd };
+  }
+
+  /* ---------- Formato ---------- */
+  function stripZeros(m) { return m.includes('.') ? m.replace(/0+$/, '').replace(/\.$/, '') : m; }
+  function fmt(x, sig) {
+    sig = sig || 5;
+    if (x === null || x === undefined || !isFinite(x)) return '–';
+    if (Math.abs(x) < 1e-12) return '0';
+    const ax = Math.abs(x);
+    let s;
+    if (ax >= 1e7 || ax < 1e-4) {
+      const [m, e] = x.toExponential(sig - 1).split('e');
+      s = stripZeros(m) + '×10<sup>' + (+e) + '</sup>';
+    } else {
+      s = String(Number(x.toPrecision(sig)));
+      if (s.includes('e')) s = x.toFixed(8);
+    }
+    return s.replace(/^-/, '−');
+  }
+  function fmtPlain(x, sig) {
+    sig = sig || 8;
+    if (!isFinite(x)) return '';
+    if (Math.abs(x) < 1e-12) return '0';
+    return String(Number(x.toPrecision(sig)));
+  }
+
+  /* ---------- Bloques HTML reutilizables ---------- */
+  const it = (s, subi) => `<i>${s}</i>${subi !== undefined && subi !== '' ? `<sub>${subi}</sub>` : ''}`;
+  const ov = (s, subi) => `<i class="ov">${s}</i>${subi !== undefined && subi !== '' ? `<sub>${subi}</sub>` : ''}`;
+  const fe = (s, subi) => `<i>${s}</i><span class="ss"><sup>F</sup><sub>${subi}</sub></span>`;
+  const MINUS = '−';
+
+  function matHTML(M, rowL, colL, f, opts) {
+    opts = opts || {};
+    f = f || ((x) => fmt(x, 5));
+    const nC = M[0].length;
+    const head = colL ? `<thead><tr><th></th>${colL.map(c => `<th>${c}</th>`).join('')}</tr></thead>` : '';
+    const body = M.map((r, i) => `<tr><th class="rl">${rowL ? rowL[i] : ''}</th>${r.map((v, j) => {
+      const cls = ['c']; if (j === 0) cls.push('L'); if (j === nC - 1) cls.push('R');
+      if (opts.hi && opts.hi(i, j)) cls.push('hi');
+      return `<td class="${cls.join(' ')}">${typeof v === 'string' ? v : f(v)}</td>`;
+    }).join('')}</tr>`).join('');
+    const pre = opts.pre ? `<span class="mx-pre">${opts.pre}</span>` : '';
+    return `<div class="mx">${pre}<table class="mx-t">${head}<tbody>${body}</tbody></table>${opts.post ? `<span class="mx-pre">${opts.post}</span>` : ''}</div>`;
+  }
+  const vecHTML = (v, rowL, f, opts) => matHTML(v.map(x => [x]), rowL, null, f, opts);
+
+  G.MR = {
+    makeRng, hashStr, zeros, matmul, matvec, transpose, solve, sub, isPD, cleanV, cleanM,
+    trussElem, beamK, fixedEnd, frameElem, assembleSolve,
+    fmt, fmtPlain, it, ov, fe, MINUS, matHTML, vecHTML
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Figuras SVG de los enunciados. Colores tomados de variables CSS de la página. */
+(function (G) {
+  'use strict';
+  const r1 = (v) => Math.round(v * 10) / 10;
+  const numTxt = (x) => String(Number(x.toPrecision(6))).replace(/^-/, '−');
+
+  const DEFS = `<defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="fig-load-fill"/></marker>
+    <marker id="dt" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2,2 L8,8 M8,2 L2,8" class="fig-dim" stroke-width="1.4"/></marker>
+  </defs>`;
+
+  const arrow = (x1, y1, x2, y2, cls) => `<line x1="${r1(x1)}" y1="${r1(y1)}" x2="${r1(x2)}" y2="${r1(y2)}" class="${cls || 'fig-load'}" marker-end="url(#ah)"/>`;
+  const text = (x, y, s, cls, anchor) => `<text x="${r1(x)}" y="${r1(y)}" class="${cls || 'fig-txt'}" text-anchor="${anchor || 'middle'}">${s}</text>`;
+
+  function hatch(x1, y1, x2, y2, dir) { // línea de terreno con rayado hacia "dir" (vector unitario)
+    let s = `<line x1="${r1(x1)}" y1="${r1(y1)}" x2="${r1(x2)}" y2="${r1(y2)}" class="fig-ground"/>`;
+    const L = Math.hypot(x2 - x1, y2 - y1), n = Math.max(3, Math.floor(L / 7));
+    for (let k = 0; k <= n; k++) {
+      const px = x1 + (x2 - x1) * k / n, py = y1 + (y2 - y1) * k / n;
+      s += `<line x1="${r1(px)}" y1="${r1(py)}" x2="${r1(px + dir[0] * 7 - dir[1] * 5)}" y2="${r1(py + dir[1] * 7 + dir[0] * 5)}" class="fig-hatch"/>`;
+    }
+    return s;
+  }
+  // Apoyo dibujado "debajo" del punto (x,y); se rota para otros lados.
+  function supportShape(kind) {
+    if (kind === 'pin') {
+      return `<path d="M0,0 L-11,19 L11,19 Z" class="fig-sup"/>` + hatch(-18, 19, 18, 19, [0, 1]);
+    }
+    // rodillo
+    return `<path d="M0,0 L-11,16 L11,16 Z" class="fig-sup"/><circle cx="-6" cy="20.5" r="3.6" class="fig-sup"/><circle cx="6" cy="20.5" r="3.6" class="fig-sup"/>` + hatch(-18, 25, 18, 25, [0, 1]);
+  }
+  function support(x, y, kind, side) {
+    const rot = { below: 0, left: 90, right: -90, above: 180 }[side || 'below'];
+    return `<g transform="translate(${r1(x)},${r1(y)}) rotate(${rot})">${supportShape(kind)}</g>`;
+  }
+  function fixedWall(x, y, side, half) { // empotramiento: pared en el lado indicado
+    half = half || 22;
+    if (side === 'left') return hatch(x, y - half, x, y + half, [-1, 0]);
+    if (side === 'right') return hatch(x, y - half, x, y + half, [1, 0]);
+    return hatch(x - half, y, x + half, y, [0, 1]); // abajo
+  }
+  function dimH(x1, x2, y, label) {
+    return `<line x1="${r1(x1)}" y1="${r1(y)}" x2="${r1(x2)}" y2="${r1(y)}" class="fig-dim" marker-start="url(#dt)" marker-end="url(#dt)"/>
+      <line x1="${r1(x1)}" y1="${r1(y - 7)}" x2="${r1(x1)}" y2="${r1(y + 7)}" class="fig-dim"/>
+      <line x1="${r1(x2)}" y1="${r1(y - 7)}" x2="${r1(x2)}" y2="${r1(y + 7)}" class="fig-dim"/>` +
+      text((x1 + x2) / 2, y - 6, label, 'fig-dimtxt');
+  }
+  function dimV(x, y1, y2, label, side) {
+    const tx = side === 'left' ? x - 6 : x + 6;
+    return `<line x1="${r1(x)}" y1="${r1(y1)}" x2="${r1(x)}" y2="${r1(y2)}" class="fig-dim" marker-start="url(#dt)" marker-end="url(#dt)"/>
+      <line x1="${r1(x - 7)}" y1="${r1(y1)}" x2="${r1(x + 7)}" y2="${r1(y1)}" class="fig-dim"/>
+      <line x1="${r1(x - 7)}" y1="${r1(y2)}" x2="${r1(x + 7)}" y2="${r1(y2)}" class="fig-dim"/>` +
+      `<text x="${r1(tx)}" y="${r1((y1 + y2) / 2 + 4)}" class="fig-dimtxt" text-anchor="${side === 'left' ? 'end' : 'start'}">${label}</text>`;
+  }
+  const svgWrap = (W, H, body, label) => `<svg viewBox="0 0 ${W} ${r1(H)}" class="fig" role="img" aria-label="${label}">${DEFS}${body}</svg>`;
+
+  /* ---------- Cercha ---------- */
+  function drawTruss(m) {
+    const xs = m.nodes.map(n => n.x), ys = m.nodes.map(n => n.y);
+    const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+    const spanX = Math.max(maxX - minX, 1), spanY = Math.max(maxY - minY, 1);
+    const W = 640, padX = 120, padTop = 80, padBot = 130;
+    const sc = Math.min((W - 2 * padX) / spanX, 230 / spanY);
+    const H = spanY * sc + padTop + padBot;
+    const ox = (W - spanX * sc) / 2;
+    const P = (x, y) => [ox + (x - minX) * sc, padTop + (maxY - y) * sc];
+    const cx = xs.reduce((a, b) => a + b, 0) / xs.length, cy = ys.reduce((a, b) => a + b, 0) / ys.length;
+    let s = '';
+    m.elems.forEach(e => {
+      const [x1, y1] = P(m.nodes[e.i].x, m.nodes[e.i].y), [x2, y2] = P(m.nodes[e.j].x, m.nodes[e.j].y);
+      s += `<line x1="${r1(x1)}" y1="${r1(y1)}" x2="${r1(x2)}" y2="${r1(y2)}" class="fig-bar"/>`;
+    });
+    let sideSupportLeft = false; const supSide = {};
+    m.nodes.forEach((n, k) => {
+      const ru = m.restr[2 * k], rv = m.restr[2 * k + 1];
+      if (!ru && !rv) return;
+      const [x, y] = P(n.x, n.y);
+      let side = 'below';
+      if (ru && rv) side = (n.y === minY) ? 'below' : (n.x === minX ? 'left' : (n.x === maxX ? 'right' : 'below'));
+      else if (ru) side = n.x === minX ? 'left' : 'right';
+      if (side === 'left') sideSupportLeft = true;
+      supSide[k] = side;
+      s += support(x, y, (ru && rv) ? 'pin' : 'roller', side);
+    });
+    m.nodes.forEach((n, k) => {
+      const [x, y] = P(n.x, n.y);
+      const X = m.loads[2 * k], Y = m.loads[2 * k + 1];
+      if (X) { // flecha horizontal del lado exterior de la estructura
+        const side = n.x < cx ? -1 : 1, d = Math.sign(X);
+        const near = x + side * 8, far = x + side * 66;
+        s += d === side ? arrow(near, y, far, y) : arrow(far, y, near, y);
+        s += text(far + side * 4, y - 7, `${numTxt(Math.abs(X))} kN`, 'fig-loadtxt', side > 0 ? 'start' : 'end');
+      }
+      if (Y) { // flecha vertical arriba de los nudos altos y abajo de los bajos
+        const side = n.y > cy ? -1 : 1, d = -Math.sign(Y);
+        const near = y + side * 8, far = y + side * 60;
+        s += d === side ? arrow(x, near, x, far) : arrow(x, far, x, near);
+        s += text(x + 7, far + (side > 0 ? 4 : 10), `${numTxt(Math.abs(Y))} kN`, 'fig-loadtxt', 'start');
+      }
+    });
+    m.nodes.forEach((n, k) => {
+      const [x, y] = P(n.x, n.y);
+      let dx = n.x - cx, dy = n.y - cy; const L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L;
+      s += `<circle cx="${r1(x)}" cy="${r1(y)}" r="5" class="fig-node"/>`;
+      let lx = x + dx * 17, ly = y - dy * 17 + 5;
+      if (supSide[k] === 'left' || supSide[k] === 'right') { lx = x + (supSide[k] === 'left' ? 13 : -13); ly = n.y > cy ? y - 10 : y + 20; }
+      s += text(lx, ly, String(k + 1), 'fig-nodetxt');
+    });
+    // Cotas
+    const bottomXs = [...new Set(m.nodes.filter(n => n.y === minY).map(n => n.x))].sort((a, b) => a - b);
+    const xsDim = bottomXs.length >= 2 ? bottomXs : [minX, maxX];
+    if (xsDim[0] > minX) xsDim.unshift(minX); if (xsDim[xsDim.length - 1] < maxX) xsDim.push(maxX);
+    const yDim = P(0, minY)[1] + (m.nodes.some((n, k) => n.y === minY && m.loads[2 * k + 1]) ? 100 : 62);
+    for (let k = 0; k < xsDim.length - 1; k++) {
+      s += dimH(P(xsDim[k], 0)[0], P(xsDim[k + 1], 0)[0], yDim, `${numTxt(xsDim[k + 1] - xsDim[k])}${m.unit ? ' ' + m.unit : ''}`);
+    }
+    if (spanY > 1) {
+      const side = sideSupportLeft ? 'right' : 'left';
+      const xd = side === 'left' ? P(minX, 0)[0] - 44 : P(maxX, 0)[0] + 44;
+      s += dimV(xd, P(0, maxY)[1], P(0, minY)[1], `${numTxt(spanY)}${m.unit ? ' ' + m.unit : ''}`, side);
+    }
+    return svgWrap(W, H, s, 'Cercha del ejercicio con nudos numerados, apoyos y cargas');
+  }
+
+  /* ---------- Resortes ---------- */
+  function zigzag(x1, x2, y) {
+    const lead = 14, n = 8, amp = 9; const a = x1 + lead, b = x2 - lead;
+    let d = `M${r1(x1)},${y} L${r1(a)},${y}`;
+    for (let k = 1; k <= n; k++) d += ` L${r1(a + (b - a) * (k - 0.5) / n)},${y + (k % 2 ? -amp : amp)}`;
+    d += ` L${r1(b)},${y} L${r1(x2)},${y}`;
+    return `<path d="${d}" class="fig-spring"/>`;
+  }
+  function drawSprings(N, fixed, loads, kLabels) {
+    const W = 640, gap = Math.min(170, (W - 160) / (N - 1)), x0 = (W - gap * (N - 1)) / 2, y = 92;
+    let s = '';
+    for (let e = 0; e < N - 1; e++) {
+      s += zigzag(x0 + e * gap, x0 + (e + 1) * gap, y);
+      s += text(x0 + (e + 0.5) * gap, y - 20, kLabels[e], 'fig-txt');
+    }
+    for (let i = 0; i < N; i++) {
+      const x = x0 + i * gap;
+      if (fixed.includes(i)) s += fixedWall(i === 0 ? x - 6 : x + 6, y, i === 0 ? 'left' : 'right', 26);
+      s += `<circle cx="${r1(x)}" cy="${y}" r="5" class="fig-node"/>`;
+      s += text(x, y + 30, String(i + 1), 'fig-nodetxt');
+      if (loads[i]) {
+        const d = Math.sign(loads[i]);
+        s += arrow(x - d * 30, y - 46, x + d * 30, y - 46);
+        s += text(x, y - 56, `${numTxt(Math.abs(loads[i]))} kN`, 'fig-loadtxt');
+      }
+    }
+    s += arrow(24, 168, 70, 168, 'fig-axis') + text(76, 172, '+X', 'fig-txt', 'start');
+    return svgWrap(W, 184, s, 'Cadena de resortes con nudos numerados, apoyos y cargas');
+  }
+
+  /* ---------- Viga ---------- */
+  // m: {nodes:[{x, label, sup:'E'|'A'|'R'|'L'}], spans:[{i,j,loads:[{type,w}|{type,P,a}]}], tipLoads:[{x,P}], unit:'m'}
+  function drawBeam(m) {
+    const xs = m.nodes.map(n => n.x); const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const W = 640, pad = 70, sc = (W - 2 * pad) / (maxX - minX), y = 112;
+    const X = (x) => pad + (x - minX) * sc;
+    let s = `<line x1="${X(minX)}" y1="${y}" x2="${X(maxX)}" y2="${y}" class="fig-beam"/>`;
+    const dimPts = new Set(xs);
+    m.spans.forEach(sp => {
+      const xa = m.nodes[sp.i].x, xb = m.nodes[sp.j].x;
+      (sp.loads || []).forEach(q => {
+        if (q.type === 'w') {
+          const n = Math.max(4, Math.round((xb - xa) * sc / 26));
+          s += `<line x1="${r1(X(xa))}" y1="${y - 40}" x2="${r1(X(xb))}" y2="${y - 40}" class="fig-load"/>`;
+          for (let k = 0; k <= n; k++) { const px = X(xa) + (X(xb) - X(xa)) * k / n; s += arrow(px, y - 40, px, y - 6); }
+          s += text((X(xa) + X(xb)) / 2, y - 48, `${numTxt(q.w)} kN/m`, 'fig-loadtxt');
+        } else {
+          const px = X(xa + q.a); dimPts.add(xa + q.a);
+          s += arrow(px, y - 66, px, y - 6);
+          s += text(px, y - 72, `${numTxt(q.P)} kN`, 'fig-loadtxt');
+        }
+      });
+    });
+    (m.tipLoads || []).forEach(t => {
+      const px = X(t.x); s += arrow(px, y - 66, px, y - 6); s += text(px, y - 72, `${numTxt(t.P)} kN`, 'fig-loadtxt');
+    });
+    m.nodes.forEach((n, k) => {
+      const px = X(n.x);
+      if (n.sup === 'E') s += fixedWall(n.x === minX ? px - 2 : px + 2, y, n.x === minX ? 'left' : 'right', 24);
+      else if (n.sup === 'A') s += support(px, y + 3, 'pin', 'below');
+      else if (n.sup === 'R') s += support(px, y + 3, 'roller', 'below');
+      s += `<circle cx="${r1(px)}" cy="${y}" r="4" class="fig-node"/>`;
+      const ly = (n.sup === 'A' || n.sup === 'R') ? y - 14 : y + 24;
+      const lx = (n.sup === 'A' || n.sup === 'R') ? px + 14 : px;
+      s += text(lx, ly, n.label, 'fig-nodetxt');
+    });
+    const pts = [...dimPts].sort((a, b) => a - b);
+    for (let k = 0; k < pts.length - 1; k++) s += dimH(X(pts[k]), X(pts[k + 1]), y + 62, `${numTxt(pts[k + 1] - pts[k])} m`);
+    if (m.note) s += text(10, 24, m.note, 'fig-txt', 'start');
+    return svgWrap(W, 196, s, 'Viga del ejercicio con apoyos, cargas y cotas');
+  }
+
+  /* ---------- Pórtico ---------- */
+  // m: {L, H, w, P, labels:{1:'1 (B)',...}}
+  function drawFrame(m) {
+    const W = 640, sc = Math.min(330 / m.L, 200 / m.H), x0 = (W - m.L * sc) / 2, yb = 70 + m.H * sc, yt = 70;
+    const xA = x0, xD = x0 + m.L * sc;
+    let s = `<line x1="${r1(xA)}" y1="${r1(yb)}" x2="${r1(xA)}" y2="${r1(yt)}" class="fig-bar"/>
+      <line x1="${r1(xA)}" y1="${r1(yt)}" x2="${r1(xD)}" y2="${r1(yt)}" class="fig-bar fig-bar-beam"/>
+      <line x1="${r1(xD)}" y1="${r1(yt)}" x2="${r1(xD)}" y2="${r1(yb)}" class="fig-bar"/>`;
+    s += fixedWall(xA, yb + 2, 'below', 20) + fixedWall(xD, yb + 2, 'below', 20);
+    const n = Math.max(6, Math.round(m.L * sc / 26));
+    s += `<line x1="${r1(xA)}" y1="${yt - 38}" x2="${r1(xD)}" y2="${yt - 38}" class="fig-load"/>`;
+    for (let k = 0; k <= n; k++) { const px = xA + (xD - xA) * k / n; s += arrow(px, yt - 38, px, yt - 5); }
+    s += text((xA + xD) / 2, yt - 46, `${numTxt(m.w)} kN/m`, 'fig-loadtxt');
+    if (m.P) { s += arrow(xA - 78, yt, xA - 8, yt); s += text(xA - 82, yt - 8, `${numTxt(m.P)} kN`, 'fig-loadtxt', 'end'); }
+    [[xA, yt, m.labels[1], 'end', -10, -8], [xD, yt, m.labels[2], 'start', 10, -8], [xA, yb, m.labels[3], 'end', -12, -4], [xD, yb, m.labels[4], 'start', 12, -4]]
+      .forEach(([x, y, l, a, dx, dy]) => { s += `<circle cx="${r1(x)}" cy="${r1(y)}" r="4.5" class="fig-node"/>` + text(x + dx, y + dy, l, 'fig-nodetxt', a); });
+    s += dimH(xA, xD, yb + 46, `${numTxt(m.L)} m`);
+    s += dimV(xD + 70, yt, yb, `${numTxt(m.H)} m`, 'right');
+    s += text((xA + xD) / 2, yt + 18, m.beamTxt, 'fig-txt');
+    s += text(xA + 10, (yt + yb) / 2, m.colTxt, 'fig-txt', 'start');
+    return svgWrap(W, yb + 72, s, 'Pórtico de un vano con bases empotradas, carga distribuida en la viga');
+  }
+
+  G.MRdraw = { drawTruss, drawSprings, drawBeam, drawFrame };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Generadores de ejercicios. Cada uno devuelve enunciado, figura, pasos con respuestas y soluciones. */
+(function (G) {
+  'use strict';
+  const M = G.MR, D = G.MRdraw;
+  const { fmt, it, ov, fe, matHTML, vecHTML } = M;
+  const f4 = (x) => fmt(x, 4);
+  const maxAbs = (A) => Math.max(1e-12, ...A.flat().map(Math.abs));
+  const MSG_SUM = 'Falta sumar los aportes de todos los elementos que comparten este GDL.';
+  const xl = (x) => String(Number(x.toPrecision(10))).replace('.', ','); // decimal con coma para Excel
+  const py = (x) => String(Number(x.toPrecision(10)));
+
+  function fld(id, label, ans, o) {
+    o = o || {};
+    const A = Array.isArray(ans[0]) ? ans : ans.map(x => [x]);
+    return {
+      id, label, ans: A, rowL: o.rowL || null, colL: o.colL || null, unit: o.unit || '',
+      rowUnits: o.rowUnits || null, colUnits: o.colUnits || null, tolRel: o.tolRel === undefined ? 0.01 : o.tolRel,
+      tolAbs: o.tolAbs === undefined ? 0.005 * maxAbs(A) : o.tolAbs, alts: o.alts || null, int: !!o.int
+    };
+  }
+  const contribAlts = (contrib, rows, cols) => (r, c) => {
+    const L = contrib[rows[r]][cols[c]];
+    return L.length > 1 ? L.map(x => ({ v: x.v, msg: MSG_SUM })) : [];
+  };
+  const tbl = (head, rows) => `<div class="tblwrap"><table class="tbl"><thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const eq = (s) => `<div class="eq">${s}</div>`;
+  const p = (s) => `<p>${s}</p>`;
+  const state = (S) => Math.abs(S) < 1e-9 ? 'sin fuerza' : (S > 0 ? 'tensión' : 'compresión');
+  const KK = '[<i>K</i>]';
+  const Knn = `[<i>K</i><sub>nn</sub>]`, Kan = `[<i>K</i><sub>an</sub>]`;
+  const dn = `{<i>δ</i><sub>n</sub>}`, Fn = `{<i>F</i><sub>n</sub>}`, Fa = `{<i>F</i><sub>a</sub>}`, FFn = `{${fe('F', 'n')}}`, FFa = `{${fe('F', 'a')}}`;
+
+  function solveText(Kmat, rhs, rowL, unitTxt, rhsTxt) {
+    const n = Kmat.length; let s = '';
+    if (n === 1) {
+      s += eq(`${rowL[0]} = ${fmt(rhs[0])} / ${fmt(Kmat[0][0])} = <b>${fmt(rhs[0] / Kmat[0][0])}</b> ${unitTxt}`);
+    } else if (n === 2) {
+      const [[a, b], [c, d]] = Kmat, det = a * d - b * c;
+      const inv = [[d / det, -b / det], [-c / det, a / det]];
+      const x = M.matvec(inv, rhs);
+      s += p(`Inversa de una matriz 2×2 por la adjunta, como en la lámina 202:`);
+      s += eq(`|${Knn.replace(/[\[\]]/g, '')}| = (${fmt(a)})(${fmt(d)}) − (${fmt(b)})(${fmt(c)}) = ${fmt(det)}`);
+      s += eq(matHTML(inv, null, null, (v) => fmt(v, 5), { pre: `${Knn}<sup>−1</sup> =` }));
+      s += eq(matHTML(inv, null, null, (v) => fmt(v, 5), { pre: `${dn} = ${Knn}<sup>−1</sup>${rhsTxt} =` }) + vecHTML(rhs, null, null, { post: '=' }) + vecHTML(x, rowL, null));
+    } else {
+      const x = M.solve(Kmat, rhs);
+      s += p(`Resuelva el sistema por eliminación de Gauss o en Excel con <code>=MMULT(MINVERSA(Knn);Fn)</code> (en inglés: MMULT y MINVERSE).`);
+      s += eq(vecHTML(x, rowL, null, { pre: `${dn} =` }) + `<span class="mx-pre">${unitTxt}</span>`);
+    }
+    return s;
+  }
+
+  /* ============ 1. Resortes en serie ============ */
+  function genResortes(r) {
+    const n = r.pick([2, 3, 3]), N = n + 1;
+    const mode = n === 2 ? r.pick(['der', 'izq']) : r.pick(['der', 'izq', 'ambos']);
+    const fixed = mode === 'der' ? [N - 1] : mode === 'izq' ? [0] : [0, N - 1];
+    const ks = Array.from({ length: n }, () => r.step(100, 900, 50));
+    const loads = Array(N).fill(0);
+    do { for (let i = 0; i < N; i++) if (!fixed.includes(i)) loads[i] = r.nz(10, 60, 5); }
+    while (fixed.length === 1 && loads.reduce((a, b) => a + b, 0) === 0);
+    const kn = ['a', 'b', 'c'];
+    const els = ks.map((k, e) => ({ code: [e, e + 1], Kg: [[k, -k], [-k, k]] }));
+    const restr = [...Array(N)].map((_, i) => fixed.includes(i));
+    const s = M.assembleSolve(N, els, loads, restr);
+    const dL = (i) => it('δ', i + 1), FL = (i) => it('F', i + 1);
+    const all = [...Array(N).keys()];
+    const S = ks.map((k, e) => k * (s.d[e + 1] - s.d[e]));
+    const fixTxt = fixed.map(i => `nudo ${i + 1} fijo (${dL(i)} = 0)`).join(' y ');
+
+    const statement = p(`Resuelva la cadena de resortes mostrada: encuentre la matriz de rigidez, los desplazamientos de los nudos libres, las reacciones y las fuerzas internas de los resortes. Apoyos: ${fixTxt}. Fuerzas y desplazamientos positivos hacia la derecha (+X).`);
+    const dataHTML = tbl(['Resorte', 'Nudos', 'k (kN/m)'], ks.map((k, e) => [it('k', kn[e]), `${e + 1}–${e + 2}`, k])) +
+      tbl(['Nudo', 'Carga aplicada (kN)'], all.filter(i => !fixed.includes(i)).map(i => [i + 1, fmt(loads[i])]));
+
+    const expand = (e) => { const Z = M.zeros(N, N); Z[e][e] = ks[e]; Z[e][e + 1] = -ks[e]; Z[e + 1][e] = -ks[e]; Z[e + 1][e + 1] = ks[e]; return Z; };
+    const labs = all.map(dL);
+    const freeL = s.free.map(dL), restL = s.rest.map(FL);
+
+    const steps = [
+      {
+        title: 'Matriz de rigidez de la estructura',
+        intro: `Escriba ${KK} completa, sin aplicar todavía los apoyos, con filas y columnas en el orden ${labs.join(', ')}. Cada resorte <i>i</i>–<i>j</i> aporta <i>k</i>[1 −1; −1 1] en las filas y columnas de sus dos nudos (superposición, láminas 195 y 196).`,
+        fields: [fld('K', `${KK} (kN/m)`, s.K, { rowL: labs, colL: labs, unit: 'kN/m', alts: contribAlts(s.contrib, all, all) })],
+        sol: ks.map((k, e) => eq(matHTML(expand(e), labs, labs, f4, { pre: `${KK}<sub>${kn[e]}</sub> =` }))).join('') +
+          p('Sumando término a término:') + eq(matHTML(s.K, labs, labs, f4, { pre: `${KK} =` }))
+      },
+      {
+        title: 'Partición de la matriz',
+        intro: `Separe los GDL libres (<i>n</i>) de los restringidos (<i>a</i>). Escriba ${Knn}: filas y columnas de los nudos libres.`,
+        fields: [fld('Knn', `${Knn} (kN/m)`, s.Knn, { rowL: freeL, colL: freeL, unit: 'kN/m', alts: contribAlts(s.contrib, s.free, s.free) })],
+        sol: p(`Los GDL restringidos son ${s.rest.map(dL).join(', ')} = 0. Se eliminan sus filas y columnas del sistema de incógnitas; las filas eliminadas se usan después para las reacciones.`) +
+          eq(matHTML(s.Knn, freeL, freeL, f4, { pre: `${Knn} =` }))
+      },
+      {
+        title: 'Desplazamientos de los nudos libres',
+        intro: `Resuelva ${Fn} = ${Knn}${dn}. Escriba los desplazamientos en metros.`,
+        fields: [fld('dn', `${dn} (m)`, s.dn, { rowL: freeL, unit: 'm' })],
+        sol: eq(vecHTML(s.Fn, s.free.map(FL), null, { pre: `${Fn} =` }) + '<span class="mx-pre">kN</span>') + solveText(s.Knn, s.Fn, freeL, 'm', Fn)
+      },
+      {
+        title: 'Reacciones',
+        intro: `Calcule ${Fa} = ${Kan}${dn}. Signo negativo: la reacción actúa hacia la izquierda.`,
+        fields: [fld('R', `${Fa} (kN)`, s.R, { rowL: restL, unit: 'kN' })],
+        sol: eq(matHTML(s.Kan, restL, freeL, f4, { pre: `${Fa} =` }) + vecHTML(s.dn, null, (x) => fmt(x, 5), { post: '=' }) + vecHTML(s.R, restL, null)) +
+          p(`Comprobación de equilibrio: suma de cargas + reacciones = ${fmt(loads.reduce((a, b) => a + b, 0) + s.R.reduce((a, b) => a + b, 0))} kN.`)
+      },
+      {
+        title: 'Fuerzas internas de los resortes',
+        intro: `Para cada resorte, ${it('S', 'ij')} = [−<i>k</i> &nbsp;<i>k</i>]{${it('δ', 'i')}; ${it('δ', 'j')}} (lámina 198). Positivo es tensión y negativo es compresión.`,
+        fields: [fld('S', 'Fuerzas internas (kN)', S, { rowL: ks.map((_, e) => it('S', `${e + 1}${e + 2}`)), unit: 'kN' })],
+        sol: ks.map((k, e) => eq(`${it('S', `${e + 1}${e + 2}`)} = [−${k} &nbsp;${k}]{${fmt(s.d[e], 5)}; ${fmt(s.d[e + 1], 5)}} = <b>${fmt(S[e])}</b> kN (${state(S[e])})`)).join('')
+      }
+    ];
+    const tsv = ['Resorte\tNudo i\tNudo j\tk (kN/m)', ...ks.map((k, e) => `${kn[e]}\t${e + 1}\t${e + 2}\t${xl(k)}`), '', 'Nudo\tCarga (kN)\tFijo', ...all.map(i => `${i + 1}\t${xl(loads[i])}\t${fixed.includes(i) ? 1 : 0}`)].join('\n');
+    const pyTxt = `k = [${ks.join(', ')}]  # kN/m, resorte e une los nudos e y e+1\ncargas = [${loads.map(py).join(', ')}]  # kN por nudo\nfijos = [${fixed.map(i => i + 1).join(', ')}]  # nudos con desplazamiento nulo`;
+    return {
+      statement, dataHTML, steps, figure: D.drawSprings(N, fixed, loads, ks.map((k, e) => `k<tspan class="sub" dy="4">${kn[e]}</tspan><tspan dy="-4"> = ${k} kN/m</tspan>`)),
+      tsv, py: pyTxt
+    };
+  }
+
+  /* ============ Utilidades de cercha ============ */
+  const dofL = (g) => g % 2 === 0 ? it('u', g / 2 + 1) : it('v', (g - 1) / 2 + 1);
+  const forceL = (g) => g % 2 === 0 ? it('X', g / 2 + 1) : it('Y', (g - 1) / 2 + 1);
+  const eName = (t) => `${t.i + 1}–${t.j + 1}`;
+  const SL = (t) => it('S', `${t.i + 1}–${t.j + 1}`);
+  function trussModel(nodes, elems, E, restr, loads) {
+    const els = elems.map(e => {
+      const a = nodes[e.i], b = nodes[e.j];
+      const t = M.trussElem(a.x, a.y, b.x, b.y, E * e.A);
+      t.code = [2 * e.i, 2 * e.i + 1, 2 * e.j, 2 * e.j + 1]; t.i = e.i; t.j = e.j; t.A = e.A; return t;
+    });
+    const s = M.assembleSolve(2 * nodes.length, els, loads, restr);
+    if (s.pd) els.forEach(t => { t.de = t.code.map(g => s.d[g]); t.dl = M.matvec(t.T, t.de); t.S = t.k * (t.dl[2] - t.dl[0]); });
+    return { nodes, elems, E, restr, loads, els, s };
+  }
+  function supTxt(m) {
+    return m.nodes.map((n, k) => {
+      const ru = m.restr[2 * k], rv = m.restr[2 * k + 1];
+      if (ru && rv) return `Nudo ${k + 1}: articulación (${it('u', k + 1)} = ${it('v', k + 1)} = 0)`;
+      if (ru) return `Nudo ${k + 1}: rodillo contra pared (${it('u', k + 1)} = 0, ${it('v', k + 1)} libre)`;
+      if (rv) return `Nudo ${k + 1}: rodillo (${it('v', k + 1)} = 0, ${it('u', k + 1)} libre)`;
+      return null;
+    }).filter(Boolean).join('<br>');
+  }
+  function trussData(m) {
+    const loadRows = [];
+    m.nodes.forEach((n, k) => { const X = m.loads[2 * k], Y = m.loads[2 * k + 1]; if (X || Y) loadRows.push([k + 1, fmt(X), fmt(Y)]); });
+    return tbl(['Nudo', 'x (mm)', 'y (mm)'], m.nodes.map((n, k) => [k + 1, fmt(n.x), fmt(n.y)])) +
+      tbl(['Barra', 'A (mm²)'], m.els.map(t => [eName(t), fmt(t.A)])) +
+      tbl(['Nudo', 'X (kN)', 'Y (kN)'], loadRows) +
+      `<p class="small">${supTxt(m)}<br>Material: <i>E</i> = ${m.E} kN/mm². Trabaje en kN y mm; la rigidez queda en kN/mm.</p>`;
+  }
+  function trussExport(m) {
+    const tsv = ['Nudo\tx (mm)\ty (mm)\tu restringido\tv restringido\tX (kN)\tY (kN)',
+      ...m.nodes.map((n, k) => [k + 1, xl(n.x), xl(n.y), m.restr[2 * k] ? 1 : 0, m.restr[2 * k + 1] ? 1 : 0, xl(m.loads[2 * k]), xl(m.loads[2 * k + 1])].join('\t')),
+      '', 'Barra\tNudo i\tNudo j\tA (mm2)', ...m.els.map(t => [eName(t), t.i + 1, t.j + 1, xl(t.A)].join('\t')), '', `E (kN/mm2)\t${xl(m.E)}`].join('\n');
+    const pyTxt = `E = ${m.E}  # kN/mm2\nnudos = {${m.nodes.map((n, k) => `${k + 1}: (${py(n.x)}, ${py(n.y)})`).join(', ')}}  # mm\n` +
+      `barras = [${m.els.map(t => `(${t.i + 1}, ${t.j + 1}, ${py(t.A)})`).join(', ')}]  # (i, j, A en mm2)\n` +
+      `apoyos = {${m.nodes.map((n, k) => (m.restr[2 * k] || m.restr[2 * k + 1]) ? `${k + 1}: (${m.restr[2 * k] ? 1 : 0}, ${m.restr[2 * k + 1] ? 1 : 0})` : null).filter(Boolean).join(', ')}}  # (u, v) 1 = restringido\n` +
+      `cargas = {${m.nodes.map((n, k) => (m.loads[2 * k] || m.loads[2 * k + 1]) ? `${k + 1}: (${py(m.loads[2 * k])}, ${py(m.loads[2 * k + 1])})` : null).filter(Boolean).join(', ')}}  # (X, Y) en kN`;
+    return { tsv, py: pyTxt };
+  }
+  // Pasos reutilizables de cercha
+  function stepGeom(m, title) {
+    const els = m.els;
+    return {
+      title: title || 'Geometría de las barras',
+      intro: `Para cada barra, orientada del nudo de menor número (<i>i</i>) al de mayor número (<i>j</i>): <i>L</i> = √(Δ<i>x</i>² + Δ<i>y</i>²), <i>c</i> = cos <i>φ</i> = Δ<i>x</i>/<i>L</i> y <i>s</i> = sen <i>φ</i> = Δ<i>y</i>/<i>L</i>, con Δ<i>x</i> = <i>x<sub>j</sub></i> − <i>x<sub>i</sub></i> y Δ<i>y</i> = <i>y<sub>j</sub></i> − <i>y<sub>i</sub></i>.`,
+      fields: [fld('geo', 'Geometría', els.map(t => [t.L, t.c, t.s]), {
+        rowL: els.map(eName), colL: ['<i>L</i> (mm)', '<i>c</i>', '<i>s</i>'], colUnits: ['mm', '', ''], tolRel: 0.002,
+        tolAbs: (r, c) => (c === 0 ? 0.5 : 0.0015),
+        alts: (r, c) => c === 1 ? [{ v: els[r].s, msg: 'Intercambió cos φ y sen φ: c = Δx/L y s = Δy/L.' }] : c === 2 ? [{ v: els[r].c, msg: 'Intercambió cos φ y sen φ: c = Δx/L y s = Δy/L.' }] : []
+      })],
+      sol: tbl(['Barra', 'Δx (mm)', 'Δy (mm)', 'L (mm)', 'c', 's', 'φ'], els.map(t => [eName(t), fmt(t.dx), fmt(t.dy), fmt(t.L, 6), fmt(t.c, 5), fmt(t.s, 5), fmt(t.phi, 5) + '°']))
+    };
+  }
+  function stepCodes(m) {
+    const els = m.els;
+    return {
+      title: 'Números de código',
+      intro: `Numere los GDL en orden natural: ${it('u', 'k')} → 2<i>k</i> − 1 y ${it('v', 'k')} → 2<i>k</i>. Escriba los cuatro números de código de cada barra [${it('u', 'i')}, ${it('v', 'i')}, ${it('u', 'j')}, ${it('v', 'j')}]. Indican en qué filas y columnas de ${KK} se suma cada término (lámina 220).`,
+      fields: [fld('codes', 'Números de código', els.map(t => t.code.map(g => g + 1)), {
+        rowL: els.map(eName), colL: [it('u', 'i'), it('v', 'i'), it('u', 'j'), it('v', 'j')], int: true, tolAbs: 0, tolRel: 0
+      })],
+      sol: tbl(['Barra', 'u<sub>i</sub>', 'v<sub>i</sub>', 'u<sub>j</sub>', 'v<sub>j</sub>', 'GDL'], els.map(t => [eName(t), ...t.code.map(g => g + 1), t.code.map(dofL).join(', ')]))
+    };
+  }
+  function elemKSol(t) {
+    const L = t.code.map(dofL);
+    return p(`Barra ${eName(t)}: <i>AE</i>/<i>L</i> = ${fmt(t.A)} × ${'E'} / ${fmt(t.L, 6)} = ${fmt(t.k, 5)} kN/mm; <i>c</i>² = ${fmt(t.c * t.c, 4)}, <i>cs</i> = ${fmt(t.c * t.s, 4)}, <i>s</i>² = ${fmt(t.s * t.s, 4)}.`) +
+      eq(matHTML(t.Kg, L, L, f4, { pre: `${KK}<sub>${eName(t)}</sub> =` }));
+  }
+  function stepKelem(m, t) {
+    const L = t.code.map(dofL);
+    return {
+      title: `Matriz de la barra ${eName(t)} en coordenadas generales`,
+      intro: `Calcule ${KK} = (<i>AE</i>/<i>L</i>)[<i>c</i>² <i>cs</i> −<i>c</i>² −<i>cs</i>; …] de la barra ${eName(t)} (lámina 214), con filas y columnas ${L.join(', ')}.`,
+      fields: [fld('Ke', `${KK}<sub>${eName(t)}</sub> (kN/mm)`, t.Kg, { rowL: L, colL: L, unit: 'kN/mm' })],
+      sol: elemKSol(t).replace(' × E /', ` × ${m.E} /`)
+    };
+  }
+  function stepKfull(m) {
+    const n = m.nodes.length * 2, all = [...Array(n).keys()], L = all.map(dofL);
+    return {
+      title: 'Matriz de rigidez de la estructura',
+      intro: `Ensamble ${KK} (${n}×${n}) por superposición con los números de código. Complete toda la matriz, también las filas de los apoyos (lámina 200, “Completar K”).`,
+      fields: [fld('K', `${KK} (kN/mm)`, m.s.K, { rowL: L, colL: L, unit: 'kN/mm', tolAbs: 0.002 * maxAbs(m.s.K), alts: contribAlts(m.s.contrib, all, all) })],
+      sol: m.els.map(t => elemKSol(t).replace(' × E /', ` × ${m.E} /`)).join('') + p('Sumando los aportes en las posiciones de sus números de código:') + eq(matHTML(m.s.K, L, L, f4, { pre: `${KK} =` }))
+    };
+  }
+  function stepKnn(m, note) {
+    const L = m.s.free.map(dofL);
+    return {
+      title: 'Matriz de los GDL libres',
+      intro: `Escriba ${Knn}: filas y columnas de los GDL libres ${L.join(', ')}.${note ? ' ' + note : ''}`,
+      fields: [fld('Knn', `${Knn} (kN/mm)`, m.s.Knn, { rowL: L, colL: L, unit: 'kN/mm', tolAbs: 0.002 * maxAbs(m.s.Knn), alts: contribAlts(m.s.contrib, m.s.free, m.s.free) })],
+      sol: p(`GDL restringidos: ${m.s.rest.map(dofL).join(', ')}. Se reordena para dejar primero los libres (láminas 222 y 241) y se toma el bloque ${Knn}:`) + eq(matHTML(m.s.Knn, L, L, f4, { pre: `${Knn} =` }))
+    };
+  }
+  function stepDn(m) {
+    const L = m.s.free.map(dofL);
+    return {
+      title: 'Desplazamientos de los nudos libres',
+      intro: `Resuelva ${dn} = ${Knn}<sup>−1</sup>${Fn}. Escriba los resultados en mm. Si tiene los valores en Excel, puede pegarlos en la primera casilla.`,
+      fields: [fld('dn', `${dn} (mm)`, m.s.dn, { rowL: L, unit: 'mm' })],
+      sol: eq(vecHTML(m.s.Fn, m.s.free.map(forceL), null, { pre: `${Fn} =` }) + '<span class="mx-pre">kN</span>') + solveText(m.s.Knn, m.s.Fn, L, 'mm', Fn)
+    };
+  }
+  function stepFa(m) {
+    const RL = m.s.rest.map(forceL), L = m.s.free.map(dofL);
+    const sumX = m.s.rest.reduce((a, g, k) => a + (g % 2 === 0 ? m.s.R[k] : 0), 0) + m.loads.filter((_, g) => g % 2 === 0).reduce((a, b) => a + b, 0);
+    const sumY = m.s.rest.reduce((a, g, k) => a + (g % 2 === 1 ? m.s.R[k] : 0), 0) + m.loads.filter((_, g) => g % 2 === 1).reduce((a, b) => a + b, 0);
+    return {
+      title: 'Reacciones',
+      intro: `Calcule ${Fa} = ${Kan}${dn} con las filas de los GDL restringidos (lámina 223).`,
+      fields: [fld('R', `${Fa} (kN)`, m.s.R, { rowL: RL, unit: 'kN' })],
+      sol: eq(matHTML(m.s.Kan, RL, L, f4, { pre: `${Fa} =` }) + vecHTML(m.s.dn, null, (x) => fmt(x, 5), { post: '=' }) + vecHTML(m.s.R, RL, null)) +
+        p(`Equilibrio global: Σ<i>X</i> = ${fmt(sumX, 3)} kN y Σ<i>Y</i> = ${fmt(sumY, 3)} kN (lámina 224).`)
+    };
+  }
+  function stepS(m, intro) {
+    return {
+      title: 'Fuerzas internas en las barras',
+      intro: intro || `Para cada barra, ${it('S', 'ij')} = (<i>AE</i>/<i>L</i>)[−<i>c</i> −<i>s</i> <i>c</i> <i>s</i>]{${it('u', 'i')}, ${it('v', 'i')}, ${it('u', 'j')}, ${it('v', 'j')}} (lámina 215). Positivo es tensión y negativo es compresión.`,
+      fields: [fld('S', 'Fuerzas internas (kN)', m.els.map(t => t.S), { rowL: m.els.map(SL), unit: 'kN' })],
+      sol: m.els.map(t => eq(`${SL(t)} = ${fmt(t.k, 5)} [${[-t.c, -t.s, t.c, t.s].map(v => fmt(v, 4)).join(' &nbsp;')}]{${t.de.map(v => fmt(v, 5)).join('; ')}} = <b>${fmt(t.S)}</b> kN (${state(t.S)})`)).join('')
+    };
+  }
+
+  /* ============ 2. Barra de cercha: transformación ============ */
+  function genBarra(r) {
+    const opts = [-3000, -2000, -1500, 0, 1500, 2000, 3000];
+    let dx = 0, dy = 0; while (dx === 0 && dy === 0) { dx = r.pick(opts); dy = r.pick(opts); }
+    const A = r.pick([500, 800, 1000, 1200, 1500, 2000]), E = 200;
+    const xi = dx < 0 ? -dx : 0, yi = dy < 0 ? -dy : 0;
+    const t = M.trussElem(xi, yi, xi + dx, yi + dy, E * A);
+    let de, dl, S;
+    do { de = [0, 0, 0, 0].map(() => r.step(-200, 200, 5) / 100); dl = M.matvec(t.T, de); S = t.k * (dl[2] - dl[0]); } while (Math.abs(S) < 2);
+    const dlWrong = M.matvec(M.transpose(t.T), de);
+    const gL = [it('u', 1), it('v', 1), it('u', 2), it('v', 2)], lL = [ov('u', 1), ov('v', 1), ov('u', 2), ov('v', 2)];
+    const phiP = Math.atan(dy / (dx || 1e-12)) * 180 / Math.PI;
+    const nodes = [{ x: xi, y: yi }, { x: xi + dx, y: yi + dy }];
+    const figure = D.drawTruss({ nodes, elems: [{ i: 0, j: 1 }], restr: [0, 0, 0, 0], loads: [0, 0, 0, 0], unit: 'mm' });
+    const statement = p(`La barra 1–2 pertenece a una cercha plana. Está orientada del nudo 1 (<i>i</i>) al nudo 2 (<i>j</i>). Del análisis de la estructura se conocen los desplazamientos de sus extremos en coordenadas generales. Calcule su transformación, su matriz de rigidez en coordenadas generales y su fuerza interna.`);
+    const dataHTML = tbl(['Nudo', 'x (mm)', 'y (mm)'], nodes.map((n, k) => [k + 1, fmt(n.x), fmt(n.y)])) +
+      `<p class="small"><i>A</i> = ${A} mm², <i>E</i> = ${E} kN/mm².</p>` +
+      tbl(['GDL', 'Desplazamiento (mm)'], gL.map((l, k) => [l, fmt(de[k])]));
+    const steps = [
+      {
+        title: 'Longitud y orientación',
+        intro: `Calcule <i>L</i>, el ángulo <i>φ</i> medido en sentido antihorario desde <i>X</i> hasta el eje 1→2 (0° a 360°), <i>c</i> = cos <i>φ</i> y <i>s</i> = sen <i>φ</i>.`,
+        fields: [fld('geo', 'Geometría', [t.L, t.phi, t.c, t.s], {
+          rowL: ['<i>L</i>', '<i>φ</i>', '<i>c</i>', '<i>s</i>'], rowUnits: ['mm', 'grados', '', ''], tolRel: 0.002,
+          tolAbs: (rr) => [0.5, 0.2, 0.0015, 0.0015][rr],
+          alts: (rr) => rr === 1 ? [{ v: phiP, msg: 'Revise el cuadrante: φ se mide en sentido antihorario desde X hasta el eje i→j, entre 0° y 360°.' }, { v: phiP + 360, msg: 'Revise el cuadrante: φ se mide en sentido antihorario desde X hasta el eje i→j.' }]
+            : rr === 2 ? [{ v: t.s, msg: 'Intercambió cos φ y sen φ.' }] : rr === 3 ? [{ v: t.c, msg: 'Intercambió cos φ y sen φ.' }] : []
+        })],
+        sol: eq(`Δ<i>x</i> = ${fmt(dx)} mm, Δ<i>y</i> = ${fmt(dy)} mm, <i>L</i> = ${fmt(t.L, 6)} mm`) + eq(`<i>φ</i> = ${fmt(t.phi, 5)}°, <i>c</i> = ${fmt(t.c, 5)}, <i>s</i> = ${fmt(t.s, 5)}`)
+      },
+      {
+        title: 'Rigidez axial',
+        intro: 'Calcule <i>AE</i>/<i>L</i> en kN/mm.',
+        fields: [fld('k', '<i>AE</i>/<i>L</i>', [t.k], { rowL: ['<i>AE</i>/<i>L</i>'], unit: 'kN/mm', tolRel: 0.005 })],
+        sol: eq(`<i>AE</i>/<i>L</i> = ${A} × ${E} / ${fmt(t.L, 6)} = <b>${fmt(t.k, 5)}</b> kN/mm`)
+      },
+      {
+        title: 'Matriz de rigidez en coordenadas generales',
+        intro: `Calcule ${KK} = [<i>T</i>]<sup>T</sup>[${ov('K')}][<i>T</i>] (láminas 213 y 214). Filas y columnas: ${gL.join(', ')}.`,
+        fields: [fld('K', `${KK} (kN/mm)`, t.Kg, { rowL: gL, colL: gL, unit: 'kN/mm' })],
+        sol: eq(matHTML(t.T, null, null, (v) => fmt(v, 4), { pre: '[<i>T</i>] =' })) + eq(matHTML(t.Kg, gL, gL, f4, { pre: `${KK} =` }))
+      },
+      {
+        title: 'Desplazamientos en coordenadas locales',
+        intro: `Calcule {${ov('δ')}} = [<i>T</i>]{<i>δ</i>} (lámina 213). La componente ${ov('u')} va a lo largo de la barra y ${ov('v')} es perpendicular.`,
+        fields: [fld('dl', `{${ov('δ')}} (mm)`, dl, { rowL: lL, unit: 'mm', alts: (rr) => [{ v: dlWrong[rr], msg: 'Usó [T]ᵀ: la relación es {δ̄} = [T]{δ}, de coordenadas generales a locales.' }] })],
+        sol: eq(matHTML(t.T, null, null, (v) => fmt(v, 4), { pre: `{${ov('δ')}} =` }) + vecHTML(de, null, null, { post: '=' }) + vecHTML(dl, lL, (x) => fmt(x, 5))) + '<span class="small">mm</span>'
+      },
+      {
+        title: 'Fuerza interna',
+        intro: `Calcule ${it('S', '12')} = (<i>AE</i>/<i>L</i>)(${ov('u', 2)} − ${ov('u', 1)}) = (<i>AE</i>/<i>L</i>)[−<i>c</i> −<i>s</i> <i>c</i> <i>s</i>]{<i>δ</i>} (lámina 215).`,
+        fields: [fld('S', `${it('S', '12')}`, [S], { rowL: [it('S', '12')], unit: 'kN' })],
+        sol: eq(`${it('S', '12')} = ${fmt(t.k, 5)} × (${fmt(dl[2], 5)} − ${fmt(dl[0], 5)}) = <b>${fmt(S)}</b> kN (${state(S)})`) +
+          p(`Los desplazamientos ${ov('v')} no alargan la barra: solo ${ov('u', 1)} y ${ov('u', 2)} intervienen.`)
+      }
+    ];
+    const tsv = `Nudo\tx (mm)\ty (mm)\tu (mm)\tv (mm)\n1\t${xl(xi)}\t${xl(yi)}\t${xl(de[0])}\t${xl(de[1])}\n2\t${xl(xi + dx)}\t${xl(yi + dy)}\t${xl(de[2])}\t${xl(de[3])}\n\nA (mm2)\t${A}\nE (kN/mm2)\t${E}`;
+    const pyTxt = `nudo_i = (${xi}, ${yi})  # mm\nnudo_j = (${xi + dx}, ${yi + dy})  # mm\nA = ${A}  # mm2\nE = ${E}  # kN/mm2\ndelta = [${de.map(py).join(', ')}]  # [ui, vi, uj, vj] en mm`;
+    return { statement, dataHTML, steps, figure, tsv, py: pyTxt };
+  }
+
+  /* ============ 3. Cercha de tres barras ============ */
+  function genCercha3(r) {
+    const geo = r.pick(['ej112', 'iso', 'der']);
+    const b = r.pick([2000, 2500, 3000, 3500, 4000]), h = r.pick([1500, 2000, 2500, 3000]);
+    const As = [800, 1000, 1200, 1500, 2000, 2500];
+    const restr = Array(6).fill(false), loads = Array(6).fill(0); let nodes;
+    if (geo === 'ej112') { nodes = [{ x: b, y: 0 }, { x: 0, y: 0 }, { x: 0, y: h }]; restr[2] = restr[4] = restr[5] = true; loads[0] = r.nz(10, 60, 5); loads[1] = -r.step(10, 80, 5); }
+    else if (geo === 'iso') { nodes = [{ x: 0, y: 0 }, { x: b, y: 0 }, { x: b / 2, y: h }]; restr[0] = restr[1] = restr[3] = true; loads[4] = r.nz(10, 60, 5); loads[5] = -r.step(10, 80, 5); }
+    else { nodes = [{ x: 0, y: 0 }, { x: b, y: 0 }, { x: b, y: h }]; restr[0] = restr[1] = restr[3] = true; loads[4] = r.nz(10, 60, 5); loads[5] = -r.step(10, 80, 5); }
+    const elems = [{ i: 0, j: 1 }, { i: 0, j: 2 }, { i: 1, j: 2 }].map(e => ({ ...e, A: r.pick(As) }));
+    const m = trussModel(nodes, elems, 200, restr, loads);
+    const statement = p(`Resuelva por completo la cercha mostrada: desplazamientos, reacciones y fuerzas internas. Es un ejercicio del mismo tipo que el ejemplo 11.2 (láminas 217 a 225), con datos propios.`);
+    const ex = trussExport(m);
+    return {
+      statement, dataHTML: trussData(m), figure: D.drawTruss({ ...m, unit: 'mm' }),
+      steps: [stepGeom(m), stepCodes(m), stepKfull(m), stepKnn(m), stepDn(m), stepFa(m), stepS(m)], tsv: ex.tsv, py: ex.py
+    };
+  }
+
+  /* ============ 4. Cercha de cinco barras ============ */
+  function genCercha5(r) {
+    const topo = r.pick(['rect', 'tri']);
+    const restr = Array(8).fill(false), loads = Array(8).fill(0); let nodes, elems;
+    if (topo === 'rect') {
+      const b = r.pick([2000, 2500, 3000, 3500]), h = r.pick([1500, 2000, 2500, 3000]);
+      nodes = [{ x: 0, y: 0 }, { x: b, y: 0 }, { x: b, y: h }, { x: 0, y: h }];
+      const diag = r.pick([[0, 2], [1, 3]]);
+      elems = [[0, 1], [1, 2], [2, 3], [0, 3], diag].map(([i, j]) => ({ i, j }));
+      restr[0] = restr[1] = restr[3] = true;
+      loads[6] = r.nz(10, 50, 5); loads[5] = -r.step(10, 60, 5); loads[7] = r.pick([0, -r.step(10, 40, 5)]);
+    } else {
+      const b = r.pick([1500, 2000, 2500, 3000]), h = r.pick([1500, 2000, 2500]);
+      nodes = [{ x: 0, y: 0 }, { x: b, y: 0 }, { x: 2 * b, y: 0 }, { x: b, y: h }];
+      elems = [[0, 1], [1, 2], [0, 3], [1, 3], [2, 3]].map(([i, j]) => ({ i, j }));
+      restr[0] = restr[1] = restr[5] = true;
+      loads[3] = -r.step(10, 60, 5); loads[6] = r.nz(10, 40, 5); loads[7] = r.pick([0, -r.step(10, 40, 5)]);
+    }
+    const Ach = r.pick([1000, 1500, 2000, 2500]), Aw = r.pick([600, 800, 1000, 1200]);
+    elems.forEach(e => { const n1 = nodes[e.i], n2 = nodes[e.j]; e.A = (n1.x !== n2.x && n1.y !== n2.y) ? Aw : Ach; });
+    const m = trussModel(nodes, elems, 200, restr, loads);
+    const diagEl = m.els.find(t => Math.abs(t.c) > 1e-9 && Math.abs(t.s) > 1e-9) || m.els[0];
+    const ex = trussExport(m);
+    return {
+      statement: p('Resuelva la cercha: desplazamientos de los nudos libres, reacciones y fuerzas en las cinco barras. Las diagonales tienen un área distinta a la de las demás barras.'),
+      dataHTML: trussData(m), figure: D.drawTruss({ ...m, unit: 'mm' }),
+      steps: [stepGeom(m), stepCodes(m), stepKelem(m, diagEl), stepKnn(m, 'Puede ensamblar directamente solo estas filas y columnas.'), stepDn(m), stepFa(m), stepS(m)],
+      tsv: ex.tsv, py: ex.py
+    };
+  }
+
+  /* ============ 5. Cercha de varios paneles (Excel o Python) ============ */
+  function genCerchaPaneles(r) {
+    const mP = r.pick([3, 4]), tipo = r.pick(['Howe', 'Pratt']);
+    const b = r.pick([2000, 2500, 3000]), h = r.pick([2000, 2500, 3000]);
+    const nodes = []; for (let k = 0; k <= mP; k++) nodes.push({ x: k * b, y: 0 });
+    for (let k = 1; k <= mP - 1; k++) nodes.push({ x: k * b, y: h });
+    const top = (k) => mP + k; // índice del nudo superior sobre el inferior k
+    const pairs = [];
+    for (let k = 0; k < mP; k++) pairs.push([k, k + 1]);
+    for (let k = 1; k <= mP - 2; k++) pairs.push([top(k), top(k + 1)]);
+    for (let k = 1; k <= mP - 1; k++) pairs.push([k, top(k)]);
+    pairs.push([0, top(1)], [mP, top(mP - 1)]);
+    const c = mP / 2;
+    for (let q = 1; q <= mP - 2; q++) {
+      const left = q + 0.5 <= c;
+      if (tipo === 'Howe') pairs.push(left ? [q, top(q + 1)] : [q + 1, top(q)]);
+      else pairs.push(left ? [top(q), q + 1] : [top(q + 1), q]);
+    }
+    const Ach = r.pick([1500, 2000, 2500, 3000]), Aw = r.pick([800, 1000, 1200, 1500]);
+    const elems = pairs.map(([i, j]) => { const a = Math.min(i, j), bb = Math.max(i, j); const horiz = nodes[a].y === nodes[bb].y; return { i: a, j: bb, A: horiz ? Ach : Aw }; });
+    const nd = 2 * nodes.length; const restr = Array(nd).fill(false), loads = Array(nd).fill(0);
+    restr[0] = restr[1] = true; restr[2 * mP + 1] = true;
+    for (let k = 1; k <= mP - 1; k++) loads[2 * k + 1] = -r.step(10, 50, 5);
+    loads[2 * top(1)] = r.pick([0, r.step(5, 30, 5)]);
+    const m = trussModel(nodes, elems, 200, restr, loads);
+    const ex = trussExport(m);
+    return {
+      statement: p(`Cercha tipo ${tipo} de ${mP} paneles. Este ejercicio está pensado para resolverse en Excel o Python: copie los datos con el botón “Datos para Excel y Python”, arme ${KK} con los números de código, resuelva y pegue aquí los resultados. Cuerdas con <i>A</i> = ${Ach} mm²; montantes y diagonales con <i>A</i> = ${Aw} mm².`),
+      dataHTML: trussData(m), figure: D.drawTruss({ ...m, unit: 'mm' }),
+      steps: [stepGeom(m, 'Geometría de las barras (puede pegar desde Excel)'), stepDn(m), stepFa(m), stepS(m)], tsv: ex.tsv, py: ex.py
+    };
+  }
+
+  /* ============ Utilidades de viga ============ */
+  const bL = (g, names) => g % 2 === 0 ? it('v', names[g / 2]) : it('θ', names[(g - 1) / 2]);
+  const bF = (g, names) => g % 2 === 0 ? it('Y', names[g / 2]) : it('M', names[(g - 1) / 2]);
+  function feSol(L, loads, i, j) {
+    let s = '';
+    const pieces = loads.map(q => q.type === 'w'
+      ? `carga uniforme <i>w</i> = ${q.w} kN/m: ${fe('M', `${i}${j}`)} = <i>wL</i>²/12 = ${fmt(q.w * L * L / 12)}; ${fe('M', `${j}${i}`)} = −<i>wL</i>²/12 = ${fmt(-q.w * L * L / 12)} kN·m`
+      : `carga <i>P</i> = ${q.P} kN con <i>a</i> = ${q.a} m y <i>b</i> = ${L - q.a} m: ${fe('M', `${i}${j}`)} = <i>Pab</i>²/<i>L</i>² = ${fmt(q.P * q.a * (L - q.a) ** 2 / L ** 2)}; ${fe('M', `${j}${i}`)} = −<i>Pa</i>²<i>b</i>/<i>L</i>² = ${fmt(-q.P * q.a ** 2 * (L - q.a) / L ** 2)} kN·m`);
+    s += `<ul class="small">${pieces.map(x => `<li>${x}</li>`).join('')}</ul>`;
+    const f = M.fixedEnd(L, loads);
+    const mom = loads.map(q => q.type === 'w' ? `${fmt(q.w * L)} × ${fmt(L / 2)}` : `${q.P} × ${fmt(L - q.a)}`).join(' + ');
+    const tot = loads.reduce((a, q) => a + (q.type === 'w' ? q.w * L : q.P), 0);
+    s += eq(`${fe('Y', `${i}${j}`)} = [${mom} + (${fmt(f[1])}) + (${fmt(f[3])})] / ${fmt(L)} = <b>${fmt(f[0])}</b> kN`);
+    s += eq(`${fe('Y', `${j}${i}`)} = ${fmt(tot)} − ${fmt(f[0])} = <b>${fmt(f[2])}</b> kN`);
+    return s;
+  }
+  const loadTxt = (loads) => loads.map(q => q.type === 'w' ? `carga uniforme de ${q.w} kN/m en todo el tramo` : `carga de ${q.P} kN a ${q.a} m del nudo izquierdo`).join('; ');
+  const fieldFe = (id, L, loads, i, j) => {
+    const f = M.fixedEnd(L, loads);
+    const swapped = M.fixedEnd(L, loads.map(q => q.type === 'P' ? { ...q, a: L - q.a } : q));
+    const hasAsym = loads.some(q => q.type === 'P' && 2 * q.a !== L);
+    return fld(id, 'Fuerzas de empotramiento', f, {
+      rowL: [fe('Y', `${i}${j}`), fe('M', `${i}${j}`), fe('Y', `${j}${i}`), fe('M', `${j}${i}`)], rowUnits: ['kN', 'kN·m', 'kN', 'kN·m'],
+      alts: (rr) => hasAsym && (rr === 1 || rr === 3) ? [{ v: swapped[rr], msg: `Revise a y b: a se mide desde el nudo ${i} (lámina 238).` }] : []
+    });
+  };
+
+  /* ============ 6. Viga con voladizo (tipo 11.7) ============ */
+  function genVigaVoladizo(r) {
+    const L = r.pick([3, 4, 4.5, 5, 6]), c = r.pick([1, 1.5, 2]), P = r.step(10, 40, 5), EI = r.pick([4860, 7290, 9720, 12150, 16200, 24300]);
+    const supA = r.pick(['E', 'E', 'A']);
+    const restr = [true, supA === 'E', true, false];
+    const Fnod = [0, 0, -P, -P * c];
+    const s = M.assembleSolve(4, [{ code: [0, 1, 2, 3], Kg: M.beamK(EI, L) }], Fnod, restr);
+    const nm = ['A', 'B'];
+    const freeL = s.free.map(g => bL(g, nm)), restL = s.rest.map(g => bF(g, nm));
+    const allL = [0, 1, 2, 3].map(g => bL(g, nm));
+    const YBi = s.rest.indexOf(2);
+    const Kord = M.sub(s.K, [...s.free, ...s.rest], [...s.free, ...s.rest]);
+    const ordL = [...s.free, ...s.rest].map(g => bL(g, nm));
+    const figure = D.drawBeam({
+      nodes: [{ x: 0, label: 'A', sup: supA }, { x: L, label: 'B', sup: 'R' }, { x: L + c, label: 'C', sup: 'L' }],
+      spans: [{ i: 0, j: 1, loads: [] }, { i: 1, j: 2, loads: [] }], tipLoads: [{ x: L + c, P }], note: `EI = ${EI} kN·m²`
+    });
+    const statement = p(`Encuentre las reacciones y la rotación en el apoyo B de la viga mostrada (mismo tipo que el ejemplo 11.7, láminas 230 a 232). A está ${supA === 'E' ? 'empotrado' : 'articulado'}, B es un rodillo y BC es un voladizo con una carga de ${P} kN en C. <i>EI</i> = ${EI} kN·m². Como no se pide el desplazamiento de C, reemplace el voladizo por sus acciones equivalentes en B.`);
+    const reac = s.R.slice();
+    const steps = [
+      {
+        title: 'Coeficientes de rigidez del tramo AB',
+        intro: `Calcule <i>EI</i>/<i>L</i>, <i>EI</i>/<i>L</i>² y <i>EI</i>/<i>L</i>³ con <i>L</i> = ${L} m.`,
+        fields: [fld('coef', 'Coeficientes', [EI / L, EI / L ** 2, EI / L ** 3], { rowL: ['<i>EI</i>/<i>L</i>', '<i>EI</i>/<i>L</i>²', '<i>EI</i>/<i>L</i>³'], rowUnits: ['kN·m', 'kN', 'kN/m'], tolRel: 0.005, tolAbs: 1e-6 })],
+        sol: eq(`<i>EI</i>/<i>L</i> = ${EI}/${L} = ${fmt(EI / L)} kN·m; <i>EI</i>/<i>L</i>² = ${fmt(EI / L ** 2)} kN; <i>EI</i>/<i>L</i>³ = ${fmt(EI / L ** 3)} kN/m`)
+      },
+      {
+        title: 'Acciones equivalentes del voladizo en B',
+        intro: `Traslade la carga de C al nudo B. Fuerzas positivas hacia arriba y momentos positivos en sentido antihorario.`,
+        fields: [fld('eqB', 'Acciones en B', [-P, -P * c], { rowL: ['Fuerza vertical en B', 'Momento en B'], rowUnits: ['kN', 'kN·m'], tolAbs: 1e-6 })],
+        sol: eq(`Fuerza: −${P} kN (hacia abajo). Momento: −${P} × ${c} = <b>${fmt(-P * c)}</b> kN·m (horario).`)
+      },
+      {
+        title: 'Matriz de los GDL libres',
+        intro: `La matriz de la viga es (<i>EI</i>/<i>L</i>³)[12 6<i>L</i> −12 6<i>L</i>; …] en el orden ${allL.join(', ')} (lámina 229). Escriba ${Knn} para los GDL libres ${freeL.join(', ')}.`,
+        fields: [fld('Knn', `${Knn}`, s.Knn, { rowL: freeL, colL: freeL, unit: 'kN·m' })],
+        sol: p('Reordenando con los GDL libres primero, como en la lámina 231:') + eq(matHTML(Kord, ordL, ordL, f4, { pre: `${KK} =`, hi: (i, j) => i < s.free.length && j < s.free.length }))
+      },
+      {
+        title: 'Giros',
+        intro: `Resuelva ${Knn}${dn} = ${Fn}. Giros en radianes, positivos en sentido antihorario.`,
+        fields: [fld('dn', `${dn} (rad)`, s.dn, { rowL: freeL, unit: 'rad' })],
+        sol: eq(vecHTML(s.Fn, s.free.map(g => bF(g, nm)), null, { pre: `${Fn} =` })) + solveText(s.Knn, s.Fn, freeL, 'rad', Fn) +
+          p(s.dn[s.dn.length - 1] < 0 ? 'El signo negativo indica giro horario en B.' : 'El signo positivo indica giro antihorario en B.')
+      },
+      {
+        title: 'Reacciones',
+        intro: `Calcule ${Kan}${dn}. La fila de ${it('v', 'B')} entrega ${it('Y', 'B')} − ${P}, que no es la reacción del rodillo (lámina 232).`,
+        fields: [fld('R', 'Reacciones', reac, {
+          rowL: s.rest.map(g => bF(g, nm)), rowUnits: s.rest.map(g => g % 2 ? 'kN·m' : 'kN'),
+          alts: (rr) => rr === YBi ? [{ v: s.Fa[YBi], msg: `Ese valor es Y_B − ${P}, la acción neta del nudo. Sume la carga para obtener la reacción del rodillo.` }] : []
+        })],
+        sol: eq(matHTML(s.Kan, restL, freeL, f4, { pre: `${Kan}${dn} =` }) + vecHTML(s.dn, null, (x) => fmt(x, 5), { post: '=' }) + vecHTML(s.Fa, s.rest.map(g => g === 2 ? `${it('Y', 'B')} − ${P}` : bF(g, nm)), null)) +
+          eq(`${it('Y', 'B')} = ${fmt(s.Fa[YBi])} + ${P} = <b>${fmt(reac[YBi])}</b> kN`) +
+          p(`Equilibrio vertical: ${s.rest.filter(g => g % 2 === 0).map(g => fmt(reac[s.rest.indexOf(g)])).join(' + ')} − ${P} = ${fmt(s.rest.filter(g => g % 2 === 0).reduce((a, g) => a + reac[s.rest.indexOf(g)], 0) - P, 3)} kN.`)
+      }
+    ];
+    const tsv = `Tramo AB L (m)\t${xl(L)}\nVoladizo BC (m)\t${xl(c)}\nP en C (kN)\t${xl(P)}\nEI (kN·m2)\t${xl(EI)}\nApoyo A\t${supA === 'E' ? 'empotrado' : 'articulado'}\nApoyo B\trodillo`;
+    const pyTxt = `L = ${py(L)}  # m, tramo AB\nc = ${py(c)}  # m, voladizo BC\nP = ${P}  # kN hacia abajo en C\nEI = ${EI}  # kN·m2\napoyo_A = "${supA === 'E' ? 'empotrado' : 'articulado'}"`;
+    return { statement, dataHTML: '', figure, steps, tsv, py: pyTxt };
+  }
+
+  /* ============ 7. Viga con cargas en el tramo (láminas 237 a 245) ============ */
+  function pickLoads(r, L, kinds) {
+    const kind = r.pick(kinds);
+    const P1 = () => ({ type: 'P', P: r.step(20, 120, 10), a: r.int(1, L - 1) });
+    if (kind === 'w') return [{ type: 'w', w: r.step(10, 40, 5) }];
+    if (kind === 'P') return [P1()];
+    if (kind === 'PP') { const a1 = r.int(1, L - 2), a2 = r.int(a1 + 1, L - 1); return [{ type: 'P', P: r.step(20, 120, 10), a: a1 }, { type: 'P', P: r.step(20, 120, 10), a: a2 }]; }
+    return [{ type: 'w', w: r.step(10, 30, 5) }, P1()];
+  }
+  function genVigaCargas(r) {
+    const L = r.pick([4, 5, 6, 7, 8]), EI = r.pick([20000, 24000, 30400, 36000, 45000]);
+    const sup = r.pick(['EA', 'AE']);
+    const loads = pickLoads(r, L, ['w', 'P', 'PP', 'wP']);
+    const ff = M.fixedEnd(L, loads);
+    const restr = sup === 'EA' ? [true, true, true, false] : [true, false, true, true];
+    const s = M.assembleSolve(4, [{ code: [0, 1, 2, 3], Kg: M.beamK(EI, L), FfG: ff }], [0, 0, 0, 0], restr);
+    const nm = ['1', '2'];
+    const freeL = s.free.map(g => bL(g, nm)), restL = s.rest.map(g => bF(g, nm));
+    const Ffa = s.rest.map(g => ff[g]);
+    const figure = D.drawBeam({ nodes: [{ x: 0, label: '1', sup: sup[0] === 'E' ? 'E' : 'A' }, { x: L, label: '2', sup: sup[1] === 'E' ? 'E' : 'A' }], spans: [{ i: 0, j: 1, loads }], note: `EI = ${EI} kN·m²` });
+    const statement = p(`Resuelva la viga mostrada con un solo tramo y el procedimiento de cargas intermedias (láminas 237 a 245): ${loadTxt(loads)}. El nudo 1 está ${sup[0] === 'E' ? 'empotrado' : 'articulado'} y el nudo 2 ${sup[1] === 'E' ? 'empotrado' : 'articulado'}. <i>EI</i> = ${EI} kN·m². Fuerzas positivas hacia arriba; momentos y giros positivos en sentido antihorario.`);
+    const steps = [
+      {
+        title: 'Fuerzas de empotramiento',
+        intro: `Calcule las reacciones del tramo con los dos extremos empotrados, [<i>F</i>]<sup>F</sup>, con las tablas de las láminas 238 y 239. ${fe('M', '12')} resulta antihorario (+) y ${fe('M', '21')} horario (−) para cargas hacia abajo.`,
+        fields: [fieldFe('Ff', L, loads, 1, 2)],
+        sol: feSol(L, loads, 1, 2)
+      },
+      {
+        title: 'Rigidez del GDL libre',
+        intro: `Escriba ${Knn} para el GDL libre ${freeL[0]}.`,
+        fields: [fld('Knn', `${Knn}`, s.Knn, { rowL: freeL, colL: freeL, unit: 'kN·m' })],
+        sol: eq(`${Knn} = 4<i>EI</i>/<i>L</i> = 4 × ${EI} / ${L} = <b>${fmt(s.Knn[0][0])}</b> kN·m`)
+      },
+      {
+        title: 'Giro del nudo libre',
+        intro: `Despeje con la ecuación 11.48: ${dn} = ${Knn}<sup>−1</sup>(${Fn} − ${FFn}). Aquí ${Fn} = 0 porque no hay momento aplicado en el nudo.`,
+        fields: [fld('dn', `${freeL[0]} (rad)`, s.dn, { rowL: freeL, unit: 'rad' })],
+        sol: eq(`${freeL[0]} = (0 − (${fmt(s.Ffn[0])})) / ${fmt(s.Knn[0][0])} = <b>${fmt(s.dn[0], 5)}</b> rad`)
+      },
+      {
+        title: 'Reacciones',
+        intro: `Calcule ${Fa} = ${FFa} + ${Kan}${dn} (ecuación 11.49, lámina 245).`,
+        fields: [fld('R', `${Fa}`, s.R, { rowL: restL, rowUnits: s.rest.map(g => g % 2 ? 'kN·m' : 'kN'), alts: (rr) => [{ v: Ffa[rr], msg: 'Ese es solo el término de empotramiento. Falta sumar [K_an]{δ_n}.' }] })],
+        sol: eq(vecHTML(Ffa, restL, null, { pre: `${Fa} =` }) + '<span class="mx-pre">+</span>' + matHTML(s.Kan, null, null, f4) + vecHTML(s.dn, null, (x) => fmt(x, 5), { post: '=' }) + vecHTML(s.R, restL, null)) +
+          p(`Equilibrio vertical: Σ<i>Y</i> = ${fmt(s.R.filter((_, k) => s.rest[k] % 2 === 0).reduce((a, b) => a + b, 0))} kN, igual a la carga total ${fmt(ff[0] + ff[2])} kN.`)
+      }
+    ];
+    const tsv = `L (m)\t${xl(L)}\nEI (kN·m2)\t${xl(EI)}\nNudo 1\t${sup[0] === 'E' ? 'empotrado' : 'articulado'}\nNudo 2\t${sup[1] === 'E' ? 'empotrado' : 'articulado'}\n\nCarga\tValor\ta (m)\n` + loads.map(q => q.type === 'w' ? `w (kN/m)\t${xl(q.w)}\t` : `P (kN)\t${xl(q.P)}\t${xl(q.a)}`).join('\n');
+    const pyTxt = `L = ${L}  # m\nEI = ${EI}  # kN·m2\napoyos = ("${sup[0] === 'E' ? 'empotrado' : 'articulado'}", "${sup[1] === 'E' ? 'empotrado' : 'articulado'}")  # nudos 1 y 2\ncargas = [${loads.map(q => q.type === 'w' ? `("w", ${q.w})` : `("P", ${q.P}, ${q.a})`).join(', ')}]  # w en kN/m; P en kN a distancia a (m) del nudo 1`;
+    return { statement, dataHTML: '', figure, steps, tsv, py: pyTxt };
+  }
+
+  /* ============ 8. Viga continua de dos tramos ============ */
+  function genVigaContinua(r) {
+    const L1 = r.pick([3, 4, 5, 6]), L2 = r.pick([3, 4, 5, 6]);
+    const EI = r.pick([20000, 30000, 40000]), ratio = r.pick([1, 1, 1.5, 2]);
+    const s1 = r.pick(['A', 'E']), s3 = r.pick(['R', 'R', 'E']);
+    const ld1 = pickLoads(r, L1, ['w', 'P']), ld2 = pickLoads(r, L2, ['w', 'P']);
+    const ff1 = M.fixedEnd(L1, ld1), ff2 = M.fixedEnd(L2, ld2);
+    const EI2 = ratio * EI;
+    const els = [{ code: [0, 1, 2, 3], Kg: M.beamK(EI, L1), FfG: ff1 }, { code: [2, 3, 4, 5], Kg: M.beamK(EI2, L2), FfG: ff2 }];
+    const restr = [true, s1 === 'E', true, false, true, s3 === 'E'];
+    const s = M.assembleSolve(6, els, Array(6).fill(0), restr);
+    const nm = ['1', '2', '3'];
+    const freeL = s.free.map(g => bL(g, nm)), restL = s.rest.map(g => bF(g, nm));
+    const endF = els.map(el => { const de = el.code.map(g => s.d[g]); return M.matvec(el.Kg, de).map((v, k) => v + el.FfG[k]); });
+    const M21 = endF[0][3], M23 = endF[1][1];
+    const supName = { A: 'articulado', E: 'empotrado', R: 'rodillo' };
+    const figure = D.drawBeam({
+      nodes: [{ x: 0, label: '1', sup: s1 }, { x: L1, label: '2', sup: 'R' }, { x: L1 + L2, label: '3', sup: s3 }],
+      spans: [{ i: 0, j: 1, loads: ld1 }, { i: 1, j: 2, loads: ld2 }], note: ratio === 1 ? `EI = ${EI} kN·m² en ambos tramos` : `EI₁₂ = ${EI}; EI₂₃ = ${fmt(EI2)} kN·m²`
+    });
+    const statement = p(`Resuelva la viga continua: nudo 1 ${supName[s1]}, nudo 2 rodillo y nudo 3 ${supName[s3]}. Tramo 1–2 (<i>L</i> = ${L1} m, <i>EI</i> = ${EI} kN·m²): ${loadTxt(ld1)}. Tramo 2–3 (<i>L</i> = ${L2} m, <i>EI</i> = ${fmt(EI2)} kN·m²): ${loadTxt(ld2)}. Orden de GDL: ${[0, 1, 2, 3, 4, 5].map(g => bL(g, nm)).join(', ')}.`);
+    const FfnSingles = (rr) => { const g = s.free[rr]; const L = []; els.forEach(el => { const k = el.code.indexOf(g); if (k >= 0 && el.FfG[k] !== 0) L.push(el.FfG[k]); }); return L.length > 1 ? L.map(v => ({ v, msg: 'En el nudo 2 se suman los momentos de empotramiento de los dos tramos.' })) : []; };
+    const Ffa = s.rest.map(g => s.Ff[g]);
+    const steps = [
+      { title: 'Fuerzas de empotramiento del tramo 1–2', intro: 'Use las tablas de las láminas 238 y 239 con el tramo 1–2 empotrado en ambos extremos.', fields: [fieldFe('Ff1', L1, ld1, 1, 2)], sol: feSol(L1, ld1, 1, 2) },
+      { title: 'Fuerzas de empotramiento del tramo 2–3', intro: 'Repita con el tramo 2–3.', fields: [fieldFe('Ff2', L2, ld2, 2, 3)], sol: feSol(L2, ld2, 2, 3) },
+      {
+        title: 'Vector de empotramiento en los GDL libres',
+        intro: `Ensamble ${FFn}: en cada giro libre se suman los momentos de empotramiento de los tramos que llegan a ese nudo.`,
+        fields: [fld('Ffn', FFn, s.Ffn, { rowL: s.free.map(g => fe('M', nm[(g - 1) / 2])), unit: 'kN·m', alts: FfnSingles })],
+        sol: eq(vecHTML(s.Ffn, freeL, null, { pre: `${FFn} =` })) + p(`En el nudo 2: ${fe('M', '21')} + ${fe('M', '23')} = ${fmt(ff1[3])} + ${fmt(ff2[1])} = ${fmt(ff1[3] + ff2[1])} kN·m.`)
+      },
+      {
+        title: 'Matriz de los GDL libres',
+        intro: `Ensamble ${Knn}. Recuerde que cada tramo tiene su propio <i>EI</i> y su propia <i>L</i>.`,
+        fields: [fld('Knn', Knn, s.Knn, { rowL: freeL, colL: freeL, unit: 'kN·m', alts: contribAlts(s.contrib, s.free, s.free) })],
+        sol: eq(matHTML(els[0].Kg, [0, 1, 2, 3].map(g => bL(g, nm)), [0, 1, 2, 3].map(g => bL(g, nm)), f4, { pre: `${KK}<sub>12</sub> =` })) +
+          eq(matHTML(els[1].Kg, [2, 3, 4, 5].map(g => bL(g, nm)), [2, 3, 4, 5].map(g => bL(g, nm)), f4, { pre: `${KK}<sub>23</sub> =` })) +
+          eq(matHTML(s.Knn, freeL, freeL, f4, { pre: `${Knn} =` }))
+      },
+      {
+        title: 'Giros',
+        intro: `Resuelva ${dn} = ${Knn}<sup>−1</sup>(${Fn} − ${FFn}), con ${Fn} = 0.`,
+        fields: [fld('dn', `${dn} (rad)`, s.dn, { rowL: freeL, unit: 'rad' })],
+        sol: solveText(s.Knn, s.rhs, freeL, 'rad', `(${Fn} − ${FFn})`)
+      },
+      {
+        title: 'Reacciones',
+        intro: `Calcule ${Fa} = ${FFa} + ${Kan}${dn}.`,
+        fields: [fld('R', Fa, s.R, { rowL: restL, rowUnits: s.rest.map(g => g % 2 ? 'kN·m' : 'kN'), alts: (rr) => [{ v: Ffa[rr], msg: 'Ese es solo el término de empotramiento. Falta sumar [K_an]{δ_n}.' }] })],
+        sol: eq(vecHTML(Ffa, restL, null, { pre: `${Fa} =` }) + '<span class="mx-pre">+</span>' + matHTML(s.Kan, null, null, f4) + vecHTML(s.dn, null, (x) => fmt(x, 5), { post: '=' }) + vecHTML(s.R, restL, null))
+      },
+      {
+        title: 'Momentos en el nudo 2',
+        intro: `Con [<i>F</i>]<sub>ij</sub> = [<i>F</i>]<sup>F</sup><sub>ij</sub> + [<i>K</i>]<sub>ij</sub>{<i>δ</i>}<sub>ij</sub> (ecuación 11.50), calcule el momento del tramo 1–2 en el extremo 2 (${it('M', '21')}) y el del tramo 2–3 en el extremo 2 (${it('M', '23')}). Deben sumar cero porque no hay momento aplicado en el nudo.`,
+        fields: [fld('M2', 'Momentos de extremo', [M21, M23], { rowL: [it('M', '21'), it('M', '23')], unit: 'kN·m' })],
+        sol: eq(`${it('M', '21')} = ${fmt(ff1[3])} + [${els[0].Kg[3].map(v => fmt(v, 4)).join(' &nbsp;')}]{${els[0].code.map(g => fmt(s.d[g], 4)).join('; ')}} = <b>${fmt(M21)}</b> kN·m`) +
+          eq(`${it('M', '23')} = ${fmt(ff2[1])} + [${els[1].Kg[1].map(v => fmt(v, 4)).join(' &nbsp;')}]{${els[1].code.map(g => fmt(s.d[g], 4)).join('; ')}} = <b>${fmt(M23)}</b> kN·m`) +
+          p(`Suma: ${fmt(M21 + M23, 3)} kN·m.`)
+      }
+    ];
+    const tsv = `Tramo\tL (m)\tEI (kN·m2)\tCarga\tValor\ta (m)\n` + [[1, L1, EI, ld1], [2, L2, EI2, ld2]].map(([k, L, ei, ld]) => ld.map(q => `${k === 1 ? '1-2' : '2-3'}\t${xl(L)}\t${xl(ei)}\t${q.type}\t${xl(q.type === 'w' ? q.w : q.P)}\t${q.type === 'P' ? xl(q.a) : ''}`).join('\n')).join('\n') +
+      `\n\nNudo 1\t${supName[s1]}\nNudo 2\trodillo\nNudo 3\t${supName[s3]}`;
+    const pyTxt = `tramos = [  # (L en m, EI en kN·m2, cargas)\n    (${L1}, ${EI}, [${ld1.map(q => q.type === 'w' ? `("w", ${q.w})` : `("P", ${q.P}, ${q.a})`).join(', ')}]),\n    (${L2}, ${py(EI2)}, [${ld2.map(q => q.type === 'w' ? `("w", ${q.w})` : `("P", ${q.P}, ${q.a})`).join(', ')}]),\n]\napoyos = ("${supName[s1]}", "rodillo", "${supName[s3]}")  # nudos 1, 2 y 3`;
+    return { statement, dataHTML: '', figure, steps, tsv, py: pyTxt };
+  }
+
+  /* ============ 9. Pórtico de un vano (lámina 253) ============ */
+  function genPortico(r) {
+    const L = r.pick([5, 6, 7, 8]), H = r.pick([3, 3.5, 4]);
+    const bv = r.pick([250, 300, 350]), hv = r.pick([400, 450, 500, 550, 600]), bc = r.pick([300, 350, 400]);
+    const Emm = r.pick([17, 19, 21, 24]), E = Emm * 1e6;
+    const w = r.step(15, 40, 5), P = r.pick([0, 0, 10, 15, 20, 25, 30]);
+    const Av = bv * hv / 1e6, Iv = bv * hv ** 3 / 12 / 1e12, Ac = bc * bc / 1e6, Ic = bc ** 4 / 12 / 1e12;
+    const xy = [[0, H], [L, H], [0, 0], [L, 0]];
+    const mem = [[2, 0, Ac, Ic, []], [0, 1, Av, Iv, [{ type: 'w', w }]], [3, 1, Ac, Ic, []]];
+    const els = mem.map(([i, j, A, I, ld]) => { const t = M.frameElem(...xy[i], ...xy[j], E, A, I, ld); t.code = [3 * i, 3 * i + 1, 3 * i + 2, 3 * j, 3 * j + 1, 3 * j + 2]; t.i = i; t.j = j; return t; });
+    const Fnod = Array(12).fill(0); Fnod[0] = P;
+    const restr = [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1].map(Boolean);
+    const s = M.assembleSolve(12, els, Fnod, restr);
+    const fL = (g) => [it('u', Math.floor(g / 3) + 1), it('v', Math.floor(g / 3) + 1), it('θ', Math.floor(g / 3) + 1)][g % 3];
+    const fF = (g) => [it('X', Math.floor(g / 3) + 1), it('Y', Math.floor(g / 3) + 1), it('M', Math.floor(g / 3) + 1)][g % 3];
+    const freeL = s.free.map(fL), restL = s.rest.map(fF);
+    const beam = els[1], col = els[0];
+    const db = beam.code.map(g => s.d[g]);
+    const Fb = M.matvec(beam.Kl, M.matvec(beam.T, db)).map((v, k) => v + beam.FfL[k]);
+    const dnShow = s.dn.map((v, k) => (k % 3 === 2 ? v : v * 1000));
+    const thMax = Math.max(Math.abs(dnShow[2]), Math.abs(dnShow[5]), 1e-12), uvMax = Math.max(...[0, 1, 3, 4].map(k => Math.abs(dnShow[k])), 1e-12);
+    const coefRows = ['<i>AE</i>/<i>L</i>', '12<i>EI</i>/<i>L</i>³', '6<i>EI</i>/<i>L</i>²', '4<i>EI</i>/<i>L</i>', '2<i>EI</i>/<i>L</i>'];
+    const coefU = ['kN/m', 'kN/m', 'kN', 'kN·m', 'kN·m'];
+    const cv = (t) => [t.coef.a, t.coef.b, t.coef.c, t.coef.d, t.coef.e];
+    const figure = D.drawFrame({ L, H, w, P, labels: { 1: '1 (B)', 2: '2 (C)', 3: '3 (A)', 4: '4 (D)' }, beamTxt: `Viga ${bv}×${hv} mm`, colTxt: `Columnas ${bc}×${bc} mm` });
+    const statement = p(`Analice el pórtico por el método matricial de los desplazamientos (mismo planteamiento de la lámina 253). Bases A y D empotradas. Viga de ${bv}×${hv} mm (<i>b</i>×<i>h</i>), columnas de ${bc}×${bc} mm, <i>E</i> = ${Emm} kN/mm². Carga uniforme de ${w} kN/m en la viga${P ? ` y carga horizontal de ${P} kN en el nudo 1 (B), hacia la derecha` : ''}. Numeración: B = 1, C = 2, A = 3, D = 4. Elementos orientados 3→1, 1→2 y 4→2. Trabaje en kN y m. Orden de GDL: ${[...Array(12).keys()].map(fL).join(', ')}.`) +
+      p('Ejercicio para Excel o Python: arme las tres matrices 6×6, transfórmelas (las columnas pueden escribirse directamente en coordenadas generales con la lámina 252), ensamble y resuelva.');
+    const steps = [
+      {
+        title: 'Propiedades de las secciones',
+        intro: 'Calcule el área y la inercia de la viga y de las columnas, <i>A</i> = <i>bh</i> e <i>I</i> = <i>bh</i>³/12, en m² y m⁴.',
+        fields: [fld('prop', 'Propiedades', [Av, Iv, Ac, Ic], {
+          rowL: [it('A', 'viga'), it('I', 'viga'), it('A', 'col'), it('I', 'col')], rowUnits: ['m²', 'm⁴', 'm²', 'm⁴'], tolRel: 0.005, tolAbs: 1e-12,
+          alts: (rr) => rr === 1 ? [{ v: hv * bv ** 3 / 12 / 1e12, msg: 'Use I = b h³/12 con h el peralte de la viga, la dimensión en el plano del pórtico.' }] : []
+        })],
+        sol: eq(`${it('A', 'viga')} = ${bv / 1000} × ${hv / 1000} = ${fmt(Av)} m²; ${it('I', 'viga')} = ${bv / 1000} × ${hv / 1000}³/12 = ${fmt(Iv)} m⁴`) +
+          eq(`${it('A', 'col')} = ${fmt(Ac)} m²; ${it('I', 'col')} = ${fmt(Ic)} m⁴; <i>E</i> = ${Emm} kN/mm² = ${fmt(E)} kN/m²`)
+      },
+      {
+        title: 'Coeficientes de rigidez de las columnas',
+        intro: `Calcule los coeficientes de la matriz 6×6 de una columna (<i>L</i> = ${H} m), láminas 249 a 252.`,
+        fields: [fld('cc', 'Columna', cv(col), { rowL: coefRows, rowUnits: coefU, tolRel: 0.005, tolAbs: 1e-6 })],
+        sol: tbl(['Coeficiente', 'Valor'], coefRows.map((l, k) => [l, `${fmt(cv(col)[k])} ${coefU[k]}`]))
+      },
+      {
+        title: 'Coeficientes de rigidez de la viga',
+        intro: `Calcule los mismos coeficientes para la viga (<i>L</i> = ${L} m).`,
+        fields: [fld('cb', 'Viga', cv(beam), { rowL: coefRows, rowUnits: coefU, tolRel: 0.005, tolAbs: 1e-6 })],
+        sol: tbl(['Coeficiente', 'Valor'], coefRows.map((l, k) => [l, `${fmt(cv(beam)[k])} ${coefU[k]}`]))
+      },
+      {
+        title: 'Fuerzas de empotramiento de la viga',
+        intro: 'La viga es horizontal, así que sus ejes locales coinciden con los generales.',
+        fields: [fieldFe('Ff', L, [{ type: 'w', w }], 1, 2)],
+        sol: feSol(L, [{ type: 'w', w }], 1, 2)
+      },
+      {
+        title: 'Desplazamientos de los nudos libres',
+        intro: `Resuelva ${dn} = ${Knn}<sup>−1</sup>(${Fn} − ${FFn}). Escriba <i>u</i> y <i>v</i> en mm y <i>θ</i> en rad.`,
+        fields: [fld('dn', dn, dnShow, {
+          rowL: freeL, rowUnits: ['mm', 'mm', 'rad', 'mm', 'mm', 'rad'],
+          tolAbs: (rr) => (rr % 3 === 2 ? 0.005 * thMax : 0.005 * uvMax)
+        })],
+        sol: eq(matHTML(s.Knn, freeL, freeL, (x) => fmt(x, 4), { pre: `${Knn} =` })) +
+          eq(vecHTML(s.rhs, freeL.map((_, k) => fF(s.free[k])), null, { pre: `${Fn} − ${FFn} =` })) +
+          eq(vecHTML(dnShow, freeL, (x) => fmt(x, 5), { pre: `${dn} =` }) + '<span class="mx-pre">mm, mm, rad, …</span>')
+      },
+      {
+        title: 'Reacciones',
+        intro: `Calcule ${Fa} = ${FFa} + ${Kan}${dn}. Las columnas no tienen carga, así que ${FFa} = 0.`,
+        fields: [fld('R', Fa, s.R, { rowL: restL, rowUnits: ['kN', 'kN', 'kN·m', 'kN', 'kN', 'kN·m'] })],
+        sol: eq(vecHTML(s.R, restL, null, { pre: `${Fa} =` })) +
+          p(`Equilibrio: Σ<i>X</i> = ${fmt(s.R[0] + s.R[3] + P, 3)} kN; Σ<i>Y</i> = ${fmt(s.R[1] + s.R[4] - w * L, 3)} kN.`)
+      },
+      {
+        title: 'Momentos en los extremos de la viga',
+        intro: `Con [<i>F</i>]<sub>12</sub> = [<i>F</i>]<sup>F</sup><sub>12</sub> + [<i>K</i>]<sub>12</sub>{<i>δ</i>}<sub>12</sub>, calcule ${it('M', '12')} y ${it('M', '21')}.`,
+        fields: [fld('Mb', 'Momentos de extremo', [Fb[2], Fb[5]], { rowL: [it('M', '12'), it('M', '21')], unit: 'kN·m' })],
+        sol: eq(vecHTML(Fb, [it('X', '12'), it('Y', '12'), it('M', '12'), it('X', '21'), it('Y', '21'), it('M', '21')], null, { pre: '[<i>F</i>]<sub>12</sub> =' })) +
+          p(`${it('X', '12')} es la fuerza axial de la viga en el extremo 1.`)
+      }
+    ];
+    const tsv = `L (m)\t${xl(L)}\nH (m)\t${xl(H)}\nE (kN/m2)\t${xl(E)}\nViga b x h (m)\t${xl(bv / 1000)}\t${xl(hv / 1000)}\nColumnas b x h (m)\t${xl(bc / 1000)}\t${xl(bc / 1000)}\nw viga (kN/m)\t${xl(w)}\nP en nudo 1 (kN)\t${xl(P)}\n\nNudo\tx (m)\ty (m)\n1\t0\t${xl(H)}\n2\t${xl(L)}\t${xl(H)}\n3\t0\t0\n4\t${xl(L)}\t0\n\nElemento\ti\tj\n3-1\t3\t1\n1-2\t1\t2\n4-2\t4\t2`;
+    const pyTxt = `E = ${py(E)}  # kN/m2\nnudos = {1: (0, ${H}), 2: (${L}, ${H}), 3: (0, 0), 4: (${L}, 0)}  # m\nviga = (${bv / 1000}, ${hv / 1000})  # b, h en m\ncolumna = (${bc / 1000}, ${bc / 1000})\nelementos = [(3, 1, "columna"), (1, 2, "viga"), (4, 2, "columna")]\nw = ${w}  # kN/m hacia abajo en la viga 1-2\nP = ${P}  # kN horizontal en el nudo 1\nempotrados = [3, 4]`;
+    return { statement, dataHTML: '', figure, steps, tsv, py: pyTxt };
+  }
+
+  G.MRgen = {
+    catalog: [
+      { id: 'resortes', group: 'Resortes', title: 'Resortes en serie', tag: 'A mano', slides: 'Láminas 187 a 203', gen: genResortes },
+      { id: 'barra', group: 'Cerchas', title: 'Transformación de una barra', tag: 'A mano', slides: 'Láminas 209 a 215', gen: genBarra },
+      { id: 'cercha3', group: 'Cerchas', title: 'Cercha de tres barras', tag: 'A mano', slides: 'Láminas 217 a 225', gen: genCercha3 },
+      { id: 'cercha5', group: 'Cerchas', title: 'Cercha de cinco barras', tag: 'A mano o Excel', slides: 'Láminas 217 a 225', gen: genCercha5 },
+      { id: 'cercha-paneles', group: 'Cerchas', title: 'Cercha de varios paneles', tag: 'Excel o Python', slides: 'Láminas 207, 208 y 220', gen: genCerchaPaneles },
+      { id: 'viga-voladizo', group: 'Vigas', title: 'Viga con voladizo', tag: 'A mano', slides: 'Láminas 227 a 232', gen: genVigaVoladizo },
+      { id: 'viga-cargas', group: 'Vigas', title: 'Viga con cargas en el tramo', tag: 'A mano', slides: 'Láminas 237 a 245', gen: genVigaCargas },
+      { id: 'viga-continua', group: 'Vigas', title: 'Viga continua de dos tramos', tag: 'A mano', slides: 'Láminas 233 a 245', gen: genVigaContinua },
+      { id: 'portico', group: 'Pórticos', title: 'Pórtico de un vano', tag: 'Excel o Python', slides: 'Láminas 246 a 253', gen: genPortico }
+    ]
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Interfaz del banco de ejercicios. */
+(function () {
+  'use strict';
+  const { MR, MRgen } = window;
+  const CAT = MRgen.catalog;
+  const $ = (sel, el) => (el || document).querySelector(sel);
+  const $$ = (sel, el) => [...(el || document).querySelectorAll(sel)];
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } }
+  };
+  const saved = store.get('rigidez:banco:estado:v2', {});
+  const S = { alias: typeof saved?.alias === 'string' ? saved.alias.slice(0, 64) : '', type: CAT.some(c => c.id === saved?.type) ? saved.type : CAT[0].id, variants: saved?.variants && typeof saved.variants === 'object' ? saved.variants : {} };
+  const hashType = location.hash.replace('#', '');
+  if (CAT.some(c => c.id === hashType)) S.type = hashType;
+  let EX = null, PROG = null, SHEET = null, LEGACY_SHEET = null, legacyOptions = null, SHEET_FIELDS = [], PUBLIC_DATA = new Map();
+
+  const progKey = () => `rigidez:banco:v2:${S.alias || 'ejemplo'}:${S.type}:${variant()}`;
+  const variant = () => Number.isSafeInteger(S.variants[S.type]) && S.variants[S.type] > 0 ? S.variants[S.type] : 1;
+  const saveState = () => store.set('rigidez:banco:estado:v2', { alias: S.alias, type: S.type, variants: S.variants });
+
+  /* ---------- Construcción de la página ---------- */
+  function navHTML() {
+    const groups = [...new Set(CAT.map(c => c.group))];
+    return groups.map(g => `<div class="nav-group"><p class="nav-h">${g}</p>${CAT.filter(c => c.group === g).map(c =>
+      `<a class="nav-item" href="#${c.id}" data-type="${c.id}"${c.id === S.type ? ' aria-current="page"' : ''}><span>${c.title}</span><span class="nav-tag">${c.tag}</span></a>`).join('')}</div>`).join('');
+  }
+  function selectHTML() {
+    return CAT.map(c => `<option value="${c.id}"${c.id === S.type ? ' selected' : ''}>${c.group}: ${c.title}</option>`).join('');
+  }
+  function fieldHTML(f, sIdx) {
+    const nC = f.ans[0].length;
+    const head = f.colL ? `<thead><tr><th></th>${f.colL.map(c => `<th>${c}</th>`).join('')}<th></th></tr></thead>` : '';
+    const rows = f.ans.map((row, r) => `<tr><th class="rl">${f.rowL ? f.rowL[r] : ''}</th>${row.map((_, c) => {
+      const cls = ['c']; if (c === 0) cls.push('L'); if (c === nC - 1) cls.push('R');
+      const id = `in-${S.type}-${variant()}-${sIdx}-${f.id}-${r}-${c}`;
+      return `<td class="${cls.join(' ')}"><input id="${id}" class="cell" data-f="${f.id}" data-r="${r}" data-c="${c}" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="${stripTags(f.label)} fila ${r + 1} columna ${c + 1}"></td>`;
+    }).join('')}<td class="unit">${f.rowUnits ? f.rowUnits[r] : ''}</td></tr>`).join('');
+    return `<div class="field" data-field="${f.id}" data-rows="${f.ans.length}" data-columns="${nC}" data-block-key="${sIdx}:${f.id}" data-label="${escapeBlockHTML(stripTags(f.label))}" data-unit="${escapeBlockHTML(f.unit || (f.rowUnits || f.colUnits || []).join(' | ') || stripTags(f.label).match(/\(([^()]*)\)/)?.[1] || '')}"><p class="flabel">${f.label}${f.unit && !f.label.includes('(') ? ` <span class="u">${f.unit}</span>` : ''} · ${f.ans.length}×${nC}</p>
+      ${f.rowL?`<p class="block-order small"><b>Filas:</b> ${f.rowL.map((label,i)=>`${label}${f.rowUnits?.[i]?` (${f.rowUnits[i]})`:''}`).join(' · ')}</p>`:''}${f.colL?`<p class="block-order small"><b>Columnas:</b> ${f.colL.map((label,i)=>`${label}${f.colUnits?.[i]?` (${f.colUnits[i]})`:''}`).join(' · ')}</p>`:''}
+      <label class="block-label">Respuesta como bloque<textarea class="block-input" data-block-editor rows="${Math.max(2,Math.min(8,f.ans.length))}" spellcheck="false" aria-label="Bloque ${escapeBlockHTML(stripTags(f.label))}" placeholder="Una fila por línea; columnas separadas por tabulador o punto y coma"></textarea></label>
+      <p class="small">Pegue la matriz completa desde Excel o desde la hoja de trabajo. Escriba 0 donde corresponda; un espacio vacío no es cero.</p>
+      <div class="block-actions"><button type="button" class="btn btn-sm" data-block="apply">Aplicar bloque</button><button type="button" class="btn btn-sm" data-block="copy">Copiar mi matriz</button><button type="button" class="btn btn-sm" data-block="sheet">Llevar mi matriz a la hoja</button></div>
+      <p class="block-message small" role="status"></p><div class="block-preview"></div>
+      <details class="cell-editor"><summary>Editar por casillas (opcional)</summary><div class="mx mx-in"><table class="mx-t">${head}<tbody>${rows}</tbody></table></div></details></div>`;
+  }
+  const stripTags = (s) => String(s).replace(/<[^>]+>/g, '');
+  function stepHTML(st, k) {
+    return `<li class="step" data-step="${k}" data-state="pending">
+      <div class="step-h"><span class="step-n">Paso ${k + 1}</span><h3>${st.title}</h3><span class="chip" data-chip>Sin revisar</span></div>
+      <p class="intro">${st.intro}</p>
+      <div class="fields">${st.fields.map(f => fieldHTML(f, k)).join('')}</div>
+      <div class="actions"><button type="button" class="btn btn-primary" data-act="check">Comprobar</button>
+        <button type="button" class="btn" data-act="sol" disabled aria-expanded="false">Ver solución</button>
+        <button type="button" class="btn btn-quiet" data-act="clear">Borrar</button><button type="button" class="btn" data-sheet-step="${k}">Usar hoja libre</button></div>
+      <div class="fb" aria-live="polite"></div>
+      <div class="sol" hidden><p class="sol-h">Solución</p>${st.sol}</div>
+    </li>`;
+  }
+  function keyHTML(ex) {
+    return ex.steps.map((st, k) => `<div class="key-step"><p class="key-h">Paso ${k + 1}. ${st.title}</p><div class="key-vals">${st.fields.map(f =>
+      f.ans.map((row, r) => row.map((v, c) => `<span class="kv"><span class="kl">${f.rowL ? f.rowL[r] : ''}${f.colL ? ' · ' + f.colL[c] : ''}</span> ${MR.fmt(v, 5)}${f.rowUnits ? ' ' + f.rowUnits[r] : (f.unit ? ' ' + f.unit : '')}</span>`).join('')).join('')).join('')}</div></div>`).join('');
+  }
+
+  function render() {
+    const cat = CAT.find(c => c.id === S.type) || CAT[0];
+    const seed = `${(S.alias || 'ejemplo').trim().toUpperCase()}|${cat.id}|${variant()}`;
+    EX = generateWithRounding(MR, cat, MR.makeRng(seed));
+    PROG = store.get(progKey(), { inputs: {}, ok: [], tried: [], blocks: {} });
+    PROG.blocks ||= {};
+    $('#nav').innerHTML = navHTML();
+    $('#nav-select').innerHTML = selectHTML();
+    $('#main').innerHTML = `
+      <section class="exhead">
+        <div class="exhead-t"><p class="eyebrow">${cat.group} · ${cat.slides}</p><h2>${cat.title}</h2></div>
+        <div class="exhead-r"><span class="tag">${cat.tag}</span>
+          <div class="variant" role="group" aria-label="Variante del ejercicio">
+            <button type="button" class="btn btn-sm" data-var="-1" ${variant() <= 1 ? 'disabled' : ''} aria-label="Variante anterior">Anterior</button>
+            <span class="var-n">Variante <b>${variant()}</b></span>
+            <button type="button" class="btn btn-sm" data-var="1" aria-label="Variante siguiente">Siguiente</button>
+          </div></div>
+      </section>
+      <div class="bank-workspace-access"><button type="button" class="btn btn-primary" data-sheet-open>Usar hoja libre</button><span class="small">Grilla plegable junto al ejercicio. Copie sus matrices, escriba fórmulas y envíe el rango al paso; sin listas de operandos.</span></div>
+      <div class="prog"><div class="prog-bar"><span style="width:0%"></span></div><span class="prog-t"></span></div>
+      <section class="enun">
+        <div class="enun-text">${EX.statement}${EX.dataHTML || ''}</div>
+        <figure class="enun-fig">${EX.figure}</figure>
+      </section>
+      <p class="small">Verde: correcto · Ámbar: compatible con redondeo, pendiente de revisar · Rojo: no coincide. Los avisos ámbar no suman pasos correctos.</p>
+      ${EX.roundingDiagnostic ? `<p class="small">${EX.roundingDiagnostic}</p>` : ''}
+      <ol class="steps">${EX.steps.map(stepHTML).join('')}</ol>
+      <details class="panel"><summary>Datos para Excel y Python</summary>
+        <div class="exp">
+          <div><p class="exp-h">Excel</p><p class="small">Copie y pegue en la celda A1 de una hoja. Columnas separadas por tabulación y punto decimal. Si su Excel usa coma decimal, ajuste la configuración de importación.</p>
+            <textarea id="exp-tsv" readonly rows="8" spellcheck="false">${EX.tsv.replace(/(^|\t)([+-]?\d+),(\d+)(?=\t|\n|$)/g, '$1$2.$3')}</textarea><button type="button" class="btn btn-sm" data-copy="exp-tsv">Copiar datos</button></div>
+          <div><p class="exp-h">Python</p><p class="small">Pegue en una celda de Colab o Jupyter como punto de partida de su programa.</p>
+            <textarea id="exp-py" readonly rows="8" spellcheck="false">${EX.py}</textarea><button type="button" class="btn btn-sm" data-copy="exp-py">Copiar código</button></div>
+        </div>
+      </details>
+      <details class="panel"><summary>Clave de respuestas</summary>
+        <p class="small">Todas las respuestas de esta variante para el alias de práctica actual. El mismo alias y número de variante reproducen los mismos datos.</p>
+        <div class="key">${keyHTML(EX)}</div>
+      </details>`;
+    // Restaurar entradas y estados
+    $$('#main input.cell').forEach(inp => { if (PROG.inputs[inp.id] !== undefined) inp.value = PROG.inputs[inp.id]; });
+    $$('.field', $('#main')).forEach(field => { const key=field.dataset.blockKey; $('.block-input',field).value=PROG.blocks[key] ?? fieldGridText(field); previewBlock(field); });
+    setupSheet(cat);
+    EX.steps.forEach((_, k) => {
+      if (PROG.tried.includes(k)) { checkStep(k, true); }
+    });
+    updateProgress();
+    document.title = `${cat.title} · Banco de ejercicios de rigidez`;
+  }
+
+  /* The worksheet bridge exposes only public data and student-owned blocks. */
+  function fieldGridText(field){
+    const rows=+field.dataset.rows,columns=+field.dataset.columns;
+    return responseTSV(Array.from({length:rows},(_,r)=>Array.from({length:columns},(_,c)=>$(`input.cell[data-r="${r}"][data-c="${c}"]`,field).value)));
+  }
+  // Preserve only trusted typographic sub/sup markup from the visible headings.
+  // Text (including any input-derived text) is always escaped; no other tags survive.
+  function previewLabelHTML(node){
+    if(!node)return '';
+    if(node.nodeType===3)return escapeBlockHTML(node.textContent);
+    const inside=Array.from(node.childNodes||[]).map(previewLabelHTML).join('');
+    const tag=String(node.nodeName||'').toLowerCase();
+    return tag==='sub'||tag==='sup'?`<${tag}>${inside}</${tag}>`:inside;
+  }
+  function previewBlock(field){
+    const raw=$('.block-input',field).value,rows=+field.dataset.rows,columns=+field.dataset.columns;
+    const result=parseResponseBlock(raw,rows,columns),message=$('.block-message',field),preview=$('.block-preview',field);
+    message.textContent=result.message;message.classList.toggle('block-error',!result.ok);
+    if(!result.ok||!raw.trim()){preview.innerHTML='';return result;}
+    const rowLabels=$$('.cell-editor tbody th.rl',field).map(previewLabelHTML),colLabels=$$('.cell-editor thead th',field).slice(1,-1).map(previewLabelHTML),rowUnits=$$('.cell-editor td.unit',field).map(n=>n.textContent),hasUnits=rowUnits.some(Boolean);
+    preview.innerHTML=`<div class="mx"><table class="mx-t" aria-label="Vista previa del bloque">${colLabels.length?`<thead><tr><th></th>${colLabels.map(t=>`<th>${t}</th>`).join('')}${hasUnits?'<th>Unidad</th>':''}</tr></thead>`:''}<tbody>${result.values.map((row,r)=>`<tr><th class="rl">${rowLabels[r]||r+1}</th>${row.map((value,c)=>{const input=$(`input.cell[data-r="${r}"][data-c="${c}"]`,field),state=['ok','bad','rounding','empty'].find(k=>input.classList.contains(k))||'';return `<td class="c ${state}" title="Fila ${r+1}, columna ${c+1}">${value===null?'—':escapeBlockHTML(Number(value.toPrecision(10)))}</td>`;}).join('')}${hasUnits?`<td class="unit">${escapeBlockHTML(rowUnits[r]||'')}</td>`:''}</tr>`).join('')}</tbody></table></div>`;
+    return result;
+  }
+  function applyBlock(field,invalidate=true){
+    const text=$('.block-input',field).value,parsed=parseResponseBlock(text,+field.dataset.rows,+field.dataset.columns);
+    previewBlock(field);
+    if(!parsed.ok){if(invalidate){invalidateStep(field.closest('.step'));saveProg();}SHEET?.refreshAnnotations?.();return false;}
+    parsed.cells.forEach((row,r)=>row.forEach((value,c)=>{const input=$(`input.cell[data-r="${r}"][data-c="${c}"]`,field);input.value=value;PROG.inputs[input.id]=value;input.classList.remove('ok','bad','empty','rounding');}));
+    PROG.blocks[field.dataset.blockKey]=text;
+    if(invalidate){invalidateStep(field.closest('.step'));saveProg();$('.block-message',field).textContent=parsed.message+' Pulse Comprobar para verificar el paso.';}
+    SHEET?.refreshAnnotations?.();
+    return true;
+  }
+  function copyStudentText(text,button){
+    const fallback=()=>{let area=button.parentElement.querySelector('.copy-fallback');if(!area){area=document.createElement('textarea');area.className='copy-fallback';area.readOnly=true;area.setAttribute('aria-label','Texto para copiar');button.parentElement.append(area);}area.value=text;area.focus();area.select();button.textContent='Texto seleccionado: use Ctrl+C';};
+    try{navigator.clipboard.writeText(text).then(()=>{button.textContent='Copiado';},fallback);}catch{fallback();}
+  }
+  function setupSheet(cat){
+    SHEET_FIELDS=$$('.step', $('#main')).flatMap(li=>$$('.field',li).map(field=>({key:field.dataset.blockKey,stepIndex:+li.dataset.step,fieldId:field.dataset.field,label:field.dataset.label,rows:+field.dataset.rows,columns:+field.dataset.columns,unit:field.dataset.unit.slice(0,100),stepTitle:$('h3',li).textContent,writable:true})));
+    PUBLIC_DATA=new Map();
+    $$('.enun .tbl', $('#main')).forEach((table,index)=>{
+      const headers=$$('thead th',table).map(n=>n.textContent.trim()),rows=$$('tbody tr',table).map(tr=>$$('td',tr).map(td=>td.textContent.trim()));
+      const numeric=numericTableColumns(headers,rows);if(!numeric)return;
+      const key=`data:${index}`;PUBLIC_DATA.set(key,numeric);
+      SHEET_FIELDS.push({key,stepIndex:-1,fieldId:key,label:numeric.headers.join(' · '),rows:numeric.cells.length,columns:numeric.columns.length,unit:'Compruebe las unidades de cada columna del enunciado',stepTitle:'Datos del enunciado',writable:false});
+      const actions=document.createElement('div');actions.className='block-actions public-matrix-actions';actions.innerHTML=`<p class="small">Columnas numéricas: ${escapeBlockHTML(numeric.headers.join(' · '))}</p><button type="button" class="btn btn-sm" data-public-copy="${key}">Copiar columnas numéricas</button><button type="button" class="btn btn-sm" data-public-sheet="${key}">Llevar datos a la hoja</button>`;
+      if(numeric.columns.length>1)numeric.headers.forEach((header,c)=>{
+        const columnKey=`${key}:column:${c}`,cells=numeric.cells.map(row=>[row[c]]);
+        PUBLIC_DATA.set(columnKey,{text:responseTSV(cells)});
+        SHEET_FIELDS.push({key:columnKey,stepIndex:-1,fieldId:columnKey,label:header,rows:cells.length,columns:1,unit:header,stepTitle:'Columna visible del enunciado',writable:false});
+        const button=document.createElement('button');button.type='button';button.className='btn btn-sm';button.dataset.publicSheet=columnKey;button.textContent=`Llevar columna: ${header}`;actions.append(button);
+      });
+      table.parentElement.append(actions);
+    });
+    const context={alias:S.alias,type:S.type,variant:variant(),title:cat.title},exports={tsv:EX.tsv,python:EX.py};
+    legacyOptions={host:$('#bank-sheet'),context,fields:SHEET_FIELDS,exports};
+    if(SHEET){SHEET.refresh({context,fields:SHEET_FIELDS,exports});if(LEGACY_SHEET)LEGACY_SHEET.refresh(legacyOptions);return;}
+    const bridge={
+      annotateField(key,text,state=''){const descriptor=SHEET_FIELDS.find(f=>f.key===key&&f.writable!==false);if(!descriptor)return;const field=$(`.field[data-block-key="${descriptor.key}"]`,$('#main'));if(!field)return;let note=$('.sheet-snapshot-note',field);if(!note){note=document.createElement('p');note.className='sheet-snapshot-note';note.setAttribute('role','status');field.append(note);}note.textContent=text;note.dataset.sourceState=state;note.hidden=!text;},
+      readField(key){if(PUBLIC_DATA.has(key))return {text:PUBLIC_DATA.get(key).text};const descriptor=SHEET_FIELDS.find(f=>f.key===key&&f.writable!==false);if(!descriptor)throw new Error('El bloque no corresponde a este ejercicio.');const field=$(`.field[data-block-key="${descriptor.key}"]`,$('#main'));return {text:$('.block-input',field).value};},
+      hasContent(key){const descriptor=SHEET_FIELDS.find(f=>f.key===key&&f.writable!==false);if(!descriptor)return false;const field=$(`.field[data-block-key="${descriptor.key}"]`,$('#main'));return Boolean(field&&$('.block-input',field).value.trim());},
+      focusField(key){const descriptor=SHEET_FIELDS.find(f=>f.key===key&&f.writable!==false);if(!descriptor)return false;const field=$(`.field[data-block-key="${descriptor.key}"]`,$('#main'));if(!field)return false;const input=$('.block-input',field);field.scrollIntoView({block:'center',behavior:'smooth'});input.focus({preventScroll:true});field.classList.add('block-return-focus');setTimeout(()=>field.classList.remove('block-return-focus'),2000);return true;},
+      writeField(key,values){const descriptor=SHEET_FIELDS.find(f=>f.key===key&&f.writable!==false);if(!descriptor)throw new Error('Seleccione un bloque de respuesta del ejercicio actual.');const text=responseTSV(values),parsed=parseResponseBlock(text,descriptor.rows,descriptor.columns);if(!parsed.ok||!parsed.complete)throw new Error(parsed.message);const field=$(`.field[data-block-key="${descriptor.key}"]`,$('#main'));const replaced=$('.block-input',field).value.trim()!=='';$('.block-input',field).value=text;PROG.blocks[key]=text;applyBlock(field,true);previewBlock(field);return {ok:true,replaced,message:`Bloque enviado al paso ${descriptor.stepIndex+1}. El paso queda sin revisar; pulse Comprobar.`};}
+    };
+    const openLegacy=fieldKey=>{SHEET.close();if(!LEGACY_SHEET)LEGACY_SHEET=mountBankSheet({...legacyOptions,...bridge});else LEGACY_SHEET.refresh(legacyOptions);LEGACY_SHEET.open(fieldKey);};
+    SHEET=mountBankFreeSheet({host:$('#bank-free-sheet'),context,fields:SHEET_FIELDS,exports,...bridge,openLegacy,closeLegacy:()=>LEGACY_SHEET?.close({returnToOrigin:false})});
+  }
+
+  function updateProgress() {
+    const n = EX.steps.length, ok = PROG.ok.length;
+    $('.prog-bar span').style.width = `${(100 * ok / n).toFixed(0)}%`;
+    $('.prog-t').textContent = ok === n ? `Ejercicio completo: ${n} de ${n} pasos correctos` : `${ok} de ${n} pasos correctos`;
+  }
+  function saveProg() { store.set(progKey(), PROG); }
+
+  function checkStep(k, silent) {
+    const li = $(`.step[data-step="${k}"]`), st = EX.steps[k];
+    if (li.querySelector?.('[data-block-editor]')) {
+      const valid=$$('.field',li).map(field=>applyBlock(field,false)).every(Boolean);
+      if(!valid){invalidateStep(li);$('.fb',li).textContent='Revise el tamaño y las expresiones del bloque antes de comprobar. No se usaron respuestas anteriores.';saveProg();return;}
+    }
+    let total = 0, good = 0, empty = 0, rounding = 0, unexplained = 0; const msgs = new Map();
+    st.fields.forEach(f => {
+      $$(`input.cell[data-f="${f.id}"]`, li).forEach(inp => {
+        const r = +inp.dataset.r, c = +inp.dataset.c; total++;
+        inp.classList.remove('ok', 'bad', 'empty', 'rounding');
+        const x = parseVal(inp.value);
+        if (x === null) { empty++; inp.classList.add('empty'); return; }
+        if (Number.isNaN(x)) { inp.classList.add('bad'); msgs.set(numericInputError(inp.value)||'No se pudo leer un valor. Use números, coma o punto decimal y operaciones simples como 30/6480.', true); return; }
+        const j = judge(x, f, r, c);
+        if (j.ok) { good++; inp.classList.add('ok'); }
+        else if (j.status === 'rounding') { rounding++; inp.classList.add('rounding'); msgs.set(j.msg, true); }
+        else { inp.classList.add('bad'); if (j.msg) msgs.set(j.msg, true); else unexplained++; }
+      });
+    });
+    const allOk = good === total;
+    li.dataset.state = allOk ? 'ok' : (rounding && good + rounding === total ? 'rounding' : 'bad');
+    $('[data-chip]', li).textContent = allOk ? 'Correcto' : (rounding && good + rounding === total ? 'Compatible con redondeo · revise' : `${good} de ${total}${rounding ? ` · ${rounding} con redondeo` : ''}`);
+    const fb = $('.fb', li);
+    if (allOk) fb.innerHTML = '<p class="fb-ok">Paso correcto.</p>';
+    else {
+      const items = [...msgs.keys()];
+      if (unexplained && rounding) items.push('Además hay casillas rojas que no coinciden: el aviso de redondeo no explica esas respuestas. Revise su procedimiento.');
+      if (empty) items.unshift(`Faltan ${empty} casilla${empty > 1 ? 's' : ''} por completar.`);
+      if (unexplained && !msgs.size) items.push('Las casillas en rojo no coinciden. Revise el procedimiento y los signos.');
+      fb.innerHTML = `<ul class="fb-list">${items.map(m => `<li>${m}</li>`).join('')}</ul>`;
+    }
+    $('[data-act="sol"]', li).disabled = false;
+    if (!PROG.tried.includes(k)) PROG.tried.push(k);
+    PROG.ok = PROG.ok.filter(x => x !== k); if (allOk) PROG.ok.push(k);
+    if (li.querySelector?.('[data-block-editor]')) $$('.field',li).forEach(previewBlock);
+    if (!silent) { saveProg(); }
+    updateProgress();
+  }
+
+  function invalidateStep(li) {
+    const k = +li.dataset.step;
+    PROG.ok = PROG.ok.filter(index => index !== k);
+    PROG.tried = PROG.tried.filter(index => index !== k);
+    li.dataset.state = 'pending';
+    $('[data-chip]', li).textContent = 'Sin revisar';
+    $('.fb', li).innerHTML = '';
+    updateProgress();
+  }
+
+  /* ---------- Eventos ---------- */
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    if(b.hasAttribute('data-sheet-open')) SHEET.open();
+    if(b.dataset.sheetStep!==undefined) SHEET.open(SHEET_FIELDS.find(f=>f.stepIndex===+b.dataset.sheetStep&&f.writable!==false)?.key);
+    if(b.dataset.block){const field=b.closest('.field');if(b.dataset.block==='apply')applyBlock(field);if(b.dataset.block==='sheet')SHEET.openForField(field.dataset.blockKey);if(b.dataset.block==='copy'){const parsed=parseResponseBlock($('.block-input',field).value,+field.dataset.rows,+field.dataset.columns);if(parsed.ok)copyStudentText(responseTSV(parsed.values),b);else $('.block-message',field).textContent=parsed.message;}}
+    if(b.dataset.publicSheet) SHEET.importField(b.dataset.publicSheet);
+    if(b.dataset.publicCopy) copyStudentText(PUBLIC_DATA.get(b.dataset.publicCopy).text,b);
+    if (b.dataset.act) {
+      const li = b.closest('.step'), k = +li.dataset.step;
+      if (b.dataset.act === 'check') checkStep(k);
+      if (b.dataset.act === 'sol') { const sol = $('.sol', li); sol.hidden = !sol.hidden; b.setAttribute('aria-expanded', String(!sol.hidden)); b.textContent = sol.hidden ? 'Ver solución' : 'Ocultar solución'; }
+      if (b.dataset.act === 'clear') {
+        $$('input.cell', li).forEach(i => { i.value = ''; i.classList.remove('ok', 'bad', 'empty', 'rounding'); delete PROG.inputs[i.id]; });
+        $$('.field',li).forEach(field=>{delete PROG.blocks[field.dataset.blockKey];$('.block-input',field).value='';previewBlock(field);});
+        invalidateStep(li);
+        $('.sol', li).hidden = true;
+        const solutionButton = $('[data-act="sol"]', li);
+        solutionButton.disabled = true; solutionButton.setAttribute('aria-expanded', 'false'); solutionButton.textContent = 'Ver solución';
+        saveProg();
+      }
+    }
+    if (b.dataset.var) { S.variants[S.type] = Math.max(1, variant() + (+b.dataset.var)); saveState(); render(); window.scrollTo({ top: 0 }); }
+    if (b.dataset.copy) {
+      const ta = document.getElementById(b.dataset.copy);
+      const done = () => { b.textContent = 'Copiado'; setTimeout(() => { b.textContent = b.dataset.copy === 'exp-py' ? 'Copiar código' : 'Copiar datos'; }, 1600); };
+      const fallback = () => { ta.focus(); ta.select(); b.textContent = 'Texto seleccionado: use Ctrl+C'; };
+      try { navigator.clipboard.writeText(ta.value).then(done, fallback); } catch (err) { fallback(); }
+    }
+  });
+  document.addEventListener('input', (e) => {
+    if (e.target.matches('textarea.block-input')) {const field=e.target.closest('.field');PROG.blocks[field.dataset.blockKey]=e.target.value;$$('input.cell',field).forEach(i=>i.classList.remove('ok','bad','empty','rounding'));previewBlock(field);invalidateStep(e.target.closest('.step'));saveProg();}
+    if (e.target.matches('input.cell')) { PROG.inputs[e.target.id] = e.target.value; e.target.classList.remove('ok', 'bad', 'empty', 'rounding'); if(e.target.closest('.field')?.querySelector){const field=e.target.closest('.field');$('.block-input',field).value=fieldGridText(field);PROG.blocks[field.dataset.blockKey]=$('.block-input',field).value;previewBlock(field);} invalidateStep(e.target.closest('.step')); saveProg(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('input.cell')) { e.preventDefault(); checkStep(+e.target.closest('.step').dataset.step); }
+  });
+  document.addEventListener('paste', (e) => {
+    const t = e.target; if (!t.matches || !t.matches('input.cell')) return;
+    const txt = (e.clipboardData || window.clipboardData).getData('text');
+    const ambiguity=numericInputError(txt);if(ambiguity){e.preventDefault();$('.block-message',t.closest('.field')).textContent=ambiguity;return;}
+    const tokens = parsePastedGrid(txt);
+    if (!tokens) return;
+    e.preventDefault();
+    const fieldEl = t.closest('.field'), r0 = +t.dataset.r, c0 = +t.dataset.c;
+    if(tokens.some(row=>row.length!==tokens[0].length)||r0+tokens.length>+fieldEl.dataset.rows||c0+tokens[0].length>+fieldEl.dataset.columns){$('.block-message',fieldEl).textContent='El bloque pegado no cabe en el rango. No se cambió ninguna casilla. Use Respuesta como bloque para revisar su tamaño.';return;}
+    tokens.forEach((row, dr) => row.forEach((val, dc) => {
+      const inp = $(`input.cell[data-r="${r0 + dr}"][data-c="${c0 + dc}"]`, fieldEl);
+      if (inp) { inp.value = val.trim(); PROG.inputs[inp.id] = inp.value; inp.classList.remove('ok', 'bad', 'empty', 'rounding'); }
+    }));
+    $('.block-input',fieldEl).value=fieldGridText(fieldEl);PROG.blocks[fieldEl.dataset.blockKey]=$('.block-input',fieldEl).value;previewBlock(fieldEl);
+    invalidateStep(t.closest('.step'));
+    saveProg();
+  });
+  $('#alias').value = S.alias;
+  $('#alias').addEventListener('change', (e) => { S.alias = e.target.value.trim().slice(0, 64); saveState(); render(); });
+  $('#nav-select').addEventListener('change', (e) => { location.hash = e.target.value; });
+  window.addEventListener('hashchange', () => {
+    const t = location.hash.replace('#', '');
+    if (CAT.some(c => c.id === t) && t !== S.type) { S.type = t; saveState(); render(); window.scrollTo({ top: 0 }); }
+  });
+  render();
+})();
+
+</script>
+
+</body>
+</html>

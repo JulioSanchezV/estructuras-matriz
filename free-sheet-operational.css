@@ -1,0 +1,39 @@
+/* Operational iframe corrections. Load after free-sheet-visual.css.
+   Controls wrap into visible rows; only the spreadsheet itself scrolls
+   horizontally. The existing cell dimensions and editing behavior are intact. */
+.toolbar {
+  flex-wrap: wrap;
+  overflow: visible;
+  flex: 0 0 auto;
+  align-content: flex-start;
+}
+.toolbar button { max-width: 100%; white-space: normal; }
+.formula-line { flex: 0 0 auto; min-width: 0; }
+.formula-line #address { flex: 0 0 auto; }
+.formula-line #formula { width: 0; min-width: 0; }
+.formula-line #commit { flex: 0 0 auto; }
+.sheet-footer, #notice, .sheet-hint, .help { flex-shrink: 0; }
+
+@media (max-width: 560px) {
+  #toggle-help { margin-left: 0; }
+}
+
+/* With an unusually short iframe (or the help open), preserve a real grid
+   viewport and allow the surrounding sheet to scroll vertically. Nothing is
+   placed beyond an overflow:hidden ancestor without a way to reach it. */
+@media (max-height: 380px) {
+  .sheet {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #a9a99e #f1f1ec;
+  }
+  .toolbar { flex-wrap: wrap; overflow: visible; min-height: 0; padding: 3px 4px; gap: 3px; }
+  .toolbar button { min-height: 24px; padding: 3px 5px; font-size: 10px; line-height: 1.2; }
+  .formula-line { padding: 4px; gap: 4px; }
+  .formula-line #address, .formula-line #formula { height: 25px; padding: 3px 4px; }
+  #grid { flex: 1 0 96px; min-height: 96px; }
+  .sheet-footer { min-height: 20px; max-height: 32px; padding: 3px 6px; overflow: auto; }
+  #notice { min-height: 21px; max-height: 40px; padding: 4px 6px; overflow: auto; }
+  .help { max-height: min(225px, 50dvh); overflow: auto; }
+}

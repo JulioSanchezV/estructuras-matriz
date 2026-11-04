@@ -1,0 +1,78 @@
+PLANTILLAS Y LABORATORIOS DEL MÉTODO DE RIGIDEZ
+
+Archivos
+- ../plantilla-resortes.xlsx: ejemplo 11.1, solución matricial y comprobaciones.
+- {cercha,viga,portico}_rigidez.xlsx: ejemplos resueltos con fórmulas visibles y entradas editables.
+- {cercha,viga,portico}_rigidez.ipynb: referencias resueltas de topología fija.
+- {cercha,viga,portico}_trabajo.ipynb: actividades por pasos para completar.
+- soluciones_laboratorios.md: soluciones separadas para consultar después del intento.
+- casos_canonicos.json: datos originales, unidades y convenciones.
+- ../plantilla-resortes.csv: versión anterior para enlaces existentes. Prefiera el XLSX.
+
+Procedimiento
+1. Dibuje el modelo, declare GDL y prediga los signos.
+2. Calcule a mano una matriz de elemento, un aporte y el sistema reducido.
+3. Reproduzca las operaciones en Excel y compare cada bloque. Las hojas resueltas son referencias, no un editor de cualquier estructura.
+4. Si utiliza Python, abra el notebook de trabajo y complete los valores None. Ejecute una celda cada vez. Los assert detienen el proceso si falta una entrada o existe una diferencia. No asignan calificaciones.
+5. Consulte el notebook resuelto o la guía de soluciones después de intentar el paso.
+Python es complementario. Puede trabajar con cálculo a mano y Excel.
+Para abrir un IPYNB en Colab: Archivo > Subir notebook. No necesita vincular estos archivos a Drive ni descargar el JSON.
+
+Notación
+δ es el vector de desplazamientos, con componentes u, v y θ; en código se escribe delta.
+n identifica GDL libres; a identifica GDL con desplazamiento conocido.
+Fn es F_n: carga aplicada en los GDL libres.
+Fa es F_a: acción nodal neta en los apoyos, suma de la carga aplicada allí y la reacción.
+F^F son las fuerzas de empotramiento. FF y FFbar son los nombres de código de F^F y F̄^F.
+Por tramo i→j, el orden de viga es [Y^F_ij,M^F_ij,Y^F_ji,M^F_ji]. El pórtico incluye X^F en cada extremo.
+δ̄=Tδ; F̄=TF; K=TᵀK̄T. T es adimensional.
+En un tramo horizontal, w>0 actúa hacia abajo. En general, w>0 actúa en −Ȳ local. Las cargas nodales conservan los ejes globales: +X derecha, +Y arriba, momentos y giros antihorarios.
+La figura original del pórtico conserva q=25 hacia abajo. Ese rótulo equivale a w=25 en los datos y cálculos actualizados.
+Sij es positivo en tensión. Distinga los momentos aplicados al elemento del diagrama interno sagante.
+
+Partición general
+Knn δn = Fn − F^F_n − Kna δa.
+Fa = F^F_a + Kan δn + Kaa δa.
+Reacción = Fa − carga aplicada directamente en ese apoyo.
+F̄_ij = F̄^F_ij + K̄_ij δ̄_ij.
+No omita cargas en apoyos ni asientos. En 11.7, Fa,B=YB−20=10 kN; YB=30 kN, no 10 kN.
+Los notebooks resueltos conservan Faplicada como registro interno de cargas conocidas y Ra/R como nombres internos de reacción/residuo. Su correspondencia con Fn/Fa se explica; no son nuevas incógnitas del curso.
+En los XLSX, Resultados H muestra Fn en grados libres y Fa en apoyos. E muestra reacción o residuo; las unidades de ambas están en F.
+Los bloques −F^F de Elementos son cargas equivalentes auxiliares conservadas para seguir las fórmulas. No se suman adicionalmente a F^F.
+
+Unidades y ejemplos
+Resortes: kN y m. kₐ=600, k_b=200 kN/m; F1=50, F2=−20 kN; δ3=0.
+Cercha 11.2: la fuente usa mm y deja E simbólico. Los archivos convierten a m y m². E_ref=1 kN/mm²=10⁶ kN/m² es una normalización algebraica, no un material real ni un dato numérico de la fuente.
+Viga 11.7: EI=7290 kN·m². Se conserva el modelo reducido AB. La carga en C se traslada a B como −P y −P·a. Esta plantilla no calcula el desplazamiento de C ni el diagrama de BC.
+Pórtico 253: kN, m y rad. E=19 kN/mm²=19×10⁶ kN/m². Viga A=.15 m², I=.003125 m⁴. Columnas A=.09 m², I=.000675 m⁴. B=1, C=2, A=3, D=4; elementos 3→1, 1→2, 4→2. Luz 6 m, altura 3 m, w=25 kN/m.
+
+XLSX de resortes
+Edite B5:B8. Knn=B11:C12, Fn=E11:E12, inversa=G11:H12.
+G11:H12 utiliza INDEX(MINVERSE(...),fila,columna). B15:B16 muestra el producto fila por columna de la inversa por Fn. No usa una fórmula particular de la cadena ni depende de una expansión entre celdas.
+El XLSX conserva las fórmulas y no requiere importar separadores de CSV. Microsoft Excel presenta los nombres de funciones según su idioma. No se ha probado directamente esta versión en Microsoft Excel español.
+El CSV anterior requiere UTF-8, punto y coma y confirmar su fórmula matricial según la versión de Excel; no es la opción principal.
+
+Límites
+Geometría, topología, apoyos y numeración de los ejemplos resueltos son fijos. No son plantillas genéricas para cualquier cercha o pórtico.
+Modelos lineales elásticos y de pequeños desplazamientos. No incluyen segundo orden, pandeo, plasticidad, contacto ni deformación por cortante. No son herramientas de diseño normativo.
+Los XLSX de cercha/viga/pórtico usan Gauss-Jordan escalar sin intercambio de filas. Knn debe ser definido positivo. Rigideces muy desiguales pueden degradar la precisión.
+Los notebooks resueltos usan numpy.linalg.solve. Los de trabajo solicitan las operaciones de cada etapa y muestran su comprobación.
+Las figuras originales de Datos no cambian al editar cargas. La deformada de los notebooks resueltos se recalcula y declara su amplificación.
+
+Comprobaciones de esta revisión
+- Recálculo con Artifact Tool de los cuatro XLSX: controles originales, sensibilidad de carga y exportes sin errores de fórmula, con resultados calculados guardados.
+- Hojas e imágenes de los tres XLSX existentes preservadas. Se ajustaron 4 fórmulas de carga en viga y 12 en pórtico para convertir q a w. La cercha no requirió cambios en fórmulas existentes. Se añadieron 22 fórmulas Fn/Fa. Las demás fórmulas y todos los resultados originales se conservaron.
+- Tres notebooks resueltos: 30 celdas ejecutadas. Contraste antes/después en 93 casos, incluidos cargas en apoyos, asientos y cargas distribuidas de ambos signos: 821 comparaciones satisfactorias. También se contrastó la deformada.
+- Tres notebooks de trabajo: 25 celdas ejecutadas tras incorporar las soluciones. Los archivos vacíos se detienen indicando qué completar. Se comprueban matrices, partición, desplazamientos y fuerzas de los tres elementos del pórtico.
+- Revisión visual de los rangos modificados en Datos, Elementos, Resultados y Guía de los tres XLSX, y de la hoja de resortes, mediante renderizado. No se probaron directamente Microsoft Excel español, Google Sheets ni Colab en la nube. No se afirma compatibilidad nativa probada en esos programas.
+
+Valores de control
+Resortes: δ1=0.2333333333 m; δ2=0.15 m; F3=−30 kN; S12=−50 kN; S23=−30 kN.
+Cercha: u1=−10/E mm; v1=−110/E mm; v2=0, con E en kN/mm². X2=10 kN; X3=−50 kN; Y3=50 kN; S12=−10 kN; S13=50√2 kN; S23=0.
+Viga: θB=−0.00462962963 rad; YA=−10 kN; MA=−15 kN·m; YB=30 kN.
+Pórtico: u1=+0.00001822548 m; u2=−0.00001822548 m; v1=v2=−0.00013157895 m; θ1=−0.00203720337 rad; θ2=+0.00203720337 rad. Y3=Y4=75 kN; X3=+17.31420363 kN; X4=−17.31420363 kN; M3=−17.26226102 kN·m; M4=+17.26226102 kN·m.
+
+Fuente de los datos
+https://view.genially.com/684f80b53c7df3efd8dc19f4
+Resortes: 200–203. Cercha: 217–225. Viga: 230–232. Pórtico: 250–253.
+La lámina 253 plantea el pórtico. Las salidas numéricas y los desarrollos son cálculos del modelo, no resultados transcritos de esa lámina.

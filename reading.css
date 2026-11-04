@@ -1,0 +1,376 @@
+/* Phase one: reading hierarchy. Presentation and printed pages deliberately
+   retain the existing styles. The instructional trace colors are untouched. */
+@media screen {
+  body:not(.presentation) {
+    --sans: var(--font-sans);
+    --serif: var(--font-serif);
+    --paper: var(--color-background);
+    --white: var(--color-background);
+    --ink: var(--color-text);
+    --muted: var(--color-text-muted);
+    --line: var(--color-border);
+    --header: 56px;
+    --footer: 44px;
+    background: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--line-body);
+  }
+
+  /* Header padding and anchor clearance share the same reading-mode height.
+     Browsers without :has retain the more generous legacy anchor clearance. */
+  html:has(> body:not(.presentation)) { scroll-padding-top: 56px; }
+  body:not(.presentation) :is(.lesson, .section-head, [id^="section-"]) {
+    scroll-margin-top: var(--space-4);
+  }
+  body:not(.presentation) #content {
+    min-width: 0;
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-12);
+  }
+  body:not(.presentation) .topbar {
+    gap: var(--space-6);
+    padding-inline: var(--space-8);
+    background: var(--color-background);
+  }
+  body:not(.presentation) .brand { font-size: 24px; gap: var(--space-2); }
+  body:not(.presentation) .brand-icon { width: 32px; height: 32px; font-size: 23px; }
+  body:not(.presentation) .brand small {
+    font: 12px/1.1 var(--font-sans);
+    letter-spacing: .02em;
+    margin-top: 3px;
+  }
+  body:not(.presentation) .brand-icon span { font-size: 12px; }
+  body:not(.presentation) .header-context { font-size: var(--text-label); }
+  body:not(.presentation) .mode-switch {
+    padding: 3px;
+    border-color: var(--color-border-strong);
+    border-radius: var(--radius-control);
+  }
+  body:not(.presentation) .mode-switch button {
+    font-size: var(--text-label);
+    min-height: 32px;
+    padding: 5px 10px;
+    white-space: nowrap;
+  }
+  body:not(.presentation) .menu-toggle {
+    font-size: var(--text-label);
+    min-height: 32px;
+    height: 36px;
+    padding: 6px 8px;
+  }
+  body:not(.presentation) .reader-footer {
+    background: var(--color-background);
+    padding-inline: var(--space-6);
+    gap: var(--space-4);
+  }
+  body:not(.presentation) .footer-controls { gap: var(--space-3); flex: none; }
+  body:not(.presentation) .reader-footer .icon-button {
+    font: 12px/1.2 var(--font-sans);
+    min-height: 32px;
+    height: 32px;
+    min-width: 70px;
+    padding: 6px 10px;
+    border-radius: var(--radius-control);
+    border-color: var(--color-border-strong);
+  }
+  body:not(.presentation) :is(#location-label, #page-count, .keyboard-hint) {
+    font-size: var(--text-label);
+    line-height: 1.3;
+    color: var(--color-text-muted);
+  }
+  body:not(.presentation) #location-label { min-width: 0; }
+  body:not(.presentation) .keyboard-hint { text-align: right; }
+  body:not(.presentation) .toast { bottom: calc(var(--footer) + var(--space-4)); }
+
+  body:not(.presentation) .sidebar { padding-top: var(--space-6); }
+  body:not(.presentation) .sidebar-head { margin-bottom: var(--space-4); }
+  body:not(.presentation) .chapter-link { gap: var(--space-3); padding-block: 10px; }
+  body:not(.presentation) .chapter-link b { font-size: 13px; line-height: 1.35; }
+  body:not(.presentation) :is(.chapter-link small, .chapter-number, .edition,
+      .sidebar .eyebrow, .sidebar-note, .sidebar-bottom, .reference-link) {
+    font-size: var(--text-label);
+    line-height: var(--line-note);
+    color: var(--color-text-muted);
+  }
+  body:not(.presentation) .sidebar-bottom { letter-spacing: 0; }
+  body:not(.presentation) .sidebar-note { padding-top: var(--space-4); }
+  body:not(.presentation) .reading-tools {
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+  }
+  body:not(.presentation) .breadcrumbs {
+    font-size: var(--text-label);
+    line-height: var(--line-note);
+    letter-spacing: .02em;
+    color: var(--color-text-muted);
+  }
+  body:not(.presentation) .route-switch > span { font-size: var(--text-label); }
+  body:not(.presentation) .route-switch button {
+    font-size: var(--text-label);
+    min-height: 32px;
+    padding: 6px 10px;
+  }
+  body:not(.presentation) .chapter-intro { margin-bottom: var(--space-6); padding-bottom: var(--space-4); }
+  body:not(.presentation) :is(.tag, .eyebrow, .section-head > .eyebrow,
+      .hero .section-head > .eyebrow, .chapter-intro > .eyebrow) {
+    font-size: var(--text-label);
+    line-height: var(--line-note);
+    letter-spacing: .08em;
+    color: var(--color-text-muted);
+  }
+  body:not(.presentation) .section-head > .eyebrow { margin-bottom: var(--space-3); }
+  body:not(.presentation) .lesson { margin-bottom: var(--space-12); padding-bottom: var(--space-12); }
+  body:not(.presentation) .section-head h2 {
+    font-family: var(--font-serif);
+    font-size: var(--text-heading);
+    font-weight: 400;
+    line-height: var(--line-heading);
+    letter-spacing: -.025em;
+    margin-bottom: var(--space-4);
+    max-width: var(--measure-reading);
+    overflow-wrap: break-word;
+  }
+  body:not(.presentation) .hero .section-head h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(36px, 3.6vw, 48px);
+    line-height: 1.12;
+    letter-spacing: -.03em;
+    margin-bottom: var(--space-4);
+  }
+  body:not(.presentation) :is(.lead, .hero .lead) {
+    font: var(--text-lead)/1.55 var(--font-sans);
+    color: var(--color-text-secondary);
+    max-width: 64ch;
+    margin-bottom: var(--space-6);
+  }
+  body:not(.presentation) .section-body {
+    font-size: var(--text-body);
+    line-height: var(--line-body);
+    min-width: 0;
+  }
+  body:not(.presentation) .section-body p,
+  body:not(.presentation) :is(.clean-list, .method-list, .derivation-working) {
+    font-size: var(--text-body);
+    line-height: var(--line-body);
+    max-width: var(--measure-prose);
+  }
+  body:not(.presentation) .section-body p { margin-bottom: var(--space-4); }
+  body:not(.presentation) .section-body :is(h3, .derivation-heading h3) {
+    font: 600 var(--text-subheading)/1.3 var(--font-sans);
+    letter-spacing: -.01em;
+    margin-bottom: var(--space-3);
+  }
+  body:not(.presentation) .section-body :is(h4, .derivation-panel h4) {
+    font: 600 18px/1.35 var(--font-sans);
+    letter-spacing: 0;
+  }
+  body:not(.presentation) :is(.method-list strong, .compact-method li strong) {
+    font-size: var(--text-body);
+    line-height: 1.4;
+  }
+  body:not(.presentation) .section-body .compact-method li p {
+    font-size: var(--text-body);
+    line-height: var(--line-body);
+  }
+  body:not(.presentation) .route-note {
+    max-width: var(--measure-reading);
+    border-left: 1px solid var(--color-border-strong);
+    margin-block: var(--space-4) var(--space-6);
+    padding-left: var(--space-4);
+  }
+  body:not(.presentation) .route-note span { font-size: var(--text-label); }
+  body:not(.presentation) .route-note p { font-size: var(--text-note); line-height: var(--line-note); }
+
+  /* Cap prose and formula lines, not the containing lesson. Wide tables and
+     six-by-six matrices keep the available column width and their own scroll. */
+  body:not(.presentation) .section-body .equation {
+    max-width: min(100%, var(--measure-reading));
+    margin-block: var(--space-4);
+    padding: 14px var(--space-4);
+    border: 0;
+    border-left: 2px solid var(--color-text);
+    border-radius: 0;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: var(--text-equation)/1.7 var(--font-serif);
+    letter-spacing: 0;
+    overflow-x: auto;
+  }
+  body:not(.presentation) :is(.derivation-working .math-line, .vector-formula) {
+    font-family: var(--font-serif);
+    font-size: var(--text-equation);
+    line-height: 1.7;
+  }
+  body:not(.presentation) .inline-matrix {
+    display: inline-flex;
+    vertical-align: middle;
+    max-width: 100%;
+    padding: .2em .3em;
+    border-left: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    font: var(--text-matrix)/1.6 var(--font-serif);
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+  body:not(.presentation) .inline-matrix-rows { display: inline-table; }
+  body:not(.presentation) .inline-matrix-row { display: table-row; }
+  body:not(.presentation) .inline-matrix-cell { display: table-cell; padding: .1em .4em; text-align: center; }
+  body:not(.presentation) .matrix-block { gap: var(--space-3); margin-block: var(--space-4); }
+  body:not(.presentation) .matrix-label { font: 16px/1.5 var(--font-serif); color: var(--color-text); }
+  body:not(.presentation) .matrix-bracket { min-width: 0; max-width: 100%; overflow-x: auto; }
+  body:not(.presentation) .matrix-block .matrix-bracket table,
+  body:not(.presentation) .matrix-block .matrix-bracket td {
+    font-family: var(--font-mono);
+    font-size: var(--text-matrix);
+    line-height: 1.6;
+    font-variant-numeric: lining-nums tabular-nums;
+    white-space: nowrap;
+  }
+  body:not(.presentation) .matrix-block .matrix-bracket td { padding: 5px 10px; text-align: right; }
+  body:not(.presentation) .matrix-block:is(.symbolic, .math-matrix) .matrix-bracket td,
+  body:not(.presentation) .matrix-block:has(.matrix-bracket .math-subscript) .matrix-bracket td,
+  body:not(.presentation) .matrix-block .matrix-bracket td .math-symbol {
+    font-family: var(--font-serif);
+  }
+  body:not(.presentation) :is(.matrix-flow, .dynamic-matrices, .reduced-system, .beam-column-result) {
+    min-width: 0;
+    gap: var(--space-4);
+  }
+  body:not(.presentation) .table-wrap { min-width: 0; max-width: 100%; overflow-x: auto; }
+  body:not(.presentation) :is(.data-table, .derivation-data) {
+    font-size: var(--text-note);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  body:not(.presentation) :is(.data-table, .derivation-data) th {
+    font-size: var(--text-label);
+    background: var(--color-surface-raised);
+    color: var(--color-text-secondary);
+  }
+  body:not(.presentation) :is(.data-table, .derivation-data) :is(th, td) { padding: 10px 12px; }
+  body:not(.presentation) :is(.data-table, .derivation-data) td:not(:first-child) { text-align: right; }
+  body:not(.presentation) :is(.data-table, .derivation-data) th:not(:first-child) { text-align: right; }
+  body:not(.presentation) :is(code, pre, .code-example, .code-example code) { font-family: var(--font-mono); }
+  body:not(.presentation) .code-example { font-size: var(--text-note); }
+
+  /* Supporting matter stays quieter than the demonstration itself. */
+  body:not(.presentation) .section-body :is(.caption, .source-note, .scope-note,
+      .control-note, .small, .derivation-intro, .beam-shape-note,
+      .derivation-panel header p, .verification p, .matrix-feature p,
+      .source-cover > p, .cover-example, .end-note p) {
+    font-size: var(--text-note);
+    line-height: var(--line-note);
+    color: var(--color-text-muted);
+  }
+  body:not(.presentation) :is(.caption, figcaption, .source-note, .scope-note,
+      .control-note, .small, .derivation-check, .derivation-footer > span,
+      .lab-footer > span, .cover-meta, .diagram-caption, .download-row > span,
+      .formula-list, .formula-list span, .chapter-bottom > span,
+      .vector-foundations > summary small, .beam-physical-states figcaption) {
+    font-size: var(--text-note);
+    line-height: var(--line-note);
+  }
+  body:not(.presentation) :is(.caption, .source-note, .scope-note, .control-note,
+      .small, .diagram-caption, .cover-meta, .chapter-bottom > span) {
+    color: var(--color-text-muted);
+  }
+  body:not(.presentation) :is(.field > span, .lab-header strong, .lab-result-cards span,
+      .lab-result-cards small, .verification strong, .angle-control > label,
+      .bar-facts span, .bar-facts small, .answer-form > label, .answer-feedback,
+      .derivation-working h5, .derivation-check strong, .vector-control-group > strong,
+      .vector-slider > span, .vector-slider output, .vector-primer-steps span,
+      .beam-case-select button span, .beam-position > label, .beam-values span,
+      .beam-function-grid > div > span, .element-badge, .model-arrow,
+      .result-grid span, .result-grid small, .node, .spring-line,
+      .integration-ladder span) {
+    font-size: var(--text-label);
+    line-height: var(--line-note);
+  }
+  body:not(.presentation) :is(summary, .technical summary, .solution > summary) {
+    font-size: var(--text-note);
+    line-height: var(--line-note);
+  }
+  body:not(.presentation) :is(.callout, details.technical) { border-radius: var(--radius-control); }
+  body:not(.presentation) .callout { padding: var(--space-4) var(--space-6); margin-block: var(--space-6); }
+  body:not(.presentation) .callout strong { font-size: var(--text-note); }
+  body:not(.presentation) details.technical { border: 0; border-left: 1px solid var(--color-border-strong); border-radius: 0; }
+  body:not(.presentation) :is(.primary, .secondary, .text-button,
+      .hero-actions .primary, .hero-actions .text-button, .chapter-bottom .primary) {
+    font-size: var(--text-control);
+    line-height: 1.4;
+  }
+  body:not(.presentation) :is(.lab-header .text-button, .lab-footer .text-button,
+      .lab-tabs button, .angle-presets button, .derivation-steps button,
+      .derivation-steps button span, .derivation-heading .text-button,
+      .derivation-footer .primary, .derivation-footer .secondary,
+      .derivation-case-tabs button, .trace-chip, .trace-reset,
+      .vector-operation-tabs button, .vector-presets button) {
+    font-size: var(--text-label);
+    line-height: 1.4;
+  }
+  body:not(.presentation) :is(.field input, .field select, .answer-form input) {
+    font-family: var(--font-sans);
+    font-size: var(--text-control);
+    border-color: var(--color-border-strong);
+    border-radius: var(--radius-control);
+  }
+  body:not(.presentation) :is(.secondary, .angle-presets button,
+      .vector-presets button, .derivation-case-tabs button) {
+    border-color: var(--color-border-strong);
+    border-radius: var(--radius-control);
+  }
+  body:not(.presentation) button:disabled {
+    opacity: 1;
+    color: var(--color-text-muted);
+    background: var(--color-background);
+    border: 1px dashed var(--color-border-strong);
+    transform: none;
+  }
+  body:not(.presentation) :is(button, a, input, select, textarea, summary):focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  body:not(.presentation) .topbar { padding-inline: var(--space-3); gap: var(--space-2); }
+  body:not(.presentation) .brand { min-width: 0; }
+  body:not(.presentation) #content { padding: var(--space-6) 20px var(--space-8); }
+  body:not(.presentation) .section-head h2 { font-size: 32px; }
+  body:not(.presentation) .reading-tools { align-items: flex-start; gap: var(--space-3); }
+  body:not(.presentation) .breadcrumbs { max-width: 100%; }
+  body:not(.presentation) .reader-footer { padding-inline: var(--space-3); gap: var(--space-2); }
+  body:not(.presentation) #location-label { flex: 1; line-height: 1.2; max-width: none; }
+  body:not(.presentation) .footer-controls { gap: var(--space-2); }
+  body:not(.presentation) .reader-footer .icon-button { min-width: 62px; padding-inline: 8px; }
+  body:not(.presentation) .derivation-heading { padding: var(--space-4); gap: var(--space-3); }
+  body:not(.presentation) .derivation-heading .text-button { max-width: 100px; }
+  body:not(.presentation) .derivation-panel { padding: var(--space-4); }
+  body:not(.presentation) .derivation-footer { padding: var(--space-3); flex-wrap: wrap; }
+  body:not(.presentation) .matrix-block .matrix-bracket td { padding: 5px 8px; }
+  body:not(.presentation) .callout { padding: var(--space-4); }
+}
+
+@media screen and (max-width: 540px) {
+  body:not(.presentation) .brand { font-size: 22px; gap: 6px; }
+  body:not(.presentation) .brand-icon { width: 28px; height: 30px; font-size: 22px; }
+  body:not(.presentation) .mode-switch { gap: 0; }
+  body:not(.presentation) .mode-switch button { padding-inline: 7px; }
+  body:not(.presentation) .menu-toggle { min-width: 48px; padding-inline: 5px; margin-left: 0; }
+  body:not(.presentation) .reading-tools { flex-direction: column; }
+  body:not(.presentation) .route-switch { gap: var(--space-1); }
+  body:not(.presentation) .chapter-intro .tag { font-size: var(--text-label); letter-spacing: .02em; }
+  body:not(.presentation) .lesson { margin-bottom: var(--space-8); padding-bottom: var(--space-8); }
+  body:not(.presentation) .section-body .equation { padding: var(--space-3); }
+  body:not(.presentation) #location-label { font-size: var(--text-label); }
+  body:not(.presentation) .hero-actions .text-button { margin-left: 0; }
+}
+
+/* Semantic matrix structure must survive presentation and print as well.
+   This is not a presentation redesign: four entries must remain 2×2. */
+.inline-matrix {display:inline-flex;vertical-align:middle;border-left:1px solid currentColor;border-right:1px solid currentColor;padding:.2em .3em;max-width:100%;overflow-x:auto}
+.inline-matrix-rows {display:inline-table;border-collapse:collapse}
+.inline-matrix-row {display:table-row}
+.inline-matrix-cell {display:table-cell;padding:.1em .4em;text-align:center;white-space:nowrap}

@@ -1,0 +1,39 @@
+MATRIZ: ejemplo 11.1;Valor;Columna C;;Columna E
+ka (kN/m);600
+kb (kN/m);200
+F1 aplicada (kN);50
+F2 aplicada (kN);-20
+Nudo 3 fijo: δ3=0. n=[1,2], a=[3].
+Knn en B8:C9;;;;Fn en E8:E9
+Fila nudo 1;=B2;=-B2;;=B4
+Fila nudo 2;=-B2;=B2+B3;;=B5
+
+Solución matricial: δn = Knn inversa por Fn. B13 debe quedar vacío para el resultado matricial.
+δ1 (m);"=MMULT(MINVERSA(B8:C9);E8:E9)"
+δ2 (m)
+
+F3 (reacción), Ra (kN);=-B3*B13
+Equilibrio global (kN);=B15+B4+B5
+Residuo nudo 1 (kN);=B8*B12+C8*B13-B4
+Residuo nudo 2 (kN);=B9*B12+C9*B13-B5
+S12 (kN), positivo en tensión;=B2*(B13-B12)
+S23 (kN), positivo en tensión;=-B3*B13
+Energía (kJ);=(B12*B4+B13*B5)/2
+
+Alcance;Lineal elástico. Pequeños desplazamientos. Modelo de aprendizaje.
+Importación;UTF-8. Separador punto y coma. Importe B2:B5 como números y compruebe que B12 es fórmula.
+Fuente;Láminas del curso: ejemplo 11.1, 200 a 203.
+Excel con matrices dinámicas;"En B12 escriba =MMULT(MINVERSA(B8:C9);E8:E9) y pulse Entrar. B13 debe estar vacío."
+Excel sin matrices dinámicas;"Seleccione B12:B13. Escriba =MMULT(MINVERSA(B8:C9);E8:E9) y confirme con Ctrl+Mayús+Entrar."
+Nombres de funciones;MINVERSA (MINVERSE en inglés). MMULT (MMULT en inglés). VBA: MInverse y MMult.
+Control del original;δ1=0.2333333333 m. δ2=0.15 m. F3=-30 kN. S12=-50 kN. S23=-30 kN.
+Paso 1;Identifique la estructura, numere los nudos y determine la orientación.
+Paso 2;Calcule las matrices de los miembros en coordenadas generales.
+Paso 3;Ensamble K y reordene separando n (libres) y a (apoyos).
+Paso 4;Particione K y calcule δn con Knn y Fn.
+Paso 5;Calcule la reacción y verifique el equilibrio general.
+Paso 6;Calcule las fuerzas internas y verifique el equilibrio de los nudos.
+Pregunta;Antes de calcular, prediga los signos de δ1, δ2 y F3. Compruebe una fila de Knn a mano.
+Caso sin cargas intermedias;Fᶠ=0 y δa=0. Fn es la carga aplicada. Fa=Ra=Kan δn.
+Con cargas intermedias;Fᶠ es el negativo de la carga equivalente. δn=Knn inversa por (Fn-Fᶠn-Kna δa).
+Reacción general;Ra=Fᶠa+Kan δn+Kaa δa-Faplicada,a. Acciones locales: F̄=F̄ᶠ+K̄δ̄.

@@ -1,0 +1,429 @@
+[
+  {
+    "id": "cercha",
+    "kind": "truss",
+    "title": "Cercha plana: ejemplo 11.2",
+    "example": "Ejemplo 11.2",
+    "slides": "217–225",
+    "source_url": "https://view.genially.com/684f80b53c7df3efd8dc19f4",
+    "nodes": [
+      {
+        "id": "1",
+        "x": 2.0,
+        "y": 0.0,
+        "label": "1"
+      },
+      {
+        "id": "2",
+        "x": 0.0,
+        "y": 0.0,
+        "label": "2"
+      },
+      {
+        "id": "3",
+        "x": 0.0,
+        "y": 2.0,
+        "label": "3"
+      }
+    ],
+    "elements": [
+      {
+        "id": "12",
+        "i": "1",
+        "j": "2",
+        "E_parameter": "E_ref",
+        "A": 0.002
+      },
+      {
+        "id": "13",
+        "i": "1",
+        "j": "3",
+        "E_parameter": "E_ref",
+        "A": 0.0028284271247461905
+      },
+      {
+        "id": "23",
+        "i": "2",
+        "j": "3",
+        "E_parameter": "E_ref",
+        "A": 0.002
+      }
+    ],
+    "parameters": [
+      {
+        "key": "E_ref",
+        "value": 1000000.0,
+        "unit": "kN/m²",
+        "description": "Normalización E_ref=1 kN/mm²; no es un material real ni dato de la fuente.",
+        "stiffness_parameter": true
+      }
+    ],
+    "dofs": [
+      {
+        "node": "1",
+        "component": "u",
+        "restrained": false,
+        "load": 40,
+        "label": "u1",
+        "editable_load": true
+      },
+      {
+        "node": "1",
+        "component": "v",
+        "restrained": false,
+        "load": -50,
+        "label": "v1",
+        "editable_load": true
+      },
+      {
+        "node": "2",
+        "component": "u",
+        "restrained": true,
+        "load": 0,
+        "label": "u2"
+      },
+      {
+        "node": "2",
+        "component": "v",
+        "restrained": false,
+        "load": 0,
+        "label": "v2"
+      },
+      {
+        "node": "3",
+        "component": "u",
+        "restrained": true,
+        "load": 0,
+        "label": "u3"
+      },
+      {
+        "node": "3",
+        "component": "v",
+        "restrained": true,
+        "load": 0,
+        "label": "v3"
+      }
+    ],
+    "convention": "δ = [u1, v1, u2, v2, u3, v3]. +x derecha; +y arriba. Libres: u1, v1, v2.",
+    "notes": [
+      "La fuente deja E simbólico. E_ref=1 kN/mm²=1 000 000 kN/m² es una normalización editable, no un dato de material.",
+      "Unidades originales: L=2000 mm; A12=A23=2000 mm²; A13=2000√2 mm². Aquí se convierten a m y m².",
+      "Rodillo contra pared en 2: u2=0, v2 libre. Articulación en 3: u3=v3=0.",
+      "E_ref solo produce coeficientes normalizados. Elija un E físicamente apropiado antes de interpretar desplazamientos reales.",
+      "Calcule Δx=xj−xi, Δy=yj−yi, L=√(Δx²+Δy²), c=Δx/L y s=Δy/L. T es adimensional.",
+      "n identifica los GDL libres y a los de apoyos. δa es conocido. Fᶠ es el negativo de la carga equivalente."
+    ],
+    "result_note": "CERCHA: valores con E_ref=1 kN/mm² son normalizados; no representan un material real ni un E dado por la fuente.",
+    "symbolic_results": [
+      "u1 = −10/E mm; v1 = −110/E mm; v2 = 0 (E en kN/mm²).",
+      "X2 = +10 kN; X3 = −50 kN; Y3 = +50 kN (cargas originales)."
+    ],
+    "source_results": {
+      "u_coefficient_mm": {
+        "u1": -10,
+        "v1": -110,
+        "v2": 0
+      },
+      "reactions_kN": {
+        "u2": 10,
+        "u3": -50,
+        "v3": 50
+      }
+    },
+    "conventions": [],
+    "load_convention": "w > 0 actúa en −Ȳ local: hacia abajo en las vigas horizontales. Las cargas nodales conservan el signo de los ejes globales."
+  },
+  {
+    "id": "viga",
+    "kind": "beam",
+    "title": "Viga con voladizo: ejemplo 11.7",
+    "example": "Ejemplo 11.7",
+    "slides": "230–232",
+    "source_url": "https://view.genially.com/684f80b53c7df3efd8dc19f4",
+    "nodes": [
+      {
+        "id": "A",
+        "x": 0.0,
+        "y": 0.0,
+        "label": "A"
+      },
+      {
+        "id": "B",
+        "x": 4.5,
+        "y": 0.0,
+        "label": "B"
+      }
+    ],
+    "original_geometry": {
+      "C_x": 6.0,
+      "L_AB": 4.5,
+      "L_BC": 1.5
+    },
+    "elements": [
+      {
+        "id": "AB",
+        "i": "A",
+        "j": "B",
+        "EI": 7290.0
+      }
+    ],
+    "parameters": [
+      {
+        "key": "P",
+        "value": 20.0,
+        "unit": "kN",
+        "description": "Carga puntual hacia abajo en C.",
+        "load_parameter": true
+      },
+      {
+        "key": "a",
+        "value": 1.5,
+        "unit": "m",
+        "description": "Longitud fija BC usada para trasladar la carga.",
+        "editable": false
+      }
+    ],
+    "dofs": [
+      {
+        "node": "B",
+        "component": "theta",
+        "restrained": false,
+        "load": -30,
+        "label": "θB",
+        "load_expr": {
+          "scale": -1,
+          "factors": [
+            "P",
+            "a"
+          ]
+        }
+      },
+      {
+        "node": "A",
+        "component": "v",
+        "restrained": true,
+        "load": 0,
+        "label": "vA"
+      },
+      {
+        "node": "A",
+        "component": "theta",
+        "restrained": true,
+        "load": 0,
+        "label": "θA"
+      },
+      {
+        "node": "B",
+        "component": "v",
+        "restrained": true,
+        "load": -20,
+        "label": "vB",
+        "load_expr": {
+          "scale": -1,
+          "factors": [
+            "P"
+          ]
+        }
+      }
+    ],
+    "convention": "δ = [θB, vA, θA, vB], como la matriz reordenada de la diap.231. +v arriba; +θ y +M antihorario.",
+    "notes": [
+      "Se conserva el modelo AB reducido del curso. La figura original tiene BC=1.5 m y una carga P=20 kN hacia abajo en C.",
+      "En B se aplican −P y −P·a. Para P=20: −20 kN y −30 kN·m. Esta equivalencia sirve para reacciones y giro θB.",
+      "EI=7290 kN·m² es el único dato de rigidez de la fuente; no se inventan E e I por separado.",
+      "Mapa del elemento [vA,θA,vB,θB] a GDL globales [2,3,4,1]. A empotrado y B rodillo.",
+      "El modelo reducido no calcula la deformación de C ni el diagrama dentro de BC.",
+      "En B, la fuerza nodal neta es YB−P=10 kN; la reacción del apoyo es YB=30 kN.",
+      "Calcule Δx=xj−xi, Δy=yj−yi, L=√(Δx²+Δy²), c=Δx/L y s=Δy/L. T es adimensional.",
+      "n identifica los GDL libres y a los de apoyos. δa es conocido. Fᶠ es el negativo de la carga equivalente."
+    ],
+    "result_note": "Cálculo fiel al modelo AB reducido. Cargas trasladadas en B: −P y −P·a. No calcula el desplazamiento de C.",
+    "symbolic_results": [
+      "Fuente: θB = −30/6480 = −0.00462963 rad.",
+      "Fuente: YA = −10 kN; MA = −15 kN·m; YB = +30 kN."
+    ],
+    "source_results": {
+      "theta_B": -0.004629629629629629,
+      "reactions": {
+        "vA": -10,
+        "θA": -15,
+        "vB": 30
+      }
+    },
+    "conventions": [],
+    "load_convention": "w > 0 actúa en −Ȳ local: hacia abajo en las vigas horizontales. Las cargas nodales conservan el signo de los ejes globales."
+  },
+  {
+    "id": "portico",
+    "kind": "frame",
+    "title": "Pórtico plano de un vano",
+    "example": "Problema de pórtico",
+    "slides": "250–253",
+    "source_url": "https://view.genially.com/684f80b53c7df3efd8dc19f4",
+    "nodes": [
+      {
+        "id": "1",
+        "x": 0.0,
+        "y": 3.0,
+        "label": "1 = B"
+      },
+      {
+        "id": "2",
+        "x": 6.0,
+        "y": 3.0,
+        "label": "2 = C"
+      },
+      {
+        "id": "3",
+        "x": 0.0,
+        "y": 0.0,
+        "label": "3 = A"
+      },
+      {
+        "id": "4",
+        "x": 6.0,
+        "y": 0.0,
+        "label": "4 = D"
+      }
+    ],
+    "elements": [
+      {
+        "id": "31",
+        "i": "3",
+        "j": "1",
+        "E_parameter": "E_material",
+        "A": 0.09,
+        "I": 0.0006749999999999998,
+        "w": -0.0
+      },
+      {
+        "id": "12",
+        "i": "1",
+        "j": "2",
+        "E_parameter": "E_material",
+        "A": 0.15,
+        "I": 0.0031249999999999997,
+        "w": 25.0
+      },
+      {
+        "id": "42",
+        "i": "4",
+        "j": "2",
+        "E_parameter": "E_material",
+        "A": 0.09,
+        "I": 0.0006749999999999998,
+        "w": -0.0
+      }
+    ],
+    "parameters": [
+      {
+        "key": "E_material",
+        "value": 19000000.0,
+        "unit": "kN/m²",
+        "description": "E de la fuente: 19 kN/mm².",
+        "stiffness_parameter": true
+      }
+    ],
+    "dofs": [
+      {
+        "node": "1",
+        "component": "u",
+        "restrained": false,
+        "load": 0,
+        "label": "u1"
+      },
+      {
+        "node": "1",
+        "component": "v",
+        "restrained": false,
+        "load": 0,
+        "label": "v1"
+      },
+      {
+        "node": "1",
+        "component": "theta",
+        "restrained": false,
+        "load": 0,
+        "label": "θ1"
+      },
+      {
+        "node": "2",
+        "component": "u",
+        "restrained": false,
+        "load": 0,
+        "label": "u2"
+      },
+      {
+        "node": "2",
+        "component": "v",
+        "restrained": false,
+        "load": 0,
+        "label": "v2"
+      },
+      {
+        "node": "2",
+        "component": "theta",
+        "restrained": false,
+        "load": 0,
+        "label": "θ2"
+      },
+      {
+        "node": "3",
+        "component": "u",
+        "restrained": true,
+        "load": 0,
+        "label": "u3"
+      },
+      {
+        "node": "3",
+        "component": "v",
+        "restrained": true,
+        "load": 0,
+        "label": "v3"
+      },
+      {
+        "node": "3",
+        "component": "theta",
+        "restrained": true,
+        "load": 0,
+        "label": "θ3"
+      },
+      {
+        "node": "4",
+        "component": "u",
+        "restrained": true,
+        "load": 0,
+        "label": "u4"
+      },
+      {
+        "node": "4",
+        "component": "v",
+        "restrained": true,
+        "load": 0,
+        "label": "v4"
+      },
+      {
+        "node": "4",
+        "component": "theta",
+        "restrained": true,
+        "load": 0,
+        "label": "θ4"
+      }
+    ],
+    "convention": "Orden global adoptado: [u1,v1,θ1,u2,v2,θ2,u3,v3,θ3,u4,v4,θ4]. La fuente sí fija nudos y orden elemental.",
+    "notes": [
+      "Fuente diap.253: A y D empotrados, altura 3 m, luz 6 m y q=25 kN/m hacia abajo en BC.",
+      "Nudos de la fuente: 1=B, 2=C, 3=A, 4=D. Orientaciones: 3→1, 1→2, 4→2.",
+      "Secciones rectangulares: viga b×h=300×500 mm; columnas 300×300 mm. E=19 kN/mm².",
+      "A e I se derivan de A=b·h e I=b·h³/12: viga A=0.15 m², I=0.003125 m⁴; columnas A=0.09 m², I=0.000675 m⁴.",
+      "Orden elemental del curso: [ui,vi,θi,uj,vj,θj]. Se incluye deformación axial y flexión Euler–Bernoulli.",
+      "q se introduce en +y local. En el elemento horizontal 1→2: q=−25 kN/m. Los giros y momentos positivos son antihorarios.",
+      "Calcule Δx=xj−xi, Δy=yj−yi, L=√(Δx²+Δy²), c=Δx/L y s=Δy/L. T es adimensional.",
+      "n identifica los GDL libres y a los de apoyos. δa es conocido. Fᶠ es el negativo de la carga equivalente."
+    ],
+    "result_note": "Pórtico 253: B=1, C=2, A=3, D=4. Compruebe la simetría de desplazamientos y reacciones.",
+    "source_results": null,
+    "conventions": [],
+    "load_convention": "w > 0 actúa en −Ȳ local: hacia abajo en las vigas horizontales. Las cargas nodales conservan el signo de los ejes globales."
+  }
+]

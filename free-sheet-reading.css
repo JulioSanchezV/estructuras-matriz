@@ -1,0 +1,163 @@
+/* Reading phase: one compact, real toolbar and a stationary iframe shell.
+   The 96 × 29 cell geometry is still owned by free-sheet-view.mjs. */
+:root {
+  font-family: var(--font-sans, "Segoe UI", Arial, sans-serif);
+  color: var(--color-text, #1a1a1a);
+  --line: var(--color-border, #d6d6d2);
+  --muted: var(--color-text-muted, #5f5f5f);
+}
+html, body { overflow: hidden; overscroll-behavior: none; }
+.sheet {
+  position: fixed;
+  inset: 0;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+button, input, summary { font-family: var(--font-sans, "Segoe UI", Arial, sans-serif); }
+button, input { border-color: var(--color-border-strong, #8a8a85); border-radius: 4px; }
+button:disabled {
+  opacity: 1;
+  color: #767670;
+  background: var(--color-background, #fff);
+  border-color: var(--color-border-strong, #8a8a85);
+  border-style: dashed;
+}
+button:focus-visible, summary:focus-visible, input:focus-visible {
+  outline: 2px solid var(--color-focus, #1f5fa8);
+  outline-offset: 1px;
+}
+.toolbar {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  min-height: 32px;
+  padding: 2px 6px;
+  gap: 4px;
+  overflow: visible;
+  align-items: center;
+  background: var(--color-surface, #f6f6f4);
+}
+.toolbar button, .toolbar-more > summary {
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 3px 6px;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+#undo, #redo { border-color: transparent; }
+#undo:disabled, #redo:disabled { border-color: transparent; background: transparent; }
+.toolbar-more { margin-left: auto; flex: 0 0 auto; }
+.toolbar-more > summary {
+  display: block;
+  list-style: none;
+  border: 1px solid var(--color-border-strong, #8a8a85);
+  border-radius: 4px;
+  color: var(--color-text, #1a1a1a);
+  background: var(--color-background, #fff);
+  cursor: pointer;
+}
+.toolbar-more > summary::-webkit-details-marker { display: none; }
+.toolbar-more > summary:hover, .toolbar-more[open] > summary { background: var(--color-surface-raised, #efefec); }
+.toolbar-more:not([open]) > .toolbar-menu { display: none; }
+.toolbar-menu {
+  position: fixed;
+  z-index: 40;
+  top: 34px;
+  right: 6px;
+  width: min(230px, calc(100vw - 12px));
+  max-height: calc(100dvh - 42px);
+  overflow: auto;
+  display: grid;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid var(--color-border-strong, #8a8a85);
+  border-radius: 6px;
+  background: var(--color-background, #fff);
+  box-shadow: 0 5px 18px #0002;
+}
+.toolbar-menu button { width: 100%; min-height: 30px; text-align: left; }
+#toggle-help { margin-left: 0; }
+.formula-line {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: 2px 6px;
+  gap: 4px;
+  background: var(--color-surface-raised, #efefec);
+  border-color: var(--color-border, #d6d6d2);
+}
+.formula-line #address, .formula-line #formula, #cell-editor {
+  font-family: var(--font-mono, Consolas, "DejaVu Sans Mono", monospace);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.formula-line #address, .formula-line #formula { height: 26px; padding: 3px 4px; }
+.formula-line #address { width: 76px; }
+.formula-line #formula { width: 0; min-width: 0; }
+.formula-line #commit { font-size: 12px; min-height: 26px; padding: 3px 6px; line-height: 18px; }
+.formula-line #commit:disabled { color: #767670; background: #fff; }
+.fx { font-family: var(--font-serif, Georgia, "Times New Roman", serif); line-height: 1; }
+.sheet-hint { margin: 4px 8px; font-size: 11px; line-height: 1.4; }
+#grid { flex: 1 1 0; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.grid-cell {
+  padding-inline: 3px;
+  font: 12px var(--font-mono, Consolas, "DejaVu Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text, #1a1a1a);
+}
+.grid-cell.formula { color: var(--color-calculated, #234e76); font-weight: 600; }
+.grid-cell.spill { color: var(--color-calculated, #234e76); background: var(--color-calculated-bg, #eef3f9); }
+.grid-cell.selected { background: var(--color-selection, #dbe7f5); }
+.grid-cell.active { background: var(--color-background, #fff); }
+.grid-cell.error { color: var(--color-error, #9e2a22); background: var(--color-error-bg, #fbecea); }
+.column-head, .row-head { font-size: 11px; color: var(--color-text-muted, #5f5f5f); }
+.column-head.selected, .row-head.selected { color: var(--color-calculated, #234e76); background: var(--color-selection, #dbe7f5); }
+#selection, #cell-editor { border-color: var(--color-focus, #1f5fa8); }
+#selection::after { background: var(--color-focus, #1f5fa8); }
+#grid:focus-visible { box-shadow: inset 0 0 0 2px var(--color-focus, #1f5fa8); }
+.sheet-status { flex: 0 0 auto; min-width: 0; border-top: 1px solid var(--color-border, #d6d6d2); }
+.sheet-footer { min-height: 20px; padding: 2px 6px; font-size: 11px; line-height: 15px; border-top: 0; gap: 8px; }
+#notice { padding: 3px 6px; min-height: 22px; max-height: 56px; font-size: 11px; line-height: 15px; overflow: auto; color: var(--color-text-muted, #5f5f5f); background: var(--color-surface, #f6f6f4); }
+#notice.error { color: var(--color-error, #9e2a22); background: var(--color-error-bg, #fbecea); border-left: 3px solid var(--color-error, #9e2a22); }
+#notice.success { color: var(--color-success, #1d6337); background: var(--color-success-bg, #eaf3ec); }
+.help {
+  position: fixed;
+  z-index: 45;
+  top: 34px;
+  right: 6px;
+  left: 6px;
+  max-height: calc(100dvh - 42px);
+  padding: 8px 10px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--color-border-strong, #8a8a85);
+  border-radius: 6px;
+  color: var(--color-text, #1a1a1a);
+  background: var(--color-background, #fff);
+  box-shadow: 0 5px 18px #0002;
+}
+.help[hidden] { display: none; }
+.help:not([hidden]) { display: block; }
+.help .help-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.help p { font-size: 12px; line-height: 1.5; margin: 8px 0 0; }
+.help code { font-family: var(--font-mono, Consolas, "DejaVu Sans Mono", monospace); font-size: 12px; }
+#close-help { font-size: 12px; min-height: 28px; padding: 3px 8px; }
+@media (max-height: 440px), (max-width: 560px) { .sheet-hint { display: none; } }
+@media (max-height: 380px) {
+  /* One status band leaves four whole rows at a 240px iframe. Error and
+     read-only notices may grow and remain fully available through scrolling. */
+  .sheet-status { display: flex; align-items: stretch; }
+  .sheet-footer { flex: 0 0 auto; flex-wrap: nowrap; max-height: none; overflow: visible; padding: 2px 6px; }
+  #cell-detail, #sheet-size { display: none; }
+  #notice { flex: 1 1 auto; min-width: 0; min-height: 20px; max-height: 52px; padding: 2px 6px; border-top: 0; border-left: 1px solid var(--color-border, #d6d6d2); line-height: 15px; }
+  #notice:not(.error) { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+}
+@media (max-width: 340px) {
+  .toolbar { padding-inline: 4px; gap: 3px; }
+  .toolbar button, .toolbar-more > summary { padding-inline: 4px; }
+  .formula-line { padding-inline: 4px; gap: 3px; }
+  .formula-line #address { width: 70px; }
+}
+@media (pointer: coarse) { .formula-line #address, .formula-line #formula, .formula-line #commit { min-height: 28px; } }
