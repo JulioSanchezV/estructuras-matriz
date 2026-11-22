@@ -1,7 +1,7 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Hoja libre matricial</title><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="free-sheet-view.css"><link rel="stylesheet" href="free-sheet-visual.css"><link rel="stylesheet" href="free-sheet-operational.css"><link rel="stylesheet" href="free-sheet-reading.css"></head><body>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Hoja libre matricial</title><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="free-sheet-view.css"><link rel="stylesheet" href="free-sheet-visual.css"><link rel="stylesheet" href="free-sheet-operational.css"><link rel="stylesheet" href="free-sheet-reading.css"><link rel="stylesheet" href="./course.css"></head><body class="course-grid">
 <main class="sheet" aria-label="Hoja libre matricial">
 <div class="toolbar" aria-label="Acciones de la hoja">
-<button id="undo" title="Deshacer (Ctrl+Z)">Deshacer</button><button id="redo" title="Rehacer (Ctrl+Y)">Rehacer</button><button id="copy-values">Copiar valores</button>
+<button id="undo" title="Deshacer (Ctrl+Z)">Deshacer</button><button id="redo" title="Rehacer (Ctrl+Y)">Rehacer</button><button id="copy-values">Copiar valores</button><button id="open-paste" type="button" aria-haspopup="dialog">Pegar bloque</button>
 <details id="more-tools" class="toolbar-more"><summary id="more-tools-toggle" aria-expanded="false" aria-controls="more-tools-actions">Más<span aria-hidden="true"> ▾</span></summary><div id="more-tools-actions" class="toolbar-menu" role="group" aria-label="Más acciones de la hoja"><button id="copy-formulas">Copiar fórmulas</button><button id="select-spill">Seleccionar resultado</button><button id="extend">Ampliar área</button><button id="toggle-help" aria-expanded="false" aria-controls="help">Ayuda</button></div></details>
 </div>
 <div class="formula-line"><label class="sr-only" for="address">Celda o rango</label><input id="address" value="A1" aria-label="Ir a celda o rango" spellcheck="false"><span class="fx" aria-hidden="true">fx</span><input id="formula" maxlength="2048" aria-label="Valor o fórmula de la celda activa" placeholder="Escriba un valor o una fórmula" autocomplete="off" spellcheck="false"><button id="commit" title="Aplicar edición (Enter)">Aplicar</button></div>
@@ -10,5 +10,13 @@
 <div id="grid" role="grid" tabindex="0" aria-label="Hoja libre; flechas para moverse, escriba para editar; fuera de edición, Tab sale y Esc vuelve al panel" aria-rowcount="120" aria-colcount="80"><div id="spacer"><div id="grid-cells"></div><div id="selection" aria-hidden="true"></div><input id="cell-editor" maxlength="2048" aria-label="Editar celda" spellcheck="false" autocomplete="off" hidden></div><div id="column-headers"></div><div id="row-headers"></div><div id="corner" aria-hidden="true"></div></div>
 <div class="sheet-status"><div class="sheet-footer"><span id="selection-label">A1 · 1×1</span><span id="sheet-size">120 filas × 80 columnas</span><span id="cell-detail"></span></div><div id="notice" role="status" aria-live="polite">Seleccione una celda y escriba.</div></div>
 </main>
+<dialog id="paste-dialog" class="paste-dialog" aria-labelledby="paste-title">
+  <h2 id="paste-title">Pegar un bloque</h2>
+  <p id="paste-origin"></p>
+  <label for="paste-text">Una fila por línea y columnas separadas por tabulaciones.</label>
+  <textarea id="paste-text" rows="4" maxlength="200000" spellcheck="false"></textarea>
+  <p id="paste-error" role="status" aria-live="polite"></p>
+  <footer><button id="cancel-paste" type="button">Cancelar</button><button id="apply-paste" type="button">Pegar en la hoja</button></footer>
+</dialog>
 <dialog id="confirmation"><form method="dialog"><h2 id="confirm-title">Confirme el cambio</h2><p id="confirm-body"></p><pre id="confirm-detail"></pre><div><button value="cancel">Cancelar</button><button value="ok" class="primary">Confirmar</button></div></form></dialog>
 <script type="module" src="free-sheet-view.mjs"></script></body></html>

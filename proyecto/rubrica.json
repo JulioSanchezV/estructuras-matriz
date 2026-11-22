@@ -1,0 +1,42 @@
+{
+  "version": "cercha-escrito-2026-11-21-v1",
+  "source": "Proyecto final de cercha de cubierta, revisión docente de 21 de noviembre de 2026, componente escrito.",
+  "criteria": [
+    {
+      "id": "modelo",
+      "label": "Geometría y modelo",
+      "description": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+    },
+    {
+      "id": "cargas",
+      "label": "Cargas y fuerzas nodales",
+      "description": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+    },
+    {
+      "id": "matrices",
+      "label": "Método matricial",
+      "description": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+    },
+    {
+      "id": "resultados",
+      "label": "Resultados y comprobación",
+      "description": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+    },
+    {
+      "id": "resistencia",
+      "label": "Resistencia y deformación",
+      "description": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+    },
+    {
+      "id": "criticas",
+      "label": "Barras críticas e inversión de esfuerzos",
+      "description": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+    },
+    {
+      "id": "perfiles",
+      "label": "Selección de perfiles",
+      "description": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+    }
+  ],
+  "numeric": null
+}

@@ -1,0 +1,22 @@
+name: Comprobar proyecto de Estructuras I
+on:
+  push:
+    branches: [revision/estructuras-i-proyecto-piloto]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verificar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Comprobar los cálculos del curso
+        run: node tests.mjs
+      - name: Comprobar extractores, evaluación, privacidad y reservas
+        run: python3 -m unittest discover -s _piloto -p 'test_*.py' -v
+      - name: Recorrer el proyecto, banco, hoja y matrices en Chrome local
+        run: node _piloto/browser-test.mjs

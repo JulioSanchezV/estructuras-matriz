@@ -7,12 +7,14 @@
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./matrix-workbench.css">
   <script type="module" src="./matrix-workbench.mjs"></script>
+  <link rel="stylesheet" href="./course.css">
 </head>
-<body>
+<body class="course-page course-matrix">
   <a class="skip-link" href="#main">Ir al contenido</a>
-  <header class="wb-header"><a class="wb-brand" href="./index.html">Matriz <small>Estructuras I</small></a><nav aria-label="Material de clase"><a href="./index.html">Volver al libro</a><a href="./index.html#ejercicios/pistas-ensamblaje">Guía de ensamblaje</a></nav></header>
+  <header class="course-mast"><a class="course-brand" href="./index.html"><span class="course-sigil" aria-hidden="true">E</span>Estructuras I</a>
+  <nav class="course-nav" aria-label="Herramientas del curso"><a href="./index.html">Libro</a><a href="./banco.html">Banco</a><a href="./calculadora.html" aria-current="page">Matrices</a><a href="./proyecto.html">Proyecto</a></nav></header>
   <main id="main" tabindex="-1">
-    <div class="wb-heading"><p class="eyebrow">Operaciones antes de Excel y Python</p><h1>Calcule y compruebe<br>cada casilla</h1><p>Defina matrices de hasta 6×6. Para ensamblar, utilice de 1 a 6 elementos y hasta 36 grados de libertad globales.</p></div>
+    <div class="wb-heading"><p class="eyebrow">Laboratorio de estructuras</p><h1>Operaciones y ensamblaje</h1><p>Defina matrices de hasta 6×6. Para ensamblar, utilice de 1 a 6 elementos y hasta 36 grados de libertad globales. <a href="./index.html#ejercicios/pistas-ensamblaje">Consultar la guía de ensamblaje</a>.</p></div>
     <div class="wb-tabs" role="tablist" aria-label="Herramienta"><button id="tab-calculator" role="tab" aria-selected="true" aria-controls="panel-calculator" data-tab="calculator">Vectores y matrices</button><button id="tab-assembly" role="tab" aria-selected="false" aria-controls="panel-assembly" tabindex="-1" data-tab="assembly">Ensamblaje por aportes</button></div>
     <section id="panel-calculator" role="tabpanel" aria-labelledby="tab-calculator">
       <div class="wb-columns">

@@ -1,0 +1,354 @@
+{
+  "docx": {
+    "rubric": "cercha-escrito-2026-11-21-v1",
+    "official": false,
+    "global": "Desarrollo parcial con una comprobación reproducida",
+    "globalNote": "La comprobación respalda ese resultado. Revise la evidencia de los demás criterios.",
+    "coverage": {
+      "evaluated": 2,
+      "total": 7
+    },
+    "criteria": [
+      {
+        "id": "modelo",
+        "label": "Geometría y modelo",
+        "status": "partial",
+        "statusLabel": "Evidencia parcial",
+        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "evidence": [
+          {
+            "location": "Word · párrafo 1",
+            "quote": "Modelo de la cercha. Nudo 1 en x = 0 m; nudo 2 en x = 3 m. Los apoyos se representan en el esquema.",
+            "id": "e1"
+          }
+        ],
+        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+      },
+      {
+        "id": "cargas",
+        "label": "Cargas y fuerzas nodales",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+      },
+      {
+        "id": "matrices",
+        "label": "Método matricial",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+      },
+      {
+        "id": "resultados",
+        "label": "Resultados y comprobación",
+        "status": "checked",
+        "statusLabel": "Comprobación reproducida",
+        "reason": "La suma independiente de las tres fuerzas coincide con el residual declarado de 0 kN.",
+        "evidence": [
+          {
+            "location": "Word · párrafo 2",
+            "quote": "Equilibrio vertical: 30 kN + 20 kN - 50 kN = 0 kN.",
+            "id": "e2"
+          }
+        ],
+        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+      },
+      {
+        "id": "resistencia",
+        "label": "Resistencia y deformación",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+      },
+      {
+        "id": "criticas",
+        "label": "Barras críticas e inversión de esfuerzos",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+      },
+      {
+        "id": "perfiles",
+        "label": "Selección de perfiles",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+      }
+    ],
+    "scale": "La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+  },
+  "xlsx": {
+    "rubric": "cercha-escrito-2026-11-21-v1",
+    "official": false,
+    "global": "Desarrollo parcial con una discrepancia comprobada",
+    "globalNote": "Revise el equilibrio señalado y vuelva a contrastar la respuesta.",
+    "coverage": {
+      "evaluated": 3,
+      "total": 7
+    },
+    "criteria": [
+      {
+        "id": "modelo",
+        "label": "Geometría y modelo",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+      },
+      {
+        "id": "cargas",
+        "label": "Cargas y fuerzas nodales",
+        "status": "partial",
+        "statusLabel": "Evidencia parcial",
+        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "evidence": [
+          {
+            "location": "Excel · hoja 1, A1:A1",
+            "quote": "A1 Carga nodal del área tributaria: 12 kN.",
+            "id": "e1"
+          }
+        ],
+        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+      },
+      {
+        "id": "matrices",
+        "label": "Método matricial",
+        "status": "partial",
+        "statusLabel": "Evidencia parcial",
+        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "evidence": [
+          {
+            "location": "Excel · hoja 1, A2:B2",
+            "quote": "A2 Equilibrio vertical: 30 kN + 20 kN - 50 kN = 4 kN. | B2 fórmula visible =30+20-50",
+            "id": "e2"
+          }
+        ],
+        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+      },
+      {
+        "id": "resultados",
+        "label": "Resultados y comprobación",
+        "status": "error",
+        "statusLabel": "Discrepancia comprobada",
+        "reason": "La suma reproducida da 0 kN. El documento declara 4 kN.",
+        "evidence": [
+          {
+            "location": "Excel · hoja 1, A2:B2",
+            "quote": "A2 Equilibrio vertical: 30 kN + 20 kN - 50 kN = 4 kN. | B2 fórmula visible =30+20-50",
+            "id": "e2"
+          }
+        ],
+        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+      },
+      {
+        "id": "resistencia",
+        "label": "Resistencia y deformación",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+      },
+      {
+        "id": "criticas",
+        "label": "Barras críticas e inversión de esfuerzos",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+      },
+      {
+        "id": "perfiles",
+        "label": "Selección de perfiles",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+      }
+    ],
+    "scale": "La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+  },
+  "pptx": {
+    "rubric": "cercha-escrito-2026-11-21-v1",
+    "official": false,
+    "global": "Desarrollo parcial documentado",
+    "globalNote": "Se localizaron datos técnicos. Complete las comprobaciones indicadas por criterio.",
+    "coverage": {
+      "evaluated": 3,
+      "total": 7
+    },
+    "criteria": [
+      {
+        "id": "modelo",
+        "label": "Geometría y modelo",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+      },
+      {
+        "id": "cargas",
+        "label": "Cargas y fuerzas nodales",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+      },
+      {
+        "id": "matrices",
+        "label": "Método matricial",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+      },
+      {
+        "id": "resultados",
+        "label": "Resultados y comprobación",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+      },
+      {
+        "id": "resistencia",
+        "label": "Resistencia y deformación",
+        "status": "partial",
+        "statusLabel": "Evidencia parcial",
+        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "evidence": [
+          {
+            "location": "PowerPoint · diapositiva 1, texto 1",
+            "quote": "Compresión de la diagonal: 24 kN. Longitud no arriostrada declarada: 2 m.",
+            "id": "e1"
+          }
+        ],
+        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+      },
+      {
+        "id": "criticas",
+        "label": "Barras críticas e inversión de esfuerzos",
+        "status": "partial",
+        "statusLabel": "Evidencia parcial",
+        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "evidence": [
+          {
+            "location": "PowerPoint · diapositiva 1, texto 1",
+            "quote": "Compresión de la diagonal: 24 kN. Longitud no arriostrada declarada: 2 m.",
+            "id": "e1"
+          }
+        ],
+        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+      },
+      {
+        "id": "perfiles",
+        "label": "Selección de perfiles",
+        "status": "partial",
+        "statusLabel": "Evidencia parcial",
+        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "evidence": [
+          {
+            "location": "PowerPoint · diapositiva 1, texto 2",
+            "quote": "Alternativa A con masa total de 390 kg. La comparación con otra alternativa sigue pendiente.",
+            "id": "e2"
+          }
+        ],
+        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+      }
+    ],
+    "scale": "La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+  },
+  "empty": {
+    "rubric": "cercha-escrito-2026-11-21-v1",
+    "official": false,
+    "global": null,
+    "globalNote": "No hay evidencia puntuable en las partes visibles. Añada texto, celdas o una comprobación con unidades.",
+    "coverage": {
+      "evaluated": 0,
+      "total": 7
+    },
+    "criteria": [
+      {
+        "id": "modelo",
+        "label": "Geometría y modelo",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+      },
+      {
+        "id": "cargas",
+        "label": "Cargas y fuerzas nodales",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+      },
+      {
+        "id": "matrices",
+        "label": "Método matricial",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+      },
+      {
+        "id": "resultados",
+        "label": "Resultados y comprobación",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+      },
+      {
+        "id": "resistencia",
+        "label": "Resistencia y deformación",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+      },
+      {
+        "id": "criticas",
+        "label": "Barras críticas e inversión de esfuerzos",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+      },
+      {
+        "id": "perfiles",
+        "label": "Selección de perfiles",
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+      }
+    ],
+    "scale": "La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+  }
+}

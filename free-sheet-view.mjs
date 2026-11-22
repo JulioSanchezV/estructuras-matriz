@@ -27,7 +27,7 @@ function recalc(){result=evaluateSheet(sheet);revision++;render();save();}
 function commitUpdates(updates,message='Entrada aplicada. Las fórmulas se recalculan automáticamente.'){
  requireEditable();const next=setCells(sheet,updates);past.push(snapshot());if(past.length>50)past.shift();future=[];sheet=next;edit=null;editor.hidden=true;recalc();const failed=Object.keys(updates).filter(a=>result.cells[a]?.error);if(failed.length)tell(`Entrada guardada con error en ${failed[0]}: ${result.cells[failed[0]].message}`,'error');else tell(message);return true;
 }
-function cancelPending(){epoch++;drag=null;closeMore();closeHelp();const pending=pendingConfirm;pendingConfirm=null;if(pending){pending.resolve(false);if($('confirmation').open)$('confirmation').close('cancel');}}
+function cancelPending(){epoch++;if($('paste-dialog').open)$('paste-dialog').close();drag=null;closeMore();closeHelp();const pending=pendingConfirm;pendingConfirm=null;if(pending){pending.resolve(false);if($('confirmation').open)$('confirmation').close('cancel');}}
 function resetView(next=createSheet()){sheet=next;result=evaluateSheet(sheet);active={row:0,col:0};endpoint={...active};selection={r1:0,c1:0,r2:0,c2:0};edit=null;editor.hidden=true;past=[];future=[];internalClip=null;revision++;grid.scrollTo(0,0);}
 function load(payload=null){
  cancelPending();try{
@@ -63,12 +63,18 @@ function render(){
  const c0=Math.max(0,Math.floor(grid.scrollLeft/CW)-1),c1=Math.min(sheet.cols-1,Math.ceil((grid.scrollLeft+grid.clientWidth)/CW)+1);
  const r0=Math.max(0,Math.floor(grid.scrollTop/RH)-1),r1=Math.min(sheet.rows-1,Math.ceil((grid.scrollTop+grid.clientHeight)/RH)+1);
  const fragment=document.createDocumentFragment();
- for(let r=r0;r<=r1;r++)for(let c=c0;c<=c1;c++){
+ for(let r=r0;r<=r1;r++){
+  const rowNode = document.createElement('div');
+  rowNode.setAttribute('role', 'row');
+  rowNode.setAttribute('aria-rowindex', String(r+1));
+  fragment.append(rowNode);
+  for(let c=c0;c<=c1;c++){
   const a=formatAddress(r,c),cell=result.cells[a],raw=sheet.inputs[a]||'',owner=result.owners?.[a],div=document.createElement('div');
   div.className='grid-cell'+(typeof cell?.value==='string'?' text':'')+(owner&&owner!==a?' spill':'')+(raw.startsWith('=')?' formula':'')+(cell?.error?' error':'')+(inRange(r,c)?' selected':'')+(r===active.row&&c===active.col?' active':'');
   div.id=`cell-${a}`;div.dataset.address=a;div.dataset.row=String(r);div.dataset.col=String(c);div.setAttribute('role','gridcell');div.setAttribute('aria-rowindex',String(r+1));div.setAttribute('aria-colindex',String(c+1));div.setAttribute('aria-selected',String(inRange(r,c)));div.setAttribute('aria-label',`${a}: ${cell?.message||outputText(cell?.value)||'vacía'}${raw.startsWith('=')?', fórmula '+raw:''}`);
   div.style.cssText=`left:${LEFT+c*CW}px;top:${TOP+r*RH}px;width:${CW}px;height:${RH}px`;
-  div.textContent=cell?.error||outputText(cell?.value);div.title=cell?.message||(raw.startsWith('=')?raw:(owner&&owner!==a?`Resultado de ${owner}`:raw));fragment.append(div);
+  div.textContent=cell?.error||outputText(cell?.value);div.title=cell?.message||(raw.startsWith('=')?raw:(owner&&owner!==a?`Resultado de ${owner}`:raw));rowNode.append(div);
+  }
  }
  $('grid-cells').replaceChildren(fragment);
  const columnFrag=document.createDocumentFragment(),rowFrag=document.createDocumentFragment();
@@ -80,8 +86,10 @@ function render(){
  $('selection-label').textContent=`${range} · ${selection.r2-selection.r1+1}×${selection.c2-selection.c1+1}`;$('sheet-size').textContent=`${sheet.rows} filas × ${sheet.cols} columnas`;
  const current=result.cells[address()],anchor=result.owners?.[address()];$('cell-detail').textContent=current?.message||(anchor&&anchor!==address()?`Resultado de ${anchor}; edite el ancla.`:sheet.inputs[address()]?.startsWith('=')?sheet.inputs[address()]:typeof current?.value==='number'?String(current.value):'Vacío ≠ 0');
  if(!edit)formula.value=sheet.inputs[address()]||'';else syncEditor();
- const readOnly=!!blockedReason();$('undo').disabled=readOnly||!past.length;$('redo').disabled=readOnly||!future.length;$('extend').disabled=readOnly;$('commit').disabled=readOnly;formula.readOnly=readOnly;editor.readOnly=readOnly;grid.setAttribute('aria-readonly',String(readOnly));
- grid.setAttribute('aria-activedescendant',`cell-${address()}`);
+ const readOnly=!!blockedReason();$('undo').disabled=readOnly||!past.length;$('redo').disabled=readOnly||!future.length;$('extend').disabled=readOnly;$('commit').disabled=readOnly;$('open-paste').disabled=readOnly;formula.readOnly=readOnly;editor.readOnly=readOnly;grid.setAttribute('aria-readonly',String(readOnly));
+ const activeId = 'cell-' + address();
+ if ($(activeId)) grid.setAttribute('aria-activedescendant', activeId);
+ else grid.removeAttribute('aria-activedescendant');
 }
 function queueRender(){if(!raf)raf=requestAnimationFrame(()=>{raf=0;render();});}
 function selectedUpdates(value=''){const updates={};for(let r=selection.r1;r<=selection.r2;r++)for(let c=selection.c1;c<=selection.c2;c++)updates[formatAddress(r,c)]=value;return updates;}
@@ -98,6 +106,32 @@ async function importBlock(cells,{label='',confirmOverwrite=true,clip=null}={}){
  commitUpdates(updates,`${label?label+': ':''}bloque ${rows.length}×${rows[0].length} incorporado. Los vacíos se conservan.`);active=anchor;selection={r1:anchor.row,c1:anchor.col,r2:anchor.row+rows.length-1,c2:anchor.col+rows[0].length-1};endpoint={row:selection.r2,col:selection.c2};render();save();grid.focus();return {range:rangeText(selection),rows:rows.length,columns:rows[0].length};
 }
 async function pasteBlock(text,clip=null){try{return await importBlock(parsePaste(text),{clip});}catch(e){tell(e.message,'error');return null;}}
+const pasteDialog = $('paste-dialog');
+$('open-paste').addEventListener('click', () => {
+  if (blockedReason()) { tell('', 'error'); return; }
+  if (editing() && !finishEdit()) return;
+  $('paste-origin').textContent = 'El bloque comenzará en ' + address() + '.';
+  $('paste-error').textContent = '';
+  $('paste-text').value = '';
+  pasteDialog.showModal();
+  $('paste-text').focus();
+});
+$('cancel-paste').addEventListener('click', () => pasteDialog.close());
+$('apply-paste').addEventListener('click', async () => {
+  const text = $('paste-text').value;
+  let cells;
+  try {
+    if (!text.length) throw Error('Pegue al menos una celda.');
+    cells = validateBlock(parsePaste(text));
+  } catch (error) {
+    $('paste-error').textContent = error.message;
+    $('paste-text').focus();
+    return;
+  }
+  pasteDialog.close();
+  try { await importBlock(cells); }
+  catch (error) { tell(error.message, 'error'); }
+});
 function prepareCopy(mode='values'){
  const range=rangeText(selection),text=copyRange(sheet,result,range,mode)+'\n';internalClip={text,mode,r1:selection.r1,c1:selection.c1};return text;
 }
