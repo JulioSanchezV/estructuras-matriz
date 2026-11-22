@@ -11,7 +11,7 @@ from consumo import Ledger, Limits, Refused
 from fixtures import sample
 from office import DocumentError, TYPES, extract
 from proveedor import MockProvider, OpenAIAdapter, VerifiedModel, run_review
-from revision import ROOT, RUBRIC, assemble, candidates, review
+from revision import ROOT, RUBRIC, assemble, candidates, numeric_floor, review
 from servidor import LocalPilot, PilotHandler, QuietServer
 
 class PilotTest(unittest.TestCase):
@@ -89,6 +89,16 @@ class PilotTest(unittest.TestCase):
         self.run_document(provider=impl)
         self.assertEqual(len(sent),1);self.assertFalse(sent[0]["store"]);self.assertEqual(sent[0]["tools"],[])
         self.assertNotIn("nudo 2 en x",sent[0]["input"].lower())
+    def test_an_approved_fictitious_scale_keeps_the_full_denominator(self):
+        # An unrelated two-criterion toy rubric demonstrates the mechanism. It is never used by the course.
+        schedule={"approval":"fixture","version":"toy-v1","max":10,"criteria":{
+            "a":{"max":4,"partial":1,"checked":3,"error":0},"b":{"max":6,"partial":1,"checked":4,"error":0}}}
+        items=[{"id":"a","status":"checked"},{"id":"b","status":"none"}]
+        self.assertEqual(numeric_floor(items,schedule),"3 / 10 · crédito mínimo sustentado")
+        self.assertIsNone(numeric_floor(items,None))
+        self.assertIsNone(numeric_floor([dict(i,status="none") for i in items],schedule))
+        with self.assertRaises(ValueError): numeric_floor(items,dict(schedule,max=8))
+
     def test_http_session_and_upload(self):
         app=LocalPilot(Path(self.tmp.name)/"privado")
         app.open_login();self.addCleanup(app.close);app.ledger.enable(True)

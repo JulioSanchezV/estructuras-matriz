@@ -14,7 +14,7 @@
         "label": "Geometría y modelo",
         "status": "partial",
         "statusLabel": "Evidencia parcial",
-        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "reason": "Las citas mencionan nudos o coordenadas, apoyos. Por verificar en la evidencia: conectividad, estabilidad.",
         "evidence": [
           {
             "location": "Word · párrafo 1",
@@ -111,7 +111,7 @@
         "label": "Cargas y fuerzas nodales",
         "status": "partial",
         "statusLabel": "Evidencia parcial",
-        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "reason": "Las citas mencionan reparto a nudos. Por verificar en la evidencia: peso propio y componentes, casos de viento, combinaciones.",
         "evidence": [
           {
             "location": "Excel · hoja 1, A1:A1",
@@ -126,7 +126,7 @@
         "label": "Método matricial",
         "status": "partial",
         "statusLabel": "Evidencia parcial",
-        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "reason": "Las citas mencionan fórmulas visibles. Por verificar en la evidencia: matriz de barra, ensamblaje, condiciones de apoyo.",
         "evidence": [
           {
             "location": "Excel · hoja 1, A2:B2",
@@ -232,7 +232,7 @@
         "label": "Resistencia y deformación",
         "status": "partial",
         "statusLabel": "Evidencia parcial",
-        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "reason": "Las citas mencionan longitud no arriostrada. Por verificar en la evidencia: capacidad axial, deflexión de servicio, caso gobernante.",
         "evidence": [
           {
             "location": "PowerPoint · diapositiva 1, texto 1",
@@ -247,7 +247,7 @@
         "label": "Barras críticas e inversión de esfuerzos",
         "status": "partial",
         "statusLabel": "Evidencia parcial",
-        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "reason": "Las citas mencionan barras identificadas. Por verificar en la evidencia: inversión de esfuerzos, levantamiento de apoyo.",
         "evidence": [
           {
             "location": "PowerPoint · diapositiva 1, texto 1",
@@ -262,7 +262,7 @@
         "label": "Selección de perfiles",
         "status": "partial",
         "statusLabel": "Evidencia parcial",
-        "reason": "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados.",
+        "reason": "Las citas mencionan alternativas, masa o peso propio. Por verificar en la evidencia: utilización comparada, alternativa gobernante.",
         "evidence": [
           {
             "location": "PowerPoint · diapositiva 1, texto 2",

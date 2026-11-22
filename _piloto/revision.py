@@ -55,6 +55,44 @@ def equilibrium(text):
 def mock_select(grouped):
     return {cid: [f.id for f in hits] for cid,hits in grouped.items()}
 
+def parcial_reason(cid, rows):
+    if not rows:
+        return "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar."
+    text = normalize(" ".join(r.text for r in rows))
+    found, pending = [], []
+    for title, pattern in RUBRIC["indicios"][cid]:
+        (found if re.search(pattern, text) else pending).append(title)
+    first = ("Las citas mencionan " + ", ".join(found) + ".") if found else "Se localizaron datos técnicos vinculados a este criterio."
+    return first + ((" Por verificar en la evidencia: " + ", ".join(pending) + ".") if pending else " Revise la coherencia y la suficiencia de esos datos en el modelo.")
+
+def numeric_floor(items, policy):
+    """Only an explicitly approved, versioned schedule can enable numeric feedback."""
+    if policy is None:
+        return None
+    if not isinstance(policy, dict) or not policy.get("approval") or not policy.get("version"):
+        raise ValueError("La escala requiere aprobación y versión.")
+    score = Decimal(0); maxima = Decimal(0)
+    parts = policy.get("criteria", {})
+    if set(parts) != {c["id"] for c in items}:
+        raise ValueError("La escala debe incluir todos los criterios.")
+    for item in items:
+        rule = parts[item["id"]]
+        maximum = Decimal(str(rule["max"]))
+        if not maximum.is_finite() or maximum <= 0:
+            raise ValueError("Máximo de criterio inválido.")
+        maxima += maximum
+        levels = {k:Decimal(str(rule[k])) for k in ("partial","checked","error")}
+        if any(not x.is_finite() or x<0 or x>maximum for x in levels.values()):
+            raise ValueError("Puntos de desempeño fuera de la escala.")
+        if item["status"] != "none":
+            score += levels[item["status"]]
+    if maxima != Decimal(str(policy["max"])):
+        raise ValueError("La suma del máximo de los criterios no coincide con la escala.")
+    if not any(c["status"]!="none" for c in items):
+        return None
+    number=lambda n:format(n.normalize(),"f").replace(".",",")
+    return number(score)+" / "+number(maxima)+" · crédito mínimo sustentado"
+
 def assemble(grouped, selections):
     items = []
     for crit in RUBRIC["criteria"]:
@@ -64,7 +102,7 @@ def assemble(grouped, selections):
         ids = {x for x in ids if isinstance(x, str)} if isinstance(ids, list) else set()
         valid = [f for f in grouped[cid] if f.id in ids]
         state = "partial" if valid else "none"
-        reason = "Hay datos vinculados al criterio. Revise con el docente si justifican todos sus apartados." if valid else "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar."
+        reason = parcial_reason(cid, valid)
         if cid == "resultados":
             checks = [(f,equilibrium(f.text)) for f in grouped[cid]]
             checks = [(f,v) for f,v in checks if v is not None]
@@ -87,9 +125,17 @@ def assemble(grouped, selections):
         global_mark, note = "Desarrollo parcial con una comprobación reproducida", "La comprobación respalda ese resultado. Revise la evidencia de los demás criterios."
     else:
         global_mark, note = "Desarrollo parcial documentado", "Se localizaron datos técnicos. Complete las comprobaciones indicadas por criterio."
+    if covered == len(items):
+        global_mark = "Siete criterios documentados con una discrepancia comprobada" if wrong else "Siete criterios documentados, pendientes de validación integral"
+    policy=RUBRIC.get("numeric")
+    scale="La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+    numeric=numeric_floor(items,policy)
+    if numeric is not None:
+        global_mark=numeric
+        scale="Escala aprobada " + policy["version"] + ". El crédito demostrado conserva el máximo global de los siete criterios. Un criterio no observable sigue abierto, sin declararlo incorrecto."
     return {"rubric":RUBRIC["version"], "official":False, "global":global_mark, "globalNote":note,
             "coverage":{"evaluated":covered, "total":len(items)}, "criteria":items,
-            "scale":"La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."}
+            "scale":scale}
 
 def review(fragments, select=mock_select):
     grouped = candidates(fragments)
