@@ -6,7 +6,7 @@ import re
 import time
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from consumo import Refused
-from revision import RUBRIC, assemble, candidates, mock_select
+from revision import RUBRIC, assemble, candidates, mock_select, usable
 
 class MockProvider:
     def preview(self, grouped):
@@ -75,9 +75,10 @@ class OpenAIAdapter:
 
 def run_review(fragments, *, actor, request_id, ledger, limits, provider):
     grouped=candidates(fragments)
-    if not any(grouped.values()):
+    candidates_for_provider=usable(grouped)
+    if not any(candidates_for_provider.values()):
         return assemble(grouped,{})
-    amount,payload=provider.preview(grouped)
+    amount,payload=provider.preview(candidates_for_provider)
     # Every dispatch passes through durable reservation. Any uncertain/provider failure
     # consumes the full reservation. No retry or optimistic refund.
     ledger.reserve(actor,request_id,amount,limits)

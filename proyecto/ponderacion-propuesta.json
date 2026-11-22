@@ -1,5 +1,5 @@
 {
-  "version": "cercha-ponderacion-propuesta-2026-11-22-v1",
+  "version": "cercha-ponderacion-propuesta-2026-11-22-v2",
   "status": "propuesta_formativa",
   "maximum": 100,
   "criteria": [
@@ -102,21 +102,39 @@
       "why": "Obtener resultados y contrastarlos requiere trabajo independiente de la solución.",
       "aspects": [
         {
-          "id": "magnitudes",
-          "max": 4,
-          "label": "Desplazamientos, reacciones y axiles",
-          "term": "desplazamiento|reaccion|fuerza axial"
+          "id": "caso",
+          "max": 2,
+          "label": "Caso de carga asociado a los resultados",
+          "term": "resultado.{0,24}(?:caso|combinaci)|(?:caso|combinaci).{0,24}resultado"
+        },
+        {
+          "id": "desplazamientos",
+          "max": 2,
+          "label": "Desplazamientos por nudo y dirección",
+          "term": "desplazamiento"
+        },
+        {
+          "id": "reacciones",
+          "max": 2,
+          "label": "Reacciones en los apoyos y componentes",
+          "term": "reaccion"
+        },
+        {
+          "id": "axiles",
+          "max": 2,
+          "label": "Fuerzas axiales con barra y signo",
+          "term": "fuerza axial|fuerzas axiales|axil"
         },
         {
           "id": "equilibrio",
-          "max": 5,
-          "label": "Comprobación del equilibrio",
+          "max": 2,
+          "label": "Aritmética del residual declarado en un eje",
           "term": "equilibrio"
         },
         {
           "id": "contraste",
-          "max": 5,
-          "label": "Contraste independiente con el mismo modelo",
+          "max": 4,
+          "label": "Contraste independiente con el mismo modelo y caso",
           "term": "contraste|independiente|comparaci.{0,20}(manual|excel)|verificaci.{0,12}manual"
         }
       ]
@@ -201,6 +219,24 @@
           "term": "menor peso|mas ligera|gobernante"
         }
       ]
+    }
+  ],
+  "levels": [
+    {
+      "percent": 25,
+      "label": "Dato pertinente"
+    },
+    {
+      "percent": 50,
+      "label": "Desarrollo documentado"
+    },
+    {
+      "percent": 75,
+      "label": "Resultado fundamentado"
+    },
+    {
+      "percent": 100,
+      "label": "Control reproducido"
     }
   ]
 }

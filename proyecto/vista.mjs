@@ -2,9 +2,9 @@ export function renderReview(host, report) {
   const node = (tag, text) => { const el = document.createElement(tag); el.textContent = text; return el; };
   host.replaceChildren();
   const num = n => String(n).replace('.',',');
-  const states = {pending:'Pendiente de evidencia',documented:'Indicio cuantificado',verified:'Comprobación reproducida',error:'Discrepancia comprobada'};
+  const states = {pending:'Pendiente de evidencia',documented:'Indicio cuantificado',developed:'Desarrollo documentado',supported:'Resultado fundamentado',verified:'Comprobación reproducida',error:'Discrepancia comprobada'};
   const heading = node('h3', report.global ? 'Nota global provisional · ' + report.global : 'Sin nota estimable');
-  host.append(heading, node('p', report.globalNote), node('p', 'Criterios con evidencia: ' + report.coverage.evaluated + ' de ' + report.coverage.total + '. Peso de apartados pendientes: ' + num(report.coverage.pendingPoints) + ' de 100 puntos.'));
+  host.append(heading, node('p', report.globalNote), node('p', 'Criterios con evidencia: ' + report.coverage.evaluated + ' de ' + report.coverage.total + '. Peso de apartados pendientes: ' + num(report.coverage.pendingPoints) + ' de 100 puntos. En apartados parcialmente documentados quedan ' + num(report.coverage.openWithinObserved) + ' puntos por sustentar.'));
   const list = document.createElement('ol');
   for (const item of report.criteria) {
     const row = document.createElement('li');

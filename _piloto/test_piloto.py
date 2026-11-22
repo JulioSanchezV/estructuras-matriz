@@ -9,9 +9,9 @@ import time
 import unittest
 from consumo import Ledger, Limits, Refused
 from fixtures import sample
-from office import DocumentError, TYPES, extract
+from office import DocumentError, Fragment, TYPES, extract
 from proveedor import MockProvider, OpenAIAdapter, VerifiedModel, run_review
-from revision import ROOT, RUBRIC, assemble, candidates, numeric_floor, review
+from revision import ROOT, RUBRIC, assemble, candidates, review
 from servidor import LocalPilot, PilotHandler, QuietServer
 
 class PilotTest(unittest.TestCase):
@@ -39,16 +39,16 @@ class PilotTest(unittest.TestCase):
         self.assertEqual(review(extract(sample("docx",True),"docx")),examples["empty"])
     def test_proposed_scores_and_unobserved_weight(self):
         word=review(extract(sample("docx"),"docx"))
-        self.assertEqual(word["global"],"6 / 100 · mínimo demostrado")
-        self.assertEqual(word["coverage"],{"evaluated":2,"total":7,"pendingPoints":91})
+        self.assertEqual(word["global"],"3 / 100 · mínimo demostrado")
+        self.assertEqual(word["coverage"],{"evaluated":2,"total":7,"pendingPoints":94,"openWithinObserved":3})
         self.assertEqual(sum(c["max"] for c in word["criteria"]),100)
         parts=[p for c in word["criteria"] for p in c["aspects"]]
         self.assertTrue(all((p["reference"] is None)==(p["state"]=="pending") for p in parts))
-        self.assertEqual(sum(p["points"] for p in parts),6)
+        self.assertEqual(sum(p["points"] for p in parts),3)
         excel=review(extract(sample("xlsx"),"xlsx"))
         balance=next(p for c in excel["criteria"] if c["id"]=="resultados" for p in c["aspects"] if p["id"]=="equilibrio")
         self.assertEqual((balance["state"],balance["points"]),("error",0))
-        self.assertEqual(excel["coverage"]["pendingPoints"],91)
+        self.assertEqual(excel["coverage"]["pendingPoints"],94)
         self.assertEqual(review([])["global"],None)
 
     def test_unknown_and_unsupported(self):
@@ -59,7 +59,7 @@ class PilotTest(unittest.TestCase):
     def test_errors_vs_absence_and_references(self):
         doc=review(extract(sample("xlsx"),"xlsx"))
         states={c["id"]:c["status"] for c in doc["criteria"]}
-        self.assertEqual(states["resultados"],"error")
+        self.assertEqual(states["resultados"],"partial")
         self.assertEqual(states["perfiles"],"none")
         group=candidates(extract(sample("docx"),"docx"))
         result=assemble(group,{"modelo":["id-inexistente"],"rubric":["otra"]})
@@ -103,15 +103,56 @@ class PilotTest(unittest.TestCase):
         self.run_document(provider=impl)
         self.assertEqual(len(sent),1);self.assertFalse(sent[0]["store"]);self.assertEqual(sent[0]["tools"],[])
         self.assertNotIn("nudo 2 en x",sent[0]["input"].lower())
-    def test_an_approved_fictitious_scale_keeps_the_full_denominator(self):
-        # An unrelated two-criterion toy rubric demonstrates the mechanism. It is never used by the course.
-        schedule={"approval":"fixture","version":"toy-v1","max":10,"criteria":{
-            "a":{"max":4,"partial":1,"checked":3,"error":0},"b":{"max":6,"partial":1,"checked":4,"error":0}}}
-        items=[{"id":"a","status":"checked"},{"id":"b","status":"none"}]
-        self.assertEqual(numeric_floor(items,schedule),"3 / 10 · crédito mínimo sustentado")
-        self.assertIsNone(numeric_floor(items,None))
-        self.assertIsNone(numeric_floor([dict(i,status="none") for i in items],schedule))
-        with self.assertRaises(ValueError): numeric_floor(items,dict(schedule,max=8))
+    def test_aggregate_status_does_not_activate_an_official_grade(self):
+        from unittest.mock import patch
+        with patch.dict(RUBRIC,{"numeric":{"approval":"fixture","max":5,"partial":5}}):
+            report=review(extract(sample("docx"),"docx"))
+        self.assertFalse(report["official"])
+        self.assertEqual(report["global"],"3 / 100 · mínimo demostrado")
+
+    def test_equal_evidence_across_the_three_containers(self):
+        nodes="Nudo 1 en x = 0 m; nudo 2 en x = 3 m."
+        for residual,score,arithmetic in [(0,"3 / 100 · mínimo demostrado","verified"),(4,"1 / 100 · mínimo demostrado","error"),(None,None,"pending")]:
+            lines=[] if residual is None else [nodes,f"Equilibrio vertical: 30 kN + 20 kN - 50 kN = {residual} kN."]
+            baseline=None
+            for fmt in TYPES:
+                with self.subTest(format=fmt,residual=residual):
+                    report=review(extract(sample(fmt,lines=lines),fmt))
+                    self.assertEqual(report["global"],score)
+                    self.assertEqual(report["coverage"]["evaluated"],0 if residual is None else 2)
+                    item=next(c for c in report["criteria"] if c["id"]=="resultados")
+                    self.assertEqual(item["status"],"none" if residual is None else "partial")
+                    self.assertEqual(item["points"],2 if residual==0 else 0)
+                    for part in item["aspects"]:
+                        self.assertEqual(part["state"],arithmetic if part["id"]=="equilibrio" else "pending")
+                    for item in report["criteria"]:
+                        if item["id"] not in ("modelo","resultados"): self.assertEqual(item["status"],"none")
+                        for e in item["evidence"]: self.assertTrue(e.pop("location"))
+                    if baseline is None: baseline=report
+                    else: self.assertEqual(report,baseline)
+
+    def test_unverified_excel_range_remains_pending_without_dispatch(self):
+        source=extract(sample("xlsx",structured_balance=True),"xlsx")
+        self.assertIn("SUM(B2:D2)",source[0].text)
+        report=run_review(source,actor=self.actor,request_id=secrets.token_hex(16),ledger=self.ledger,limits=self.limits,provider=MockProvider())
+        self.assertIsNone(report["global"])
+        self.assertEqual(report["coverage"]["evaluated"],0)
+        item=next(c for c in report["criteria"] if c["id"]=="resultados")
+        self.assertEqual(item["statusLabel"],"Control tabular no evaluable")
+        self.assertIn("A2:E2",item["evidence"][0]["location"])
+        self.assertTrue(all(a["state"]=="pending" for a in item["aspects"]))
+
+    def test_progression_and_late_evidence(self):
+        def aspect(lines,cid,aid):
+            report=review([Fragment("e"+str(i),"Lugar ficticio "+str(i),line) for i,line in enumerate(lines,1)])
+            return next(a for c in report["criteria"] if c["id"]==cid for a in c["aspects"] if a["id"]==aid)
+        method="Se calculó el ensamblaje mediante la suma de 10 kN/m + 4 kN/m = 14 kN/m"
+        self.assertEqual(aspect([method],"matrices","ensamble")["state"],"developed")
+        self.assertEqual(aspect([method+" porque el contraste independiente reproduce el total"],"matrices","ensamble")["state"],"supported")
+        self.assertEqual(aspect(["Fuerza nodal por área tributaria: 2 kN/m² × 3 m² = 6 kN."],"cargas","reparto")["state"],"verified")
+        self.assertEqual(aspect(["Fuerza nodal por área tributaria: 2 kN/m² × 3 m² = 9 kN."],"cargas","reparto")["state"],"error")
+        rows=[f"Nudo {i} en x = {i} m." for i in range(1,10)]+["Apoyo 1 con el grado de libertad GDL 3. Desplazamiento 0 mm."]
+        self.assertEqual(aspect(rows,"modelo","apoyos")["reference"],"e10")
 
     def test_http_session_and_upload(self):
         app=LocalPilot(Path(self.tmp.name)/"privado")

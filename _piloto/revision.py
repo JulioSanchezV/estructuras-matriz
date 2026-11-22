@@ -22,10 +22,19 @@ TOPICS = {
 }
 DATA = re.compile(r"[-+]?\d+(?:[.,]\d+)?\s*(?:kn(?:/m[²2]?)?|mm|cm|m(?:[²2])?|kg|mpa|%)\b|(?:nudo|barra|gdl)\s+[a-z]?\d+|formula visible\s*=\S+|\[\s*-?\d+\s*[,;]", re.I)
 BALANCE = re.compile(r"equilibrio\s+(?:vertical|horizontal)\s*:\s*([+-]?\d+(?:[.,]\d+)?)\s*kN\s*([+-])\s*(\d+(?:[.,]\d+)?)\s*kN\s*([+-])\s*(\d+(?:[.,]\d+)?)\s*kN\s*=\s*([+-]?\d+(?:[.,]\d+)?)\s*kN", re.I)
-STATUS = {"none":"Sin evidencia legible", "partial":"Evidencia parcial", "checked":"Comprobación reproducida", "error":"Discrepancia comprobada"}
+STATUS = {"none":"Sin evidencia puntuable", "partial":"Evidencia parcial", "checked":"Comprobación reproducida", "error":"Discrepancia comprobada"}
 
 def normalize(s):
     return "".join(c for c in unicodedata.normalize("NFD", s.lower()) if not unicodedata.combining(c))
+
+def tabular_balance(fragment):
+    plain=normalize(fragment.text)
+    return (fragment.location.startswith("Excel ·") and " | " in plain
+            and re.search(r"equilibrio\s+(?:vertical|horizontal)\s*\(\s*kn\s*\)",plain) is not None
+            and "formula visible =" in plain and equilibrium(fragment.text) is None)
+
+def usable(grouped):
+    return {cid:[f for f in hits if not tabular_balance(f)] for cid,hits in grouped.items()}
 
 def candidates(fragments):
     selected = {}
@@ -36,7 +45,17 @@ def candidates(fragments):
             plain = normalize(fragment.text)
             if re.search(TOPICS[cid], plain) and DATA.search(plain):
                 hits.append(fragment)
-        selected[cid] = hits[:6]
+        chosen=set()
+        for part in PROPOSED_BY_ID[cid]["aspects"]:
+            ranked=[]
+            for i,fragment in enumerate(hits):
+                state,_=assess(cid,part,fragment)
+                if state!="pending":
+                    ranked.append((5 if state=="error" else LEVEL[state],-i,fragment.id))
+            chosen.update(row[2] for row in sorted(ranked,reverse=True)[:2])
+        if cid=="resultados":
+            chosen.update(f.id for f in hits if tabular_balance(f))
+        selected[cid]=[f for f in hits if f.id in chosen]
     return selected
 
 def equilibrium(text):
@@ -69,55 +88,68 @@ def parcial_reason(cid, rows):
     first = ("Las citas mencionan " + ", ".join(found) + ".") if found else "Se localizaron datos técnicos vinculados a este criterio."
     return first + ((" Por verificar en la evidencia: " + ", ".join(pending) + ".") if pending else " Revise la coherencia y la suficiencia de esos datos en el modelo.")
 
-def proposed_points(criterion, fragments):
-    breakdown = []
-    for part in criterion["aspects"]:
-        state, value, reference = "pending", 0, None
-        for fragment in fragments:
-            clauses = re.split(r";|(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ])|\s+\|\s+", fragment.text)
-            for clause in clauses:
-                plain = normalize(clause)
-                hit = re.search(part["term"], plain)
-                if not hit or not DATA.search(plain[max(0,hit.start()-80):hit.end()+80]):
-                    continue
-                if criterion["id"]=="matrices" and part["id"]=="solucion" and not re.search(r"matriz|matricial|ensambl|partici|sistema reducido|mmult|minvers",normalize(fragment.text)):
-                    continue
-                if state == "pending":
-                    state, value, reference = "documented", part["max"]/4, fragment.id
-                if criterion["id"]=="resultados" and part["id"]=="equilibrio":
-                    check=equilibrium(clause)
-                    if check is not None and (state!="error" or not check[0]):
-                        state, value, reference = ("verified",part["max"],fragment.id) if check[0] else ("error",0,fragment.id)
-        breakdown.append({"id":part["id"],"label":part["label"],"max":part["max"],"points":value,"state":state,"reference":reference})
-    return breakdown
+LEVEL={"pending":0,"documented":1,"developed":2,"supported":3,"verified":4,"error":0}
+PROCEDURE=re.compile(r"mediante|a partir de|se (?:calcul|obtuvo|ensambl|resolv|distribuy|compar)|multiplicando|aplicando|usando")
+REASONING=re.compile(r"debido a|porque|por ser|se (?:adopt|elig|seleccion)|por lo tanto|por tanto")
+CHECK_SOURCE=re.compile(r"contraste|comprob|independiente|residual|referencia|segunda (?:solucion|alternativa)")
+OPERATION=re.compile(r"\d\s*(?:[a-z/²0-9]+)?\s*[×*/=+-]\s*[-+]?\d")
+NODAL=re.compile(r"([-+]?\d+(?:[.,]\d+)?)\s*kN/m(?:²|2)\s*(?:×|\*|x)\s*(\d+(?:[.,]\d+)?)\s*m(?:²|2)\s*=\s*([-+]?\d+(?:[.,]\d+)?)\s*kN\b",re.I)
 
-def numeric_floor(items, policy):
-    """Only an explicitly approved, versioned schedule can enable numeric feedback."""
-    if policy is None:
-        return None
-    if not isinstance(policy, dict) or not policy.get("approval") or not policy.get("version"):
-        raise ValueError("La escala requiere aprobación y versión.")
-    score = Decimal(0); maxima = Decimal(0)
-    parts = policy.get("criteria", {})
-    if set(parts) != {c["id"] for c in items}:
-        raise ValueError("La escala debe incluir todos los criterios.")
-    for item in items:
-        rule = parts[item["id"]]
-        maximum = Decimal(str(rule["max"]))
-        if not maximum.is_finite() or maximum <= 0:
-            raise ValueError("Máximo de criterio inválido.")
-        maxima += maximum
-        levels = {k:Decimal(str(rule[k])) for k in ("partial","checked","error")}
-        if any(not x.is_finite() or x<0 or x>maximum for x in levels.values()):
-            raise ValueError("Puntos de desempeño fuera de la escala.")
-        if item["status"] != "none":
-            score += levels[item["status"]]
-    if maxima != Decimal(str(policy["max"])):
-        raise ValueError("La suma del máximo de los criterios no coincide con la escala.")
-    if not any(c["status"]!="none" for c in items):
-        return None
-    number=lambda n:format(n.normalize(),"f").replace(".",",")
-    return number(score)+" / "+number(maxima)+" · crédito mínimo sustentado"
+def numerical_control(cid,part,clause):
+    if cid=="resultados" and part=="equilibrio":
+        return equilibrium(clause)
+    if cid=="cargas" and part=="reparto":
+        plain=normalize(clause)
+        if "tributari" in plain and re.search(r"(?:carga|fuerza) nodal",plain):
+            m=NODAL.search(clause)
+            if m:
+                q,area,declared=(Decimal(n.replace(",",".")) for n in m.groups())
+                if abs(q*area-declared)>Decimal("0.001"):
+                    return False,f"El producto de la intensidad por el área tributaria da {q*area} kN. Se declararon {declared} kN."
+                return True,"El producto de la intensidad por el área tributaria reproduce la fuerza nodal declarada."
+    return None
+
+def assess(cid,part,fragment):
+    best,note="pending",None
+    for clause in re.split(r";|(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ])|\s+\|\s+",fragment.text):
+        plain=normalize(clause)
+        hit=re.search(part["term"],plain)
+        if not hit:
+            continue
+        nearby=plain[max(0,hit.start()-80):hit.end()+160]
+        quantities={m.group(0).strip() for m in DATA.finditer(nearby)}
+        if not quantities:
+            continue
+        if cid=="matrices" and part["id"]=="solucion" and not re.search(r"matriz|matricial|ensambl|partici|sistema reducido|mmult|minvers",plain):
+            continue
+        check=numerical_control(cid,part["id"],clause)
+        if check is not None:
+            if not check[0]:
+                return "error",check[1]
+            best,note="verified",check[1]
+            continue
+        state="documented"
+        if len(quantities)>=2 and PROCEDURE.search(plain) and OPERATION.search(plain):
+            state="supported" if REASONING.search(plain) and CHECK_SOURCE.search(plain) else "developed"
+        if LEVEL[state]>LEVEL[best]:
+            best=state
+    return best,note
+
+def proposed_points(criterion,fragments):
+    breakdown,notes=[],[]
+    for part in criterion["aspects"]:
+        state,reference,reason="pending",None,None
+        for f in fragments:
+            found,note=assess(criterion["id"],part,f)
+            if found=="error" or LEVEL[found]>LEVEL[state]:
+                state,reference,reason=found,f.id,note
+            if state=="error":
+                break
+        if reason:
+            notes.append((state,reason))
+        breakdown.append({"id":part["id"],"label":part["label"],"max":part["max"],
+                          "points":part["max"]*LEVEL[state]/4,"state":state,"reference":reference})
+    return breakdown,notes
 
 def assemble(grouped, selections):
     items = []
@@ -129,31 +161,39 @@ def assemble(grouped, selections):
         valid = [f for f in grouped[cid] if f.id in ids]
         state = "partial" if valid else "none"
         reason = parcial_reason(cid, valid)
-        if cid == "resultados":
-            checks = [(f,equilibrium(f.text)) for f in grouped[cid]]
-            checks = [(f,v) for f,v in checks if v is not None]
-            if checks:
-                f, check = next(((z,c) for z,c in checks if not c[0]), checks[0])
-                state, reason = ("checked" if check[0] else "error"), check[1]
-                valid = [f] + [z for z in valid if z.id != f.id]
         rule=PROPOSED_BY_ID[cid]
-        breakdown=proposed_points(rule,valid)
-        if all(a["state"]=="pending" for a in breakdown):
-            state="none"
-            if valid:
-                reason="Se localizó una referencia al tema, pero falta evidencia cuantificable relacionada con un apartado concreto."
+        for part in rule["aspects"]:
+            for f in grouped[cid]:
+                if f not in valid and assess(cid,part,f)[0] in ("error","verified"):
+                    valid.append(f)
+        breakdown,notes=proposed_points(rule,valid)
+        state="partial" if any(a["state"]!="pending" for a in breakdown) else "none"
+        if all(a["state"]=="verified" for a in breakdown):
+            state="checked"
+        if notes:
+            notes.sort(key=lambda n:n[0]!="error")
+            reason=" ".join(n for _,n in notes)+" Los demás apartados se evalúan por separado."
+        unreadable=[f for f in grouped[cid] if cid=="resultados" and tabular_balance(f)][:2]
+        if unreadable:
+            explanation="Se leyó el equilibrio en varias celdas y una fórmula de rango. El extractor no reproduce ese control."
+            reason=(reason+" "+explanation) if state!="none" else explanation
+            valid.extend(f for f in unreadable if f not in valid)
+        label="Control tabular no evaluable" if unreadable and state=="none" else STATUS[state]
         evidence = [{"id":f.id, "location":f.location, "quote":f.text[:240]} for f in valid]
-        items.append({"id":cid, "label":crit["label"], "status":state, "statusLabel":STATUS[state],
+        items.append({"id":cid, "label":crit["label"], "status":state, "statusLabel":label,
                       "reason":reason, "evidence":evidence, "next":crit["description"], "max":rule["max"],
                       "points":sum(a["points"] for a in breakdown), "aspects":breakdown})
     covered = sum(i["status"] != "none" for i in items)
-    wrong = any(i["status"] == "error" for i in items)
-    checked = any(i["status"] == "checked" for i in items)
+    parts=[a for item in items for a in item["aspects"]]
+    wrong=any(a["state"]=="error" for a in parts)
+    checked=any(a["state"]=="verified" for a in parts)
     if not covered:
         global_mark = None
         note = "No hay evidencia puntuable en las partes visibles. Añada texto, celdas o una comprobación con unidades."
+        if any(tabular_balance(f) for f in grouped["resultados"]):
+            note="El libro contiene un control de equilibrio en varias celdas que el extractor no pudo verificar. No se puede estimar una nota con esa única evidencia."
     elif wrong:
-        global_mark, note = "Desarrollo parcial con una discrepancia comprobada", "Revise el equilibrio señalado y vuelva a contrastar la respuesta."
+        global_mark, note = "Desarrollo parcial con una discrepancia comprobada", "Revise el apartado con la discrepancia identificada y vuelva a contrastar su resultado."
     elif checked:
         global_mark, note = "Desarrollo parcial con una comprobación reproducida", "La comprobación respalda ese resultado. Revise la evidencia de los demás criterios."
     else:
@@ -162,22 +202,15 @@ def assemble(grouped, selections):
         global_mark = "Siete criterios documentados con una discrepancia comprobada" if wrong else "Siete criterios documentados, pendientes de validación integral"
     pending_max=sum(a["max"] for i in items for a in i["aspects"] if a["state"]=="pending")
     confirmed=sum(Decimal(str(i["points"])) for i in items)
-    policy=RUBRIC.get("numeric")
-    scale="La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
-    numeric=numeric_floor(items,policy)
-    if numeric is not None:
-        global_mark=numeric
-        scale="Escala aprobada " + policy["version"] + ". El crédito demostrado conserva el máximo global de los siete criterios. Un criterio no observable sigue abierto, sin declararlo incorrecto."
-    elif covered:
+    open_within=sum(a["max"]-a["points"] for a in parts if a["state"] in ("documented","developed","supported"))
+    if covered:
         global_mark=format(confirmed.normalize(),"f").replace(".",",")+" / 100 · mínimo demostrado"
-    if policy is None:
-        scale="Ponderación propuesta para el piloto, sin aprobación para la nota oficial. Un indicio cuantificado recibe un cuarto del subcriterio. Una comprobación aritmética reproducida puede completar solo ese subcriterio. Una discrepancia comprobada recibe cero en el apartado afectado. Los apartados sin evidencia quedan pendientes; el denominador siempre es 100."
+    scale="Ponderación propuesta para el piloto. Un dato pertinente aporta el 25 % del apartado, un desarrollo documentado el 50 % y un resultado fundamentado el 75 %. El 100 % exige reproducir el control aplicable. Una discrepancia comprobada afecta a ese apartado. La evidencia ausente queda pendiente. La nota provisional mantiene el denominador de 100."
     return {"rubric":RUBRIC["version"], "proposal":PROPOSAL["version"], "official":False, "global":global_mark, "globalNote":note,
-            "coverage":{"evaluated":covered, "total":len(items), "pendingPoints":pending_max}, "criteria":items,
+            "coverage":{"evaluated":covered, "total":len(items), "pendingPoints":pending_max,"openWithinObserved":open_within}, "criteria":items,
             "scale":scale}
 
 def review(fragments, select=mock_select):
     grouped = candidates(fragments)
-    if not any(grouped.values()):
-        return assemble(grouped, {})
-    return assemble(grouped, select(grouped))
+    candidates_for_provider=usable(grouped)
+    return assemble(grouped,select(candidates_for_provider) if any(candidates_for_provider.values()) else {})

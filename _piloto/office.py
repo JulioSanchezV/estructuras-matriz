@@ -190,7 +190,8 @@ def sheets(package, main):
                     cells.append((addr, value))
             if cells:
                 loc = f"Excel · hoja {number}, {cells[0][0]}:{cells[-1][0]}"
-                yield loc, " | ".join(f"{a} {v}" for a,v in cells)
+                value=cells[0][1] if len(cells)==1 else " | ".join(f"{a} {v}" for a,v in cells)
+                yield loc,value
 
 def extract(raw, expected):
     if expected not in TYPES or not isinstance(raw, bytes) or not 0 < len(raw) <= MAX_UPLOAD:
