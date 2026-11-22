@@ -37,6 +37,20 @@ class PilotTest(unittest.TestCase):
                 self.assertLess(result["coverage"]["evaluated"],7)
                 self.assertTrue(all("OCULTO-DE-PRUEBA" not in e["quote"] for c in result["criteria"] for e in c["evidence"]))
         self.assertEqual(review(extract(sample("docx",True),"docx")),examples["empty"])
+    def test_proposed_scores_and_unobserved_weight(self):
+        word=review(extract(sample("docx"),"docx"))
+        self.assertEqual(word["global"],"6 / 100 · mínimo demostrado")
+        self.assertEqual(word["coverage"],{"evaluated":2,"total":7,"pendingPoints":91})
+        self.assertEqual(sum(c["max"] for c in word["criteria"]),100)
+        parts=[p for c in word["criteria"] for p in c["aspects"]]
+        self.assertTrue(all((p["reference"] is None)==(p["state"]=="pending") for p in parts))
+        self.assertEqual(sum(p["points"] for p in parts),6)
+        excel=review(extract(sample("xlsx"),"xlsx"))
+        balance=next(p for c in excel["criteria"] if c["id"]=="resultados" for p in c["aspects"] if p["id"]=="equilibrio")
+        self.assertEqual((balance["state"],balance["points"]),("error",0))
+        self.assertEqual(excel["coverage"]["pendingPoints"],91)
+        self.assertEqual(review([])["global"],None)
+
     def test_unknown_and_unsupported(self):
         for content,ext in [(b"Archivo ficticio ilegible","docx"),(sample("xlsx"),"pptx"),(sample("docx"),"pdf")]:
             with self.assertRaises(DocumentError): extract(content,ext)

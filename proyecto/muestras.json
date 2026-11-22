@@ -2,11 +2,12 @@
   "docx": {
     "rubric": "cercha-escrito-2026-11-21-v1",
     "official": false,
-    "global": "Desarrollo parcial con una comprobación reproducida",
+    "global": "6 / 100 · mínimo demostrado",
     "globalNote": "La comprobación respalda ese resultado. Revise la evidencia de los demás criterios.",
     "coverage": {
       "evaluated": 2,
-      "total": 7
+      "total": 7,
+      "pendingPoints": 91
     },
     "criteria": [
       {
@@ -22,7 +23,43 @@
             "id": "e1"
           }
         ],
-        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad.",
+        "max": 14,
+        "aspects": [
+          {
+            "id": "geometria",
+            "label": "Tipología, peralte y geometría justificados",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "conectividad",
+            "label": "Coordenadas, numeración y conectividad",
+            "max": 4,
+            "points": 1,
+            "state": "documented",
+            "reference": "e1"
+          },
+          {
+            "id": "apoyos",
+            "label": "Apoyos y grados de libertad",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "estabilidad",
+            "label": "Estabilidad del modelo",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 1
       },
       {
         "id": "cargas",
@@ -31,7 +68,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones.",
+        "max": 17,
+        "aspects": [
+          {
+            "id": "acciones",
+            "label": "Componentes de carga y fuentes",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "reparto",
+            "label": "Áreas tributarias y reparto a los nudos",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "viento",
+            "label": "Casos de viento y signos",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "combinaciones",
+            "label": "Combinaciones y unidades",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "matrices",
@@ -40,7 +113,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas.",
+        "max": 22,
+        "aspects": [
+          {
+            "id": "barra",
+            "label": "Matriz de barra",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "ensamble",
+            "label": "Ensamblaje y correspondencia de grados de libertad",
+            "max": 7,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "restricciones",
+            "label": "Condiciones de contorno y partición",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "solucion",
+            "label": "Solución y procedimiento reproducible",
+            "max": 6,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "resultados",
@@ -55,7 +164,35 @@
             "id": "e2"
           }
         ],
-        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo.",
+        "max": 14,
+        "aspects": [
+          {
+            "id": "magnitudes",
+            "label": "Desplazamientos, reacciones y axiles",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "equilibrio",
+            "label": "Comprobación del equilibrio",
+            "max": 5,
+            "points": 5,
+            "state": "verified",
+            "reference": "e2"
+          },
+          {
+            "id": "contraste",
+            "label": "Contraste independiente con el mismo modelo",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 5
       },
       {
         "id": "resistencia",
@@ -64,7 +201,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes.",
+        "max": 16,
+        "aspects": [
+          {
+            "id": "traccion",
+            "label": "Resistencia a tracción",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "compresion",
+            "label": "Compresión, longitud efectiva y arriostramiento",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "deformacion",
+            "label": "Deflexión de servicio",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "gobernante",
+            "label": "Utilización y condición gobernante",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "criticas",
@@ -73,7 +246,35 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión.",
+        "max": 7,
+        "aspects": [
+          {
+            "id": "barras",
+            "label": "Identificación de barras críticas",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "inversion",
+            "label": "Inversión de esfuerzos",
+            "max": 2,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "levantamiento",
+            "label": "Levantamiento y succión en apoyos",
+            "max": 2,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "perfiles",
@@ -82,19 +283,49 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante.",
+        "max": 10,
+        "aspects": [
+          {
+            "id": "comparacion",
+            "label": "Comparación de alternativas HSS",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "peso",
+            "label": "Actualización de masa y peso propio",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "seleccion",
+            "label": "Selección de la alternativa más ligera que cumple",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       }
     ],
-    "scale": "La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+    "scale": "Ponderación propuesta para el piloto, sin aprobación para la nota oficial. Un indicio cuantificado recibe un cuarto del subcriterio. Una comprobación aritmética reproducida puede completar solo ese subcriterio. Una discrepancia comprobada recibe cero en el apartado afectado. Los apartados sin evidencia quedan pendientes; el denominador siempre es 100.",
+    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v1"
   },
   "xlsx": {
     "rubric": "cercha-escrito-2026-11-21-v1",
     "official": false,
-    "global": "Desarrollo parcial con una discrepancia comprobada",
+    "global": "1 / 100 · mínimo demostrado",
     "globalNote": "Revise el equilibrio señalado y vuelva a contrastar la respuesta.",
     "coverage": {
-      "evaluated": 3,
-      "total": 7
+      "evaluated": 2,
+      "total": 7,
+      "pendingPoints": 91
     },
     "criteria": [
       {
@@ -104,7 +335,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad.",
+        "max": 14,
+        "aspects": [
+          {
+            "id": "geometria",
+            "label": "Tipología, peralte y geometría justificados",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "conectividad",
+            "label": "Coordenadas, numeración y conectividad",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "apoyos",
+            "label": "Apoyos y grados de libertad",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "estabilidad",
+            "label": "Estabilidad del modelo",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "cargas",
@@ -119,22 +386,88 @@
             "id": "e1"
           }
         ],
-        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones.",
+        "max": 17,
+        "aspects": [
+          {
+            "id": "acciones",
+            "label": "Componentes de carga y fuentes",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "reparto",
+            "label": "Áreas tributarias y reparto a los nudos",
+            "max": 4,
+            "points": 1,
+            "state": "documented",
+            "reference": "e1"
+          },
+          {
+            "id": "viento",
+            "label": "Casos de viento y signos",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "combinaciones",
+            "label": "Combinaciones y unidades",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 1
       },
       {
         "id": "matrices",
         "label": "Método matricial",
-        "status": "partial",
-        "statusLabel": "Evidencia parcial",
-        "reason": "Las citas mencionan fórmulas visibles. Por verificar en la evidencia: matriz de barra, ensamblaje, condiciones de apoyo.",
-        "evidence": [
+        "status": "none",
+        "statusLabel": "Sin evidencia legible",
+        "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
+        "evidence": [],
+        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas.",
+        "max": 22,
+        "aspects": [
           {
-            "location": "Excel · hoja 1, A2:B2",
-            "quote": "A2 Equilibrio vertical: 30 kN + 20 kN - 50 kN = 4 kN. | B2 fórmula visible =30+20-50",
-            "id": "e2"
+            "id": "barra",
+            "label": "Matriz de barra",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "ensamble",
+            "label": "Ensamblaje y correspondencia de grados de libertad",
+            "max": 7,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "restricciones",
+            "label": "Condiciones de contorno y partición",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "solucion",
+            "label": "Solución y procedimiento reproducible",
+            "max": 6,
+            "points": 0,
+            "state": "pending",
+            "reference": null
           }
         ],
-        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+        "points": 0
       },
       {
         "id": "resultados",
@@ -149,7 +482,35 @@
             "id": "e2"
           }
         ],
-        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo.",
+        "max": 14,
+        "aspects": [
+          {
+            "id": "magnitudes",
+            "label": "Desplazamientos, reacciones y axiles",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "equilibrio",
+            "label": "Comprobación del equilibrio",
+            "max": 5,
+            "points": 0,
+            "state": "error",
+            "reference": "e2"
+          },
+          {
+            "id": "contraste",
+            "label": "Contraste independiente con el mismo modelo",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "resistencia",
@@ -158,7 +519,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes.",
+        "max": 16,
+        "aspects": [
+          {
+            "id": "traccion",
+            "label": "Resistencia a tracción",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "compresion",
+            "label": "Compresión, longitud efectiva y arriostramiento",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "deformacion",
+            "label": "Deflexión de servicio",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "gobernante",
+            "label": "Utilización y condición gobernante",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "criticas",
@@ -167,7 +564,35 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión.",
+        "max": 7,
+        "aspects": [
+          {
+            "id": "barras",
+            "label": "Identificación de barras críticas",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "inversion",
+            "label": "Inversión de esfuerzos",
+            "max": 2,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "levantamiento",
+            "label": "Levantamiento y succión en apoyos",
+            "max": 2,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "perfiles",
@@ -176,19 +601,49 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante.",
+        "max": 10,
+        "aspects": [
+          {
+            "id": "comparacion",
+            "label": "Comparación de alternativas HSS",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "peso",
+            "label": "Actualización de masa y peso propio",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "seleccion",
+            "label": "Selección de la alternativa más ligera que cumple",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       }
     ],
-    "scale": "La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+    "scale": "Ponderación propuesta para el piloto, sin aprobación para la nota oficial. Un indicio cuantificado recibe un cuarto del subcriterio. Una comprobación aritmética reproducida puede completar solo ese subcriterio. Una discrepancia comprobada recibe cero en el apartado afectado. Los apartados sin evidencia quedan pendientes; el denominador siempre es 100.",
+    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v1"
   },
   "pptx": {
     "rubric": "cercha-escrito-2026-11-21-v1",
     "official": false,
-    "global": "Desarrollo parcial documentado",
+    "global": "3,75 / 100 · mínimo demostrado",
     "globalNote": "Se localizaron datos técnicos. Complete las comprobaciones indicadas por criterio.",
     "coverage": {
       "evaluated": 3,
-      "total": 7
+      "total": 7,
+      "pendingPoints": 85
     },
     "criteria": [
       {
@@ -198,7 +653,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad.",
+        "max": 14,
+        "aspects": [
+          {
+            "id": "geometria",
+            "label": "Tipología, peralte y geometría justificados",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "conectividad",
+            "label": "Coordenadas, numeración y conectividad",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "apoyos",
+            "label": "Apoyos y grados de libertad",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "estabilidad",
+            "label": "Estabilidad del modelo",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "cargas",
@@ -207,7 +698,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones.",
+        "max": 17,
+        "aspects": [
+          {
+            "id": "acciones",
+            "label": "Componentes de carga y fuentes",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "reparto",
+            "label": "Áreas tributarias y reparto a los nudos",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "viento",
+            "label": "Casos de viento y signos",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "combinaciones",
+            "label": "Combinaciones y unidades",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "matrices",
@@ -216,7 +743,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas.",
+        "max": 22,
+        "aspects": [
+          {
+            "id": "barra",
+            "label": "Matriz de barra",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "ensamble",
+            "label": "Ensamblaje y correspondencia de grados de libertad",
+            "max": 7,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "restricciones",
+            "label": "Condiciones de contorno y partición",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "solucion",
+            "label": "Solución y procedimiento reproducible",
+            "max": 6,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "resultados",
@@ -225,7 +788,35 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo.",
+        "max": 14,
+        "aspects": [
+          {
+            "id": "magnitudes",
+            "label": "Desplazamientos, reacciones y axiles",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "equilibrio",
+            "label": "Comprobación del equilibrio",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "contraste",
+            "label": "Contraste independiente con el mismo modelo",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "resistencia",
@@ -240,7 +831,43 @@
             "id": "e1"
           }
         ],
-        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes.",
+        "max": 16,
+        "aspects": [
+          {
+            "id": "traccion",
+            "label": "Resistencia a tracción",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "compresion",
+            "label": "Compresión, longitud efectiva y arriostramiento",
+            "max": 5,
+            "points": 1.25,
+            "state": "documented",
+            "reference": "e1"
+          },
+          {
+            "id": "deformacion",
+            "label": "Deflexión de servicio",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "gobernante",
+            "label": "Utilización y condición gobernante",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 1.25
       },
       {
         "id": "criticas",
@@ -255,7 +882,35 @@
             "id": "e1"
           }
         ],
-        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión.",
+        "max": 7,
+        "aspects": [
+          {
+            "id": "barras",
+            "label": "Identificación de barras críticas",
+            "max": 3,
+            "points": 0.75,
+            "state": "documented",
+            "reference": "e1"
+          },
+          {
+            "id": "inversion",
+            "label": "Inversión de esfuerzos",
+            "max": 2,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "levantamiento",
+            "label": "Levantamiento y succión en apoyos",
+            "max": 2,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0.75
       },
       {
         "id": "perfiles",
@@ -270,10 +925,39 @@
             "id": "e2"
           }
         ],
-        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante.",
+        "max": 10,
+        "aspects": [
+          {
+            "id": "comparacion",
+            "label": "Comparación de alternativas HSS",
+            "max": 4,
+            "points": 1,
+            "state": "documented",
+            "reference": "e2"
+          },
+          {
+            "id": "peso",
+            "label": "Actualización de masa y peso propio",
+            "max": 3,
+            "points": 0.75,
+            "state": "documented",
+            "reference": "e2"
+          },
+          {
+            "id": "seleccion",
+            "label": "Selección de la alternativa más ligera que cumple",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 1.75
       }
     ],
-    "scale": "La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+    "scale": "Ponderación propuesta para el piloto, sin aprobación para la nota oficial. Un indicio cuantificado recibe un cuarto del subcriterio. Una comprobación aritmética reproducida puede completar solo ese subcriterio. Una discrepancia comprobada recibe cero en el apartado afectado. Los apartados sin evidencia quedan pendientes; el denominador siempre es 100.",
+    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v1"
   },
   "empty": {
     "rubric": "cercha-escrito-2026-11-21-v1",
@@ -282,7 +966,8 @@
     "globalNote": "No hay evidencia puntuable en las partes visibles. Añada texto, celdas o una comprobación con unidades.",
     "coverage": {
       "evaluated": 0,
-      "total": 7
+      "total": 7,
+      "pendingPoints": 100
     },
     "criteria": [
       {
@@ -292,7 +977,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad.",
+        "max": 14,
+        "aspects": [
+          {
+            "id": "geometria",
+            "label": "Tipología, peralte y geometría justificados",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "conectividad",
+            "label": "Coordenadas, numeración y conectividad",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "apoyos",
+            "label": "Apoyos y grados de libertad",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "estabilidad",
+            "label": "Estabilidad del modelo",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "cargas",
@@ -301,7 +1022,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones.",
+        "max": 17,
+        "aspects": [
+          {
+            "id": "acciones",
+            "label": "Componentes de carga y fuentes",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "reparto",
+            "label": "Áreas tributarias y reparto a los nudos",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "viento",
+            "label": "Casos de viento y signos",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "combinaciones",
+            "label": "Combinaciones y unidades",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "matrices",
@@ -310,7 +1067,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+        "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas.",
+        "max": 22,
+        "aspects": [
+          {
+            "id": "barra",
+            "label": "Matriz de barra",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "ensamble",
+            "label": "Ensamblaje y correspondencia de grados de libertad",
+            "max": 7,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "restricciones",
+            "label": "Condiciones de contorno y partición",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "solucion",
+            "label": "Solución y procedimiento reproducible",
+            "max": 6,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "resultados",
@@ -319,7 +1112,35 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+        "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo.",
+        "max": 14,
+        "aspects": [
+          {
+            "id": "magnitudes",
+            "label": "Desplazamientos, reacciones y axiles",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "equilibrio",
+            "label": "Comprobación del equilibrio",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "contraste",
+            "label": "Contraste independiente con el mismo modelo",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "resistencia",
@@ -328,7 +1149,43 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+        "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes.",
+        "max": 16,
+        "aspects": [
+          {
+            "id": "traccion",
+            "label": "Resistencia a tracción",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "compresion",
+            "label": "Compresión, longitud efectiva y arriostramiento",
+            "max": 5,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "deformacion",
+            "label": "Deflexión de servicio",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "gobernante",
+            "label": "Utilización y condición gobernante",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "criticas",
@@ -337,7 +1194,35 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+        "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión.",
+        "max": 7,
+        "aspects": [
+          {
+            "id": "barras",
+            "label": "Identificación de barras críticas",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "inversion",
+            "label": "Inversión de esfuerzos",
+            "max": 2,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "levantamiento",
+            "label": "Levantamiento y succión en apoyos",
+            "max": 2,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       },
       {
         "id": "perfiles",
@@ -346,9 +1231,38 @@
         "statusLabel": "Sin evidencia legible",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+        "next": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante.",
+        "max": 10,
+        "aspects": [
+          {
+            "id": "comparacion",
+            "label": "Comparación de alternativas HSS",
+            "max": 4,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "peso",
+            "label": "Actualización de masa y peso propio",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "seleccion",
+            "label": "Selección de la alternativa más ligera que cumple",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          }
+        ],
+        "points": 0
       }
     ],
-    "scale": "La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
+    "scale": "Ponderación propuesta para el piloto, sin aprobación para la nota oficial. Un indicio cuantificado recibe un cuarto del subcriterio. Una comprobación aritmética reproducida puede completar solo ese subcriterio. Una discrepancia comprobada recibe cero en el apartado afectado. Los apartados sin evidencia quedan pendientes; el denominador siempre es 100.",
+    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v1"
   }
 }

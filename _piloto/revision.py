@@ -7,10 +7,14 @@ import unicodedata
 
 ROOT = Path(__file__).resolve().parents[1]
 RUBRIC = json.loads((ROOT / "proyecto" / "rubrica.json").read_text(encoding="utf-8"))
+PROPOSAL = json.loads((ROOT / "proyecto" / "ponderacion-propuesta.json").read_text(encoding="utf-8"))
+PROPOSED_BY_ID = {c["id"]:c for c in PROPOSAL["criteria"]}
+if set(PROPOSED_BY_ID)!={c["id"] for c in RUBRIC["criteria"]} or sum(c["max"] for c in PROPOSED_BY_ID.values())!=100 or any(sum(a["max"] for a in c["aspects"])!=c["max"] for c in PROPOSED_BY_ID.values()):
+    raise ValueError("La propuesta debe cubrir exactamente los siete criterios y sumar 100 puntos.")
 TOPICS = {
     "modelo": r"nudos?|coordenadas?|apoyos?|conectividad|grados de libertad|peralte|triangul",
     "cargas": r"tributari|carga muerta|carga viva|fuerza nodal|cargas nodales|caso de viento|peso propio",
-    "matrices": r"ensambl|matriz|rigidez|condici[oó]n de apoyo|formula visible",
+    "matrices": r"ensambl|matriz|rigidez|condici[oó]n de apoyo|mmult|minvers",
     "resultados": r"equilibrio|reaccion|desplazamiento|fuerza axial",
     "resistencia": r"deflexion|compresion|traccion|longitud no arriostrada|capacidad axial",
     "criticas": r"inversion de esfuerzos|levantamiento|succion|barra critica|cordon|diagonal|montante",
@@ -65,6 +69,28 @@ def parcial_reason(cid, rows):
     first = ("Las citas mencionan " + ", ".join(found) + ".") if found else "Se localizaron datos técnicos vinculados a este criterio."
     return first + ((" Por verificar en la evidencia: " + ", ".join(pending) + ".") if pending else " Revise la coherencia y la suficiencia de esos datos en el modelo.")
 
+def proposed_points(criterion, fragments):
+    breakdown = []
+    for part in criterion["aspects"]:
+        state, value, reference = "pending", 0, None
+        for fragment in fragments:
+            clauses = re.split(r";|(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ])|\s+\|\s+", fragment.text)
+            for clause in clauses:
+                plain = normalize(clause)
+                hit = re.search(part["term"], plain)
+                if not hit or not DATA.search(plain[max(0,hit.start()-80):hit.end()+80]):
+                    continue
+                if criterion["id"]=="matrices" and part["id"]=="solucion" and not re.search(r"matriz|matricial|ensambl|partici|sistema reducido|mmult|minvers",normalize(fragment.text)):
+                    continue
+                if state == "pending":
+                    state, value, reference = "documented", part["max"]/4, fragment.id
+                if criterion["id"]=="resultados" and part["id"]=="equilibrio":
+                    check=equilibrium(clause)
+                    if check is not None and (state!="error" or not check[0]):
+                        state, value, reference = ("verified",part["max"],fragment.id) if check[0] else ("error",0,fragment.id)
+        breakdown.append({"id":part["id"],"label":part["label"],"max":part["max"],"points":value,"state":state,"reference":reference})
+    return breakdown
+
 def numeric_floor(items, policy):
     """Only an explicitly approved, versioned schedule can enable numeric feedback."""
     if policy is None:
@@ -110,9 +136,16 @@ def assemble(grouped, selections):
                 f, check = next(((z,c) for z,c in checks if not c[0]), checks[0])
                 state, reason = ("checked" if check[0] else "error"), check[1]
                 valid = [f] + [z for z in valid if z.id != f.id]
-        evidence = [{"id":f.id, "location":f.location, "quote":f.text[:240]} for f in valid[:3]]
+        rule=PROPOSED_BY_ID[cid]
+        breakdown=proposed_points(rule,valid)
+        if all(a["state"]=="pending" for a in breakdown):
+            state="none"
+            if valid:
+                reason="Se localizó una referencia al tema, pero falta evidencia cuantificable relacionada con un apartado concreto."
+        evidence = [{"id":f.id, "location":f.location, "quote":f.text[:240]} for f in valid]
         items.append({"id":cid, "label":crit["label"], "status":state, "statusLabel":STATUS[state],
-                      "reason":reason, "evidence":evidence, "next":crit["description"]})
+                      "reason":reason, "evidence":evidence, "next":crit["description"], "max":rule["max"],
+                      "points":sum(a["points"] for a in breakdown), "aspects":breakdown})
     covered = sum(i["status"] != "none" for i in items)
     wrong = any(i["status"] == "error" for i in items)
     checked = any(i["status"] == "checked" for i in items)
@@ -127,14 +160,20 @@ def assemble(grouped, selections):
         global_mark, note = "Desarrollo parcial documentado", "Se localizaron datos técnicos. Complete las comprobaciones indicadas por criterio."
     if covered == len(items):
         global_mark = "Siete criterios documentados con una discrepancia comprobada" if wrong else "Siete criterios documentados, pendientes de validación integral"
+    pending_max=sum(a["max"] for i in items for a in i["aspects"] if a["state"]=="pending")
+    confirmed=sum(Decimal(str(i["points"])) for i in items)
     policy=RUBRIC.get("numeric")
     scale="La versión docente contiene siete criterios y carece de pesos o escala numérica aprobados. La nota global del piloto es descriptiva. La cobertura cuenta criterios con evidencia, por separado de su calidad."
     numeric=numeric_floor(items,policy)
     if numeric is not None:
         global_mark=numeric
         scale="Escala aprobada " + policy["version"] + ". El crédito demostrado conserva el máximo global de los siete criterios. Un criterio no observable sigue abierto, sin declararlo incorrecto."
-    return {"rubric":RUBRIC["version"], "official":False, "global":global_mark, "globalNote":note,
-            "coverage":{"evaluated":covered, "total":len(items)}, "criteria":items,
+    elif covered:
+        global_mark=format(confirmed.normalize(),"f").replace(".",",")+" / 100 · mínimo demostrado"
+    if policy is None:
+        scale="Ponderación propuesta para el piloto, sin aprobación para la nota oficial. Un indicio cuantificado recibe un cuarto del subcriterio. Una comprobación aritmética reproducida puede completar solo ese subcriterio. Una discrepancia comprobada recibe cero en el apartado afectado. Los apartados sin evidencia quedan pendientes; el denominador siempre es 100."
+    return {"rubric":RUBRIC["version"], "proposal":PROPOSAL["version"], "official":False, "global":global_mark, "globalNote":note,
+            "coverage":{"evaluated":covered, "total":len(items), "pendingPoints":pending_max}, "criteria":items,
             "scale":scale}
 
 def review(fragments, select=mock_select):

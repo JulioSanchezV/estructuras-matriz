@@ -38,7 +38,7 @@ try{
   await ev('document.querySelector(".course-nav a[href*=proyecto]").click()');await until('document.querySelector("#show-example")');
   const dimensions=await ev('({viewport:innerWidth,contenido:document.documentElement.scrollWidth})');metrics.push({width,...dimensions});assert.ok(dimensions.contenido<=width+1,JSON.stringify(dimensions));
   assert.equal(await ev('!!document.querySelector("#entregar button:disabled")&&!document.querySelector("input[type=file]")'),true);
-  for(const fmt of ['docx','xlsx','pptx','empty']){await ev('document.querySelector("#example-kind").value='+JSON.stringify(fmt)+';document.querySelector("#show-example").click()');await until('document.querySelector("#review-result li")&&!document.querySelector("#show-example").disabled');assert.equal(await ev('document.querySelectorAll("#review-result li").length'),7);}
+  for(const fmt of ['docx','xlsx','pptx','empty']){await ev('document.querySelector("#example-kind").value='+JSON.stringify(fmt)+';document.querySelector("#show-example").click()');await until('document.querySelector("#review-result li")&&!document.querySelector("#show-example").disabled');assert.equal(await ev('document.querySelectorAll("#review-result > ol > li").length'),7);}
   if(process.env.ESTRUCTURAS_CAPTURAS){const dir=resolve(process.env.ESTRUCTURAS_CAPTURAS);await mkdir(dir,{recursive:true});await ev('scrollTo(0,0)');const png=await cmd('Page.captureScreenshot',{format:'png'});await writeFile(join(dir,'proyecto-'+width+'.png'),Buffer.from(png.data,'base64'));}
  }
  await go('banco.html#resortes','document.querySelector("input.cell")');
