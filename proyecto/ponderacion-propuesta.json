@@ -1,0 +1,281 @@
+{
+  "version": "cercha-ponderacion-propuesta-2026-11-22-v3",
+  "status": "propuesta_formativa",
+  "maximum": 100,
+  "criteria": [
+    {
+      "id": "modelo",
+      "max": 10,
+      "why": "El esquema, las coordenadas y la conectividad definen el modelo.",
+      "aspects": [
+        {
+          "id": "geometria",
+          "max": 3,
+          "label": "Tipología y peralte",
+          "term": "tipolog|peralte"
+        },
+        {
+          "id": "coordenadas",
+          "max": 3,
+          "label": "Numeración y coordenadas de los nodos",
+          "term": "n[ou]do|coordenad"
+        },
+        {
+          "id": "conectividad",
+          "max": 2,
+          "label": "Conectividad de las barras",
+          "term": "conectiv|incidenc"
+        },
+        {
+          "id": "esquema",
+          "max": 2,
+          "label": "Esquema acotado y grados de libertad",
+          "term": "esquema acotad|grado.{0,12}libertad|gdl"
+        }
+      ]
+    },
+    {
+      "id": "cargas",
+      "max": 15,
+      "why": "El avalúo incluye cargas de cubierta, viento y carga viva. La asignación en nodos exige áreas tributarias, signos y unidades.",
+      "aspects": [
+        {
+          "id": "acciones",
+          "max": 4,
+          "label": "Avalúo de cargas y fuentes",
+          "term": "avaluo de cargas|carga muerta|carga viva|peso propio|montaje solar"
+        },
+        {
+          "id": "reparto",
+          "max": 4,
+          "label": "Áreas tributarias y asignación en nodos",
+          "term": "tributari|carga nodal|fuerza nodal|asignaci.{0,20}n[ou]do"
+        },
+        {
+          "id": "viento",
+          "max": 3,
+          "label": "Casos de viento y signos",
+          "term": "viento|succion"
+        },
+        {
+          "id": "combinaciones",
+          "max": 4,
+          "label": "Combinaciones y unidades",
+          "term": "combinaci"
+        }
+      ]
+    },
+    {
+      "id": "matrices",
+      "max": 30,
+      "why": "El desarrollo enlaza la matriz de cada barra con el ensamblaje global, la aplicación de restricciones y la solución del sistema.",
+      "aspects": [
+        {
+          "id": "barra",
+          "max": 6,
+          "label": "Matriz de barra",
+          "term": "matriz.{0,24}barra|rigidez.{0,20}element"
+        },
+        {
+          "id": "ensamble",
+          "max": 10,
+          "label": "Ensamblaje y correspondencia de grados de libertad",
+          "term": "ensambl"
+        },
+        {
+          "id": "restricciones",
+          "max": 6,
+          "label": "Condiciones de contorno y partición",
+          "term": "partici|condici.{0,12}apoyo|restricc"
+        },
+        {
+          "id": "solucion",
+          "max": 8,
+          "label": "Solución y procedimiento reproducible",
+          "term": "formula visible|sistema reducido|solucion matricial"
+        }
+      ]
+    },
+    {
+      "id": "resultados",
+      "max": 15,
+      "why": "Obtener resultados y contrastarlos requiere trabajo independiente de la solución.",
+      "aspects": [
+        {
+          "id": "caso",
+          "max": 2,
+          "label": "Caso de carga asociado a los resultados",
+          "term": "resultado.{0,24}(?:caso|combinaci)|(?:caso|combinaci).{0,24}resultado"
+        },
+        {
+          "id": "desplazamientos",
+          "max": 2,
+          "label": "Desplazamientos por nodo y dirección",
+          "term": "desplazamiento"
+        },
+        {
+          "id": "reacciones",
+          "max": 2,
+          "label": "Reacciones en los apoyos y componentes",
+          "term": "reaccion"
+        },
+        {
+          "id": "axiles",
+          "max": 2,
+          "label": "Fuerzas axiales con barra y signo",
+          "term": "fuerza axial|fuerzas axiales|axil"
+        },
+        {
+          "id": "equilibrio",
+          "max": 2,
+          "label": "Aritmética del residual declarado en un eje",
+          "term": "equilibrio"
+        },
+        {
+          "id": "contraste",
+          "max": 5,
+          "label": "Contraste independiente con el mismo modelo y caso",
+          "term": "contraste|independiente|comparaci.{0,20}(manual|excel)|verificaci.{0,12}manual"
+        }
+      ]
+    },
+    {
+      "id": "resistencia",
+      "max": 15,
+      "why": "Combina dos estados de esfuerzo, la longitud efectiva y una verificación de servicio distinta.",
+      "aspects": [
+        {
+          "id": "traccion",
+          "max": 3,
+          "label": "Resistencia a tracción",
+          "term": "traccion"
+        },
+        {
+          "id": "compresion",
+          "max": 5,
+          "label": "Compresión, longitud efectiva y arriostramiento",
+          "term": "compresion|longitud no arriostrada|longitud efectiva"
+        },
+        {
+          "id": "deformacion",
+          "max": 4,
+          "label": "Deflexión de servicio",
+          "term": "deflexion|flecha"
+        },
+        {
+          "id": "gobernante",
+          "max": 3,
+          "label": "Utilización y condición gobernante",
+          "term": "utilizaci|gobernante"
+        }
+      ]
+    },
+    {
+      "id": "criticas",
+      "max": 5,
+      "why": "Es una comprobación focalizada en barras y apoyos concretos bajo distintos casos.",
+      "aspects": [
+        {
+          "id": "barras",
+          "max": 3,
+          "label": "Barras críticas e inversión de esfuerzos",
+          "term": "barra critica|diagonal|montante|cordon|inversion|cambio de signo"
+        },
+        {
+          "id": "levantamiento",
+          "max": 2,
+          "label": "Levantamiento de apoyos bajo succión",
+          "term": "levantamiento|succion"
+        }
+      ]
+    },
+    {
+      "id": "perfiles",
+      "max": 10,
+      "why": "La comparación exige iterar, actualizar el peso y justificar la alternativa admisible más ligera.",
+      "aspects": [
+        {
+          "id": "comparacion",
+          "max": 4,
+          "label": "Comparación de alternativas HSS",
+          "term": "alternativa|comparaci.{0,20}perfiles"
+        },
+        {
+          "id": "peso",
+          "max": 3,
+          "label": "Actualización de masa y peso propio",
+          "term": "masa total|peso propio"
+        },
+        {
+          "id": "seleccion",
+          "max": 3,
+          "label": "Selección de la alternativa más ligera que cumple",
+          "term": "menor peso|mas ligera|gobernante"
+        }
+      ]
+    }
+  ],
+  "levels": [
+    {
+      "id": "documented",
+      "label": "Dato pertinente"
+    },
+    {
+      "id": "developed",
+      "label": "Desarrollo documentado"
+    },
+    {
+      "id": "supported",
+      "label": "Resultado fundamentado"
+    },
+    {
+      "id": "verified",
+      "label": "Control reproducido"
+    }
+  ],
+  "pointsByMaximum": {
+    "2": [
+      1,
+      1,
+      1,
+      2
+    ],
+    "3": [
+      1,
+      1,
+      2,
+      3
+    ],
+    "4": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "5": [
+      1,
+      2,
+      4,
+      5
+    ],
+    "6": [
+      1,
+      3,
+      4,
+      6
+    ],
+    "8": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "10": [
+      2,
+      5,
+      7,
+      10
+    ]
+  },
+  "scaleNote": "Ponderación propuesta para el piloto sobre 100 puntos. Cada apartado usa una escala de puntos enteros para dato pertinente, desarrollo documentado, resultado fundamentado y control reproducido. Una discrepancia comprobada afecta a ese apartado. Los apartados sin evidencia quedan pendientes. El total conserva el denominador de 100."
+}

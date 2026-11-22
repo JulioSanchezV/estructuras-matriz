@@ -1,0 +1,166 @@
+{
+  "version": "cercha-escrito-2026-11-22-v2",
+  "source": "Proyecto final de cercha de cubierta, revisión docente del 21 de noviembre de 2026, con los ajustes de terminología y alcance del 22 de noviembre.",
+  "criteria": [
+    {
+      "id": "modelo",
+      "label": "Geometría y modelo",
+      "description": "Defina la tipología y el peralte. Presente el esquema acotado, las coordenadas de los nodos, la conectividad de las barras y los grados de libertad."
+    },
+    {
+      "id": "cargas",
+      "label": "Avalúo de cargas y asignación en nodos",
+      "description": "Realice el avalúo de cargas de la cubierta, el montaje solar, las correas y el peso propio. Incluya la carga viva y los casos de viento. Asigne las cargas a los nodos mediante las áreas tributarias e indique signos, unidades y combinaciones."
+    },
+    {
+      "id": "matrices",
+      "label": "Método matricial",
+      "description": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas."
+    },
+    {
+      "id": "resultados",
+      "label": "Resultados y comprobación",
+      "description": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo."
+    },
+    {
+      "id": "resistencia",
+      "label": "Resistencia y deformación",
+      "description": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes."
+    },
+    {
+      "id": "criticas",
+      "label": "Barras críticas e inversión de esfuerzos",
+      "description": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión."
+    },
+    {
+      "id": "perfiles",
+      "label": "Selección de perfiles",
+      "description": "Compare alternativas HSS cuadradas que cumplan las verificaciones y actualice el peso propio. Justifique la más ligera y resuma utilizaciones, deflexiones y caso gobernante."
+    }
+  ],
+  "numeric": null,
+  "indicios": {
+    "modelo": [
+      [
+        "tipología o peralte",
+        "tipolog|peralte"
+      ],
+      [
+        "coordenadas de los nodos",
+        "n[ou]do|coordenad"
+      ],
+      [
+        "conectividad de las barras",
+        "conectiv|incidenc"
+      ],
+      [
+        "esquema y grados de libertad",
+        "esquema|grado.{0,12}libertad|gdl"
+      ]
+    ],
+    "cargas": [
+      [
+        "asignación en nodos",
+        "tributari|carga nodal|fuerza nodal|asignaci.{0,20}n[ou]do"
+      ],
+      [
+        "peso propio y componentes",
+        "peso propio|montaje|carga muerta"
+      ],
+      [
+        "casos de viento",
+        "viento|succion"
+      ],
+      [
+        "combinaciones",
+        "combinaci"
+      ]
+    ],
+    "matrices": [
+      [
+        "matriz de barra",
+        "matriz.{0,25}(?:barra|element)"
+      ],
+      [
+        "ensamblaje",
+        "ensambl"
+      ],
+      [
+        "condiciones de apoyo",
+        "condici.{0,12}apoyo|restricc"
+      ],
+      [
+        "fórmulas visibles",
+        "formula visible"
+      ]
+    ],
+    "resultados": [
+      [
+        "equilibrio",
+        "equilibrio"
+      ],
+      [
+        "reacciones",
+        "reaccion"
+      ],
+      [
+        "desplazamientos",
+        "desplazamiento"
+      ],
+      [
+        "fuerzas axiales",
+        "axial"
+      ]
+    ],
+    "resistencia": [
+      [
+        "longitud no arriostrada",
+        "longitud no arriostrada|longitud efectiva"
+      ],
+      [
+        "capacidad axial",
+        "capacidad|utilizaci"
+      ],
+      [
+        "deflexión de servicio",
+        "deflexion|flecha"
+      ],
+      [
+        "caso gobernante",
+        "gobernante"
+      ]
+    ],
+    "criticas": [
+      [
+        "barras identificadas",
+        "diagonal|montante|cordon"
+      ],
+      [
+        "inversión de esfuerzos",
+        "inversion|cambio de signo"
+      ],
+      [
+        "levantamiento de apoyo",
+        "levantamiento|succion"
+      ]
+    ],
+    "perfiles": [
+      [
+        "alternativas",
+        "alternativa"
+      ],
+      [
+        "masa o peso propio",
+        "masa total|peso propio"
+      ],
+      [
+        "utilización comparada",
+        "utilizaci"
+      ],
+      [
+        "alternativa gobernante",
+        "menor peso|gobernante"
+      ]
+    ]
+  }
+}

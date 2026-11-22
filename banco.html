@@ -204,17 +204,26 @@ input.cell.rounding { background:#fff3d4; border-color:#946000; color:#623f00; }
 <link rel="stylesheet" href="./bank-operational.css">
 <link rel="stylesheet" href="./tokens.css">
 <link rel="stylesheet" href="./bank-reading.css">
+  <link rel="stylesheet" href="./course.css">
 </head>
-<body>
+<body class="course-page course-bank">
+<a class="course-skip" href="#main">Ir al ejercicio</a>
+<header class="course-mast"><a class="course-brand" href="./index.html"><span class="course-sigil" aria-hidden="true">E</span>Estructuras I</a>
+  <nav class="course-nav" aria-label="Herramientas del curso"><a href="./index.html">Libro</a><a href="./banco.html" aria-current="page">Banco</a><a href="./calculadora.html">Matrices</a><a href="./proyecto.html">Proyecto</a></nav></header>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><a href="index.html">Volver al libro</a><p class="eyebrow">Estructuras I · Corte 3 · Método matricial de rigidez</p><h1>Banco de ejercicios de rigidez</h1></div>
+    <div class="brand"><p class="eyebrow">Estructuras I · Corte 3 · Método matricial de rigidez</p><h1>Banco de ejercicios de rigidez</h1></div>
+  </header>
+  <details class="practice-options"><summary>Alias de práctica y privacidad</summary>
     <div class="who">
       <label for="alias">Alias de práctica</label>
       <div class="row"><input id="alias" placeholder="Ej.: PUENTE" maxlength="64" autocomplete="off" spellcheck="false" aria-describedby="alias-hint">
-        <span class="hint" id="alias-hint">Use un alias inventado, no su nombre ni código personal. El alias determina los datos de práctica. Se guarda con las respuestas solo en este navegador; no se envían datos. Sin alias se usan datos de ejemplo.</span></div>
+          <span class="hint" id="alias-hint">Use un alias inventado o deje el campo vacío para usar el ejemplo. Las respuestas y la hoja se guardan en este perfil del navegador.</span></div>
     </div>
-  </header>
+    <p>Quien use el mismo perfil puede volver a abrir la práctica. Use un perfil propio o una ventana privada. Al terminar, cierre todas las ventanas privadas y recoja los respaldos que descargó.</p>
+    <p>El banco procesa las respuestas en su dispositivo. GitHub Pages registra la dirección IP de las visitas por seguridad.</p>
+  </details>
+  <div id="practice-storage-status" role="status" aria-atomic="true"></div>
   <div class="layout">
     <aside class="side">
       <select id="nav-select" aria-label="Ejercicio"></select>
@@ -222,7 +231,7 @@ input.cell.rounding { background:#fff3d4; border-color:#946000; color:#623f00; }
       <p class="side-note">Cada tipo permite practicar con distintas variantes. Use “Siguiente” para practicar con otros datos.</p>
     </aside>
     <div class="bank-content" style="min-width:0; display:grid; gap:20px;">
-      <main id="main"></main>
+      <main id="main" tabindex="-1"></main>
       <details class="panel" id="notacion">
         <summary>Notación y convenciones</summary>
         <div class="notation">
@@ -1401,9 +1410,43 @@ import { parseResponseBlock, responseTSV, numericTableColumns, escapeBlockHTML }
   const CAT = MRgen.catalog;
   const $ = (sel, el) => (el || document).querySelector(sel);
   const $$ = (sel, el) => [...(el || document).querySelectorAll(sel)];
+  const sessionOnly = new Map();
+  const isRecord = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+  function isProgress(value) {
+    return isRecord(value) && isRecord(value.inputs) && Array.isArray(value.ok) &&
+      Array.isArray(value.tried) && (value.blocks == null || isRecord(value.blocks));
+  }
+  function keepInSession(key, value) {
+    sessionOnly.set(key, value);
+    const status = $('#practice-storage-status');
+    if (!status.textContent) {
+      status.textContent = 'Parte de su práctica se conserva solo en esta pestaña. Copie las respuestas que necesite antes de cerrarla.';
+    }
+    return value;
+  }
   const store = {
-    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } }
+    get(key, fallback, valid = isRecord) {
+      if (sessionOnly.has(key)) return sessionOnly.get(key);
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw === null) return fallback;
+        const value = JSON.parse(raw);
+        return valid(value) ? value : keepInSession(key, fallback);
+      } catch {
+        return keepInSession(key, fallback);
+      }
+    },
+    set(key, value) {
+      if (sessionOnly.has(key)) {
+        sessionOnly.set(key, value);
+        return;
+      }
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        keepInSession(key, value);
+      }
+    }
   };
   const saved = store.get('rigidez:banco:estado:v2', {});
   const S = { alias: typeof saved?.alias === 'string' ? saved.alias.slice(0, 64) : '', type: CAT.some(c => c.id === saved?.type) ? saved.type : CAT[0].id, variants: saved?.variants && typeof saved.variants === 'object' ? saved.variants : {} };
@@ -1462,7 +1505,7 @@ import { parseResponseBlock, responseTSV, numericTableColumns, escapeBlockHTML }
     const cat = CAT.find(c => c.id === S.type) || CAT[0];
     const seed = `${(S.alias || 'ejemplo').trim().toUpperCase()}|${cat.id}|${variant()}`;
     EX = generateWithRounding(MR, cat, MR.makeRng(seed));
-    PROG = store.get(progKey(), { inputs: {}, ok: [], tried: [], blocks: {} });
+    PROG = store.get(progKey(), { inputs: {}, ok: [], tried: [], blocks: {} }, isProgress);
     PROG.blocks ||= {};
     $('#nav').innerHTML = navHTML();
     $('#nav-select').innerHTML = selectHTML();
@@ -1476,12 +1519,12 @@ import { parseResponseBlock, responseTSV, numericTableColumns, escapeBlockHTML }
             <button type="button" class="btn btn-sm" data-var="1" aria-label="Variante siguiente">Siguiente</button>
           </div></div>
       </section>
-      <div class="bank-workspace-access"><button type="button" class="btn btn-primary" data-sheet-open>Usar hoja libre</button><span class="small">Grilla plegable junto al ejercicio. Copie sus matrices, escriba fórmulas y envíe el rango al paso; sin listas de operandos.</span></div>
       <div class="prog"><div class="prog-bar"><span style="width:0%"></span></div><span class="prog-t"></span></div>
       <section class="enun">
         <div class="enun-text">${EX.statement}${EX.dataHTML || ''}</div>
         <figure class="enun-fig">${EX.figure}</figure>
       </section>
+      <div class="bank-workspace-access"><button type="button" class="btn btn-primary" data-sheet-open>Abrir hoja de cálculo</button><span class="small">Pegue una matriz, aplique una fórmula y envíe el rango al paso que está resolviendo.</span></div>
       <p class="small">Verde: correcto · Ámbar: compatible con redondeo, pendiente de revisar · Rojo: no coincide. Los avisos ámbar no suman pasos correctos.</p>
       ${EX.roundingDiagnostic ? `<p class="small">${EX.roundingDiagnostic}</p>` : ''}
       <ol class="steps">${EX.steps.map(stepHTML).join('')}</ol>

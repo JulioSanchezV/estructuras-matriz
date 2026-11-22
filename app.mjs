@@ -1,3 +1,4 @@
+import { courseCover } from './course-cover.mjs';
 import { chapters, exercises, matrix } from './content.mjs';
 import { sectionsForChapter, resolveLocation } from './routes.mjs';
 import { springChain, bar2D, barPlanar } from './math.mjs';
@@ -21,7 +22,14 @@ function toast(message) { $('#toast').textContent=message; $('#toast').classList
 function readHash(){ Object.assign(state, resolveLocation(chapters, location.hash, state.route)); }
 function setHash(){ const hash=`#${state.chapter}/${sections()[state.step]?.id || sections()[0].id}?ruta=${state.route}`; if(location.hash!==hash) history.pushState(null,'',hash); }
 function navigate(chapter,step=0){ state.chapter=chapter;state.step=step;setHash();render();window.scrollTo({top:0,behavior:'instant'});closeMenu();$('#main').focus({preventScroll:true}); }
-function closeMenu(){ $('#sidebar').classList.remove('is-open');$('#menu-toggle').setAttribute('aria-expanded','false'); }
+function closeMenu() {
+  const sidebar = $('#sidebar');
+  const toggle = $('#menu-toggle');
+  const returnFocus = sidebar.classList.contains('is-open') && sidebar.contains(document.activeElement);
+  sidebar.classList.remove('is-open');
+  toggle.setAttribute('aria-expanded', 'false');
+  if (returnFocus) toggle.focus({preventScroll: true});
+}
 function changeMode(mode){ state.mode=mode;render();window.scrollTo({top:0,behavior:'instant'});closeMenu(); }
 function changeRoute(route){ const oldId=sections()[state.step]?.id;state.route=route;state.step=Math.max(0,sections().findIndex(s=>s.id===oldId));render();setHash(); }
 function move(direction){
@@ -40,7 +48,7 @@ function render(){
  const routeBar=`<div class="reading-tools"><div class="breadcrumbs"><span>CUADERNO 01</span><span>/</span><span>${chapter.number} · ${chapter.title}</span></div><div class="route-switch" role="group" aria-label="Ruta de aprendizaje"><span>Ruta</span><button data-route="understand" aria-pressed="${state.route==='understand'}">Demostraciones</button><button data-route="apply" aria-pressed="${state.route==='apply'}">Formulario</button></div></div>`;
  const chapterIntro=chapter.id!=='inicio'?`<div class="chapter-intro"><span class="eyebrow">CAPÍTULO ${chapter.number}</span><span class="tag ${chapter.status==='Desarrollado'?'complete':chapter.status==='Síntesis'?'overview':'deeper'}">${chapter.status==='Síntesis'?'Síntesis · no es capítulo completo':chapter.status}</span></div>`:'';
  const active=state.mode==='slides'?[list[state.step]]:list;
- $('#content').innerHTML=routeBar+chapterIntro+active.map(s=>`<section class="lesson ${s.hero?'hero':''} ${s.body.includes('data-widget')?'lab-lesson':''}" id="section-${s.id}"><div class="section-head"><span class="eyebrow">${s.tag}</span><h${s.hero?'1':'2'}>${s.title}</h${s.hero?'1':'2'}><p class="lead">${s.lead}</p></div>${!s.hero&&s.showRouteNote!==false?`<div class="route-note"><span>${state.route==='understand'?'DEDUCCIÓN':'PROCEDIMIENTO'}</span><p>${s[state.route]}</p></div>`:''}<div class="section-body">${s.body}</div></section>`).join('')+(state.mode==='book'?`<div class="chapter-bottom"><span>Fin del capítulo.</span>${chapters[chapters.indexOf(chapter)+1]?`<button class="primary" data-next-chapter>Continuar: ${chapters[chapters.indexOf(chapter)+1].title}</button>`:'<button class="primary" data-go="inicio">Volver al inicio</button>'}</div>`:'');
+ $('#content').innerHTML=routeBar+chapterIntro+active.map(s=>s.hero && state.chapter==='inicio' && state.mode==='book' ? courseCover(s,chapters) : `<section class="lesson ${s.hero?'hero':''} ${s.body.includes('data-widget')?'lab-lesson':''}" id="section-${s.id}"><div class="section-head"><span class="eyebrow">${s.tag}</span><h${s.hero?'1':'2'}>${s.title}</h${s.hero?'1':'2'}><p class="lead">${s.lead}</p></div>${!s.hero&&s.showRouteNote!==false?`<div class="route-note"><span>${state.route==='understand'?'DEDUCCIÓN':'PROCEDIMIENTO'}</span><p>${s[state.route]}</p></div>`:''}<div class="section-body">${s.body}</div></section>`).join('')+(state.mode==='book'?`<div class="chapter-bottom"><span>Fin del capítulo.</span>${chapters[chapters.indexOf(chapter)+1]?`<button class="primary" data-next-chapter>Continuar: ${chapters[chapters.indexOf(chapter)+1].title}</button>`:'<button class="primary" data-go="inicio">Volver al inicio</button>'}</div>`:'');
  const i=chapters.indexOf(chapter);$('#location-label').innerHTML=`<span class="footer-book">Matriz /</span> ${chapter.title}`;
  $('#page-count').textContent=state.mode==='slides'?`${state.step+1} / ${list.length}`:`${i+1} / ${chapters.length}`;
  $('#previous').disabled=i===0&&(state.mode==='book'||state.step===0);

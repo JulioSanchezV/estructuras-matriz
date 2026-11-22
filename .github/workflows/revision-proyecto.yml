@@ -1,0 +1,30 @@
+name: Comprobar proyecto de Estructuras I
+on:
+  push:
+    branches: [revision/estructuras-i-proyecto-piloto]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verificar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verificar que el parche completo aplica en ambos sentidos
+        run: |
+          base=26c3f5d6908aec3ff48181fc45457e7920ca26ce
+          git diff --binary "$base" HEAD > "$RUNNER_TEMP/curso.patch"
+          git apply --reverse --check "$RUNNER_TEMP/curso.patch"
+          git worktree add --detach "$RUNNER_TEMP/curso-base" "$base"
+          git -C "$RUNNER_TEMP/curso-base" apply --check "$RUNNER_TEMP/curso.patch"
+      - name: Comprobar los cálculos del curso
+        run: node tests.mjs
+      - name: Comprobar extractores, evaluación, privacidad y reservas
+        run: python3 -m unittest discover -s _piloto -p 'test_*.py' -v
+      - name: Recorrer el proyecto, banco, hoja y matrices en Chrome local
+        run: node _piloto/browser-test.mjs

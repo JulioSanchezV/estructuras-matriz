@@ -374,3 +374,10 @@
 .inline-matrix-rows {display:inline-table;border-collapse:collapse}
 .inline-matrix-row {display:table-row}
 .inline-matrix-cell {display:table-cell;padding:.1em .4em;text-align:center;white-space:nowrap}
+
+@media screen and (max-width: 760px) {
+  .sidebar:not(.is-open) { visibility: hidden; }
+}
+@media screen {
+  .presentation .sidebar:not(.is-open) { visibility: hidden; }
+}
