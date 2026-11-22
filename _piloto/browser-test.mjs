@@ -11,16 +11,35 @@ const mime={'.mjs':'text/javascript','.js':'text/javascript','.html':'text/html'
 const server=createServer(async(req,res)=>{try{const path=resolve(root,'.'+new URL(req.url,'http://localhost').pathname);if(!path.startsWith(root)||path.includes('/.git/'))throw Error();const data=await readFile(path);res.writeHead(200,{'Content-Type':mime[extname(path)]||'application/octet-stream'});res.end(data);}catch{res.writeHead(404);res.end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
 const chrome=spawn(process.env.CHROME_PATH||'google-chrome',['--headless',...(process.env.GITHUB_ACTIONS==='true'?['--no-sandbox']:[]),'--disable-gpu','--disable-dev-shm-usage','--disable-background-networking','--disable-component-update','--disable-sync','--no-first-run','--no-default-browser-check','--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1, EXCLUDE localhost','--remote-debugging-address=127.0.0.1','--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{stdio:['ignore','ignore','pipe']});
-let id=0,session,socket,startError;const diagnostics=[];
+let id=0,session,socket,startError,announcedEndpoint;const diagnostics=[];
 const pending=new Map(),pause=ms=>new Promise(r=>setTimeout(r,ms));
 chrome.on('error',e=>{startError=e;});chrome.on('exit',(code)=>{if(code!==0)startError=Error('Chrome terminó con código '+code);});
-chrome.stderr.on('data',chunk=>{for(const line of chunk.toString().split('\n'))if(/sandbox|FATAL|error while loading shared/i.test(line))console.error(line.slice(0,200));});
+chrome.stderr.on('data',chunk=>{
+ const output=chunk.toString(), match=output.match(/DevTools listening on (ws:\/\/127\.0\.0\.1:\d+\/devtools\/browser\/[a-zA-Z0-9-]+)/);
+ if(match) announcedEndpoint=match[1];
+ for(const line of output.split('\n')) if(/sandbox|FATAL|error while loading shared/i.test(line)) console.error(line.slice(0,200));
+});
 async function connect(){
- let parts;
- for(let i=0;i<150;i++){if(startError)throw startError;try{parts=(await readFile(join(profile,'DevToolsActivePort'),'utf8')).trim().split('\n');if(parts.length===2)break;}catch{}await pause(100);}
- if(!parts||parts.length!==2)throw Error('Chrome no abrió el canal local de depuración.');
- socket=new WebSocket('ws://127.0.0.1:'+parts[0]+parts[1]);
- await new Promise((ok,no)=>{socket.addEventListener('open',ok,{once:true});socket.addEventListener('error',()=>no(Error('No se pudo abrir CDP local.')),{once:true});});
+ const deadline=Date.now()+45_000;
+ let address;
+ while(!address && Date.now()<deadline){
+  if(startError) throw startError;
+  address=announcedEndpoint;
+  if(!address){
+   try{
+    const [port,path]=(await readFile(join(profile,'DevToolsActivePort'),'utf8')).trim().split('\n');
+    if(/^\d+$/.test(port)&&/^\/devtools\/browser\/[a-zA-Z0-9-]+$/.test(path)) address='ws://127.0.0.1:'+port+path;
+   }catch{}
+  }
+  if(!address) await pause(100);
+ }
+ if(!address) throw Error('Chrome no abrió el canal local de depuración en 45 segundos.');
+ socket=new WebSocket(address);
+ await new Promise((ok,no)=>{
+  const timer=setTimeout(()=>no(Error('Chrome no aceptó CDP local.')),10_000);
+  socket.addEventListener('open',()=>{clearTimeout(timer);ok();},{once:true});
+  socket.addEventListener('error',()=>{clearTimeout(timer);no(Error('No se pudo abrir CDP local.'));},{once:true});
+ });
  socket.addEventListener('message',event=>{const msg=JSON.parse(event.data);if(msg.method==='Runtime.exceptionThrown'){const detail=msg.params.exceptionDetails;diagnostics.push((detail.exception?.description||detail.text).split('\n')[0].slice(0,180));} const p=pending.get(msg.id);if(!p)return;pending.delete(msg.id);msg.error?p.reject(Error(msg.error.message)):p.resolve(msg.result);});
 }
 function cmd(method,params={},sid=session){return new Promise((accept,reject)=>{const i=++id,t=setTimeout(()=>{pending.delete(i);reject(Error('Tiempo de espera: '+method));},15000);pending.set(i,{resolve:v=>{clearTimeout(t);accept(v);},reject:e=>{clearTimeout(t);reject(e);}});socket.send(JSON.stringify({id:i,method,params,...(sid?{sessionId:sid}:{})}));});}
