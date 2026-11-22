@@ -1,16 +1,16 @@
 {
-  "version": "cercha-escrito-2026-11-21-v1",
-  "source": "Proyecto final de cercha de cubierta, revisión docente de 21 de noviembre de 2026, componente escrito.",
+  "version": "cercha-escrito-2026-11-22-v2",
+  "source": "Proyecto final de cercha de cubierta, revisión docente del 21 de noviembre de 2026, con los ajustes de terminología y alcance del 22 de noviembre.",
   "criteria": [
     {
       "id": "modelo",
       "label": "Geometría y modelo",
-      "description": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad."
+      "description": "Defina la tipología y el peralte. Presente el esquema acotado, las coordenadas de los nodos, la conectividad de las barras y los grados de libertad."
     },
     {
       "id": "cargas",
-      "label": "Cargas y fuerzas nodales",
-      "description": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones."
+      "label": "Avalúo de cargas y asignación en nodos",
+      "description": "Realice el avalúo de cargas de la cubierta, el montaje solar, las correas y el peso propio. Incluya la carga viva y los casos de viento. Asigne las cargas a los nodos mediante las áreas tributarias e indique signos, unidades y combinaciones."
     },
     {
       "id": "matrices",
@@ -42,26 +42,26 @@
   "indicios": {
     "modelo": [
       [
-        "nudos o coordenadas",
-        "nudo|coordenad"
+        "tipología o peralte",
+        "tipolog|peralte"
       ],
       [
-        "apoyos",
-        "apoy"
+        "coordenadas de los nodos",
+        "n[ou]do|coordenad"
       ],
       [
-        "conectividad",
+        "conectividad de las barras",
         "conectiv|incidenc"
       ],
       [
-        "estabilidad",
-        "estabili"
+        "esquema y grados de libertad",
+        "esquema|grado.{0,12}libertad|gdl"
       ]
     ],
     "cargas": [
       [
-        "reparto a nudos",
-        "tributari|carga nodal|fuerza nodal"
+        "asignación en nodos",
+        "tributari|carga nodal|fuerza nodal|asignaci.{0,20}n[ou]do"
       ],
       [
         "peso propio y componentes",

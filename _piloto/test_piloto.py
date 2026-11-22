@@ -11,7 +11,7 @@ from consumo import Ledger, Limits, Refused
 from fixtures import sample
 from office import DocumentError, Fragment, TYPES, extract
 from proveedor import MockProvider, OpenAIAdapter, VerifiedModel, run_review
-from revision import ROOT, RUBRIC, assemble, candidates, review
+from revision import ROOT, RUBRIC, PROPOSAL, assemble, candidates, proposed_points, review
 from servidor import LocalPilot, PilotHandler, QuietServer
 
 class PilotTest(unittest.TestCase):
@@ -40,7 +40,7 @@ class PilotTest(unittest.TestCase):
     def test_proposed_scores_and_unobserved_weight(self):
         word=review(extract(sample("docx"),"docx"))
         self.assertEqual(word["global"],"3 / 100 · mínimo demostrado")
-        self.assertEqual(word["coverage"],{"evaluated":2,"total":7,"pendingPoints":94,"openWithinObserved":3})
+        self.assertEqual(word["coverage"],{"evaluated":2,"total":7,"pendingPoints":95,"openWithinObserved":2})
         self.assertEqual(sum(c["max"] for c in word["criteria"]),100)
         parts=[p for c in word["criteria"] for p in c["aspects"]]
         self.assertTrue(all((p["reference"] is None)==(p["state"]=="pending") for p in parts))
@@ -50,6 +50,40 @@ class PilotTest(unittest.TestCase):
         self.assertEqual((balance["state"],balance["points"]),("error",0))
         self.assertEqual(excel["coverage"]["pendingPoints"],94)
         self.assertEqual(review([])["global"],None)
+
+    def test_integer_scores_at_every_level_and_full_distribution(self):
+        from unittest.mock import patch
+        parts = PROPOSAL["criteria"]
+        self.assertEqual([c["max"] for c in parts],[10,15,30,15,15,5,10])
+        self.assertEqual([p["max"] for p in parts[2]["aspects"]],[6,10,6,8])
+        fragment = Fragment("e1","Referencia de prueba","Evidencia ficticia")
+        levels = ["pending","documented","developed","supported","verified","error"]
+        for state in levels:
+            with self.subTest(state=state), patch("revision.assess",return_value=(state,None)):
+                scores = []
+                for criterion in parts:
+                    breakdown,_ = proposed_points(criterion,[fragment])
+                    self.assertEqual(sum(p["max"] for p in breakdown),criterion["max"])
+                    for part in breakdown:
+                        self.assertIs(type(part["points"]),int)
+                        self.assertTrue(0 <= part["points"] <= part["max"])
+                        scores.append(part["points"])
+                if state == "verified": self.assertEqual(sum(scores),100)
+                if state in ("pending","error"): self.assertEqual(sum(scores),0)
+        for kind in TYPES:
+            report = review(extract(sample(kind),kind))
+            self.assertTrue(all(type(n) is int for n in report["coverage"].values()))
+            self.assertTrue(all(type(c["points"]) is int for c in report["criteria"]))
+            self.assertRegex(report["global"],r"^\d+ / 100")
+
+    def test_adopted_course_terms_and_older_node_spelling(self):
+        self.assertEqual(RUBRIC["criteria"][1]["label"],"Avalúo de cargas y asignación en nodos")
+        def evaluate(line):
+            return review([Fragment("e1","Ubicación ficticia",line)])
+        self.assertEqual(evaluate("Nodo 2 en x = 3 m.")["global"],evaluate("Nudo 2 en x = 3 m.")["global"])
+        load=evaluate("Asignación en nodos por área tributaria: 2 kN/m² × 3 m² = 6 kN.")
+        nodal=next(a for c in load["criteria"] if c["id"]=="cargas" for a in c["aspects"] if a["id"]=="reparto")
+        self.assertEqual((nodal["state"],nodal["points"]),("verified",4))
 
     def test_unknown_and_unsupported(self):
         for content,ext in [(b"Archivo ficticio ilegible","docx"),(sample("xlsx"),"pptx"),(sample("docx"),"pdf")]:
@@ -102,7 +136,7 @@ class PilotTest(unittest.TestCase):
         impl=OpenAIAdapter(model,lambda:"solo-fixture",approved=True,transport=fake)
         self.run_document(provider=impl)
         self.assertEqual(len(sent),1);self.assertFalse(sent[0]["store"]);self.assertEqual(sent[0]["tools"],[])
-        self.assertNotIn("nudo 2 en x",sent[0]["input"].lower())
+        self.assertNotIn("en x = 3",sent[0]["input"].lower())
     def test_aggregate_status_does_not_activate_an_official_grade(self):
         from unittest.mock import patch
         with patch.dict(RUBRIC,{"numeric":{"approval":"fixture","max":5,"partial":5}}):
@@ -151,8 +185,8 @@ class PilotTest(unittest.TestCase):
         self.assertEqual(aspect([method+" porque el contraste independiente reproduce el total"],"matrices","ensamble")["state"],"supported")
         self.assertEqual(aspect(["Fuerza nodal por área tributaria: 2 kN/m² × 3 m² = 6 kN."],"cargas","reparto")["state"],"verified")
         self.assertEqual(aspect(["Fuerza nodal por área tributaria: 2 kN/m² × 3 m² = 9 kN."],"cargas","reparto")["state"],"error")
-        rows=[f"Nudo {i} en x = {i} m." for i in range(1,10)]+["Apoyo 1 con el grado de libertad GDL 3. Desplazamiento 0 mm."]
-        self.assertEqual(aspect(rows,"modelo","apoyos")["reference"],"e10")
+        rows=[f"Nudo {i} en x = {i} m." for i in range(1,10)]+["Esquema acotado con el grado de libertad GDL 3."]
+        self.assertEqual(aspect(rows,"modelo","esquema")["reference"],"e10")
 
     def test_http_session_and_upload(self):
         app=LocalPilot(Path(self.tmp.name)/"privado")

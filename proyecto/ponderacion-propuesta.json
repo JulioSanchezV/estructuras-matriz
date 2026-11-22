@@ -1,59 +1,59 @@
 {
-  "version": "cercha-ponderacion-propuesta-2026-11-22-v2",
+  "version": "cercha-ponderacion-propuesta-2026-11-22-v3",
   "status": "propuesta_formativa",
   "maximum": 100,
   "criteria": [
     {
       "id": "modelo",
-      "max": 14,
-      "why": "Definir y validar la geometría condiciona todo el análisis.",
+      "max": 10,
+      "why": "El esquema, las coordenadas y la conectividad definen el modelo.",
       "aspects": [
         {
           "id": "geometria",
-          "max": 4,
-          "label": "Tipología, peralte y geometría justificados",
-          "term": "tipolog|peralte|geometr"
+          "max": 3,
+          "label": "Tipología y peralte",
+          "term": "tipolog|peralte"
+        },
+        {
+          "id": "coordenadas",
+          "max": 3,
+          "label": "Numeración y coordenadas de los nodos",
+          "term": "n[ou]do|coordenad"
         },
         {
           "id": "conectividad",
-          "max": 4,
-          "label": "Coordenadas, numeración y conectividad",
-          "term": "nudo|coordenad|conectiv"
+          "max": 2,
+          "label": "Conectividad de las barras",
+          "term": "conectiv|incidenc"
         },
         {
-          "id": "apoyos",
-          "max": 3,
-          "label": "Apoyos y grados de libertad",
-          "term": "apoy|grado.{0,12}libertad|gdl"
-        },
-        {
-          "id": "estabilidad",
-          "max": 3,
-          "label": "Estabilidad del modelo",
-          "term": "estabili"
+          "id": "esquema",
+          "max": 2,
+          "label": "Esquema acotado y grados de libertad",
+          "term": "esquema acotad|grado.{0,12}libertad|gdl"
         }
       ]
     },
     {
       "id": "cargas",
-      "max": 17,
-      "why": "Exige integrar varias acciones, hacer el reparto a nudos y controlar signos y unidades.",
+      "max": 15,
+      "why": "El avalúo incluye cargas de cubierta, viento y carga viva. La asignación en nodos exige áreas tributarias, signos y unidades.",
       "aspects": [
         {
           "id": "acciones",
-          "max": 5,
-          "label": "Componentes de carga y fuentes",
-          "term": "carga muerta|carga viva|peso propio|montaje solar"
+          "max": 4,
+          "label": "Avalúo de cargas y fuentes",
+          "term": "avaluo de cargas|carga muerta|carga viva|peso propio|montaje solar"
         },
         {
           "id": "reparto",
           "max": 4,
-          "label": "Áreas tributarias y reparto a los nudos",
-          "term": "tributari|carga nodal|fuerza nodal"
+          "label": "Áreas tributarias y asignación en nodos",
+          "term": "tributari|carga nodal|fuerza nodal|asignaci.{0,20}n[ou]do"
         },
         {
           "id": "viento",
-          "max": 4,
+          "max": 3,
           "label": "Casos de viento y signos",
           "term": "viento|succion"
         },
@@ -67,30 +67,30 @@
     },
     {
       "id": "matrices",
-      "max": 22,
-      "why": "Es el desarrollo más largo. Se sigue la rigidez desde la barra hasta el sistema restringido y su solución.",
+      "max": 30,
+      "why": "El desarrollo enlaza la matriz de cada barra con el ensamblaje global, la aplicación de restricciones y la solución del sistema.",
       "aspects": [
         {
           "id": "barra",
-          "max": 4,
+          "max": 6,
           "label": "Matriz de barra",
           "term": "matriz.{0,24}barra|rigidez.{0,20}element"
         },
         {
           "id": "ensamble",
-          "max": 7,
+          "max": 10,
           "label": "Ensamblaje y correspondencia de grados de libertad",
           "term": "ensambl"
         },
         {
           "id": "restricciones",
-          "max": 5,
+          "max": 6,
           "label": "Condiciones de contorno y partición",
           "term": "partici|condici.{0,12}apoyo|restricc"
         },
         {
           "id": "solucion",
-          "max": 6,
+          "max": 8,
           "label": "Solución y procedimiento reproducible",
           "term": "formula visible|sistema reducido|solucion matricial"
         }
@@ -98,7 +98,7 @@
     },
     {
       "id": "resultados",
-      "max": 14,
+      "max": 15,
       "why": "Obtener resultados y contrastarlos requiere trabajo independiente de la solución.",
       "aspects": [
         {
@@ -110,7 +110,7 @@
         {
           "id": "desplazamientos",
           "max": 2,
-          "label": "Desplazamientos por nudo y dirección",
+          "label": "Desplazamientos por nodo y dirección",
           "term": "desplazamiento"
         },
         {
@@ -133,7 +133,7 @@
         },
         {
           "id": "contraste",
-          "max": 4,
+          "max": 5,
           "label": "Contraste independiente con el mismo modelo y caso",
           "term": "contraste|independiente|comparaci.{0,20}(manual|excel)|verificaci.{0,12}manual"
         }
@@ -141,12 +141,12 @@
     },
     {
       "id": "resistencia",
-      "max": 16,
+      "max": 15,
       "why": "Combina dos estados de esfuerzo, la longitud efectiva y una verificación de servicio distinta.",
       "aspects": [
         {
           "id": "traccion",
-          "max": 4,
+          "max": 3,
           "label": "Resistencia a tracción",
           "term": "traccion"
         },
@@ -172,25 +172,19 @@
     },
     {
       "id": "criticas",
-      "max": 7,
+      "max": 5,
       "why": "Es una comprobación focalizada en barras y apoyos concretos bajo distintos casos.",
       "aspects": [
         {
           "id": "barras",
           "max": 3,
-          "label": "Identificación de barras críticas",
-          "term": "barra critica|diagonal|montante|cordon"
-        },
-        {
-          "id": "inversion",
-          "max": 2,
-          "label": "Inversión de esfuerzos",
-          "term": "inversion|cambio de signo"
+          "label": "Barras críticas e inversión de esfuerzos",
+          "term": "barra critica|diagonal|montante|cordon|inversion|cambio de signo"
         },
         {
           "id": "levantamiento",
           "max": 2,
-          "label": "Levantamiento y succión en apoyos",
+          "label": "Levantamiento de apoyos bajo succión",
           "term": "levantamiento|succion"
         }
       ]
@@ -223,20 +217,65 @@
   ],
   "levels": [
     {
-      "percent": 25,
+      "id": "documented",
       "label": "Dato pertinente"
     },
     {
-      "percent": 50,
+      "id": "developed",
       "label": "Desarrollo documentado"
     },
     {
-      "percent": 75,
+      "id": "supported",
       "label": "Resultado fundamentado"
     },
     {
-      "percent": 100,
+      "id": "verified",
       "label": "Control reproducido"
     }
-  ]
+  ],
+  "pointsByMaximum": {
+    "2": [
+      1,
+      1,
+      1,
+      2
+    ],
+    "3": [
+      1,
+      1,
+      2,
+      3
+    ],
+    "4": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "5": [
+      1,
+      2,
+      4,
+      5
+    ],
+    "6": [
+      1,
+      3,
+      4,
+      6
+    ],
+    "8": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "10": [
+      2,
+      5,
+      7,
+      10
+    ]
+  },
+  "scaleNote": "Ponderación propuesta para el piloto sobre 100 puntos. Cada apartado usa una escala de puntos enteros para dato pertinente, desarrollo documentado, resultado fundamentado y control reproducido. Una discrepancia comprobada afecta a ese apartado. Los apartados sin evidencia quedan pendientes. El total conserva el denominador de 100."
 }

@@ -5,7 +5,7 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 from office import A, CT, P, PKG, R, TYPES, W, X
 
-WORD=["Modelo de la cercha. Nudo 1 en x = 0 m; nudo 2 en x = 3 m. Los apoyos se representan en el esquema.",
+WORD=["Modelo de la cercha. Nodo 1 en x = 0 m; nodo 2 en x = 3 m.",
       "Equilibrio vertical: 30 kN + 20 kN - 50 kN = 0 kN."]
 EXCEL=["Carga nodal del área tributaria: 12 kN.","Equilibrio vertical: 30 kN + 20 kN - 50 kN = 4 kN."]
 SLIDE=["Compresión de la diagonal: 24 kN. Longitud no arriostrada declarada: 2 m.",

@@ -1,14 +1,14 @@
 {
   "docx": {
-    "rubric": "cercha-escrito-2026-11-21-v1",
+    "rubric": "cercha-escrito-2026-11-22-v2",
     "official": false,
     "global": "3 / 100 · mínimo demostrado",
     "globalNote": "La comprobación respalda ese resultado. Revise la evidencia de los demás criterios.",
     "coverage": {
       "evaluated": 2,
       "total": 7,
-      "pendingPoints": 94,
-      "openWithinObserved": 3
+      "pendingPoints": 95,
+      "openWithinObserved": 2
     },
     "criteria": [
       {
@@ -16,45 +16,45 @@
         "label": "Geometría y modelo",
         "status": "partial",
         "statusLabel": "Evidencia parcial",
-        "reason": "Las citas mencionan nudos o coordenadas, apoyos. Por verificar en la evidencia: conectividad, estabilidad.",
+        "reason": "Las citas mencionan coordenadas de los nodos. Por verificar en la evidencia: tipología o peralte, conectividad de las barras, esquema y grados de libertad.",
         "evidence": [
           {
             "location": "Word · párrafo 1",
-            "quote": "Modelo de la cercha. Nudo 1 en x = 0 m; nudo 2 en x = 3 m. Los apoyos se representan en el esquema.",
+            "quote": "Modelo de la cercha. Nodo 1 en x = 0 m; nodo 2 en x = 3 m.",
             "id": "e1"
           }
         ],
-        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad.",
-        "max": 14,
+        "next": "Defina la tipología y el peralte. Presente el esquema acotado, las coordenadas de los nodos, la conectividad de las barras y los grados de libertad.",
+        "max": 10,
         "aspects": [
           {
             "id": "geometria",
-            "label": "Tipología, peralte y geometría justificados",
-            "max": 4,
+            "label": "Tipología y peralte",
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
-            "id": "conectividad",
-            "label": "Coordenadas, numeración y conectividad",
-            "max": 4,
+            "id": "coordenadas",
+            "label": "Numeración y coordenadas de los nodos",
+            "max": 3,
             "points": 1,
             "state": "documented",
             "reference": "e1"
           },
           {
-            "id": "apoyos",
-            "label": "Apoyos y grados de libertad",
-            "max": 3,
+            "id": "conectividad",
+            "label": "Conectividad de las barras",
+            "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
-            "id": "estabilidad",
-            "label": "Estabilidad del modelo",
-            "max": 3,
+            "id": "esquema",
+            "label": "Esquema acotado y grados de libertad",
+            "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -64,25 +64,25 @@
       },
       {
         "id": "cargas",
-        "label": "Cargas y fuerzas nodales",
+        "label": "Avalúo de cargas y asignación en nodos",
         "status": "none",
         "statusLabel": "Sin evidencia puntuable",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones.",
-        "max": 17,
+        "next": "Realice el avalúo de cargas de la cubierta, el montaje solar, las correas y el peso propio. Incluya la carga viva y los casos de viento. Asigne las cargas a los nodos mediante las áreas tributarias e indique signos, unidades y combinaciones.",
+        "max": 15,
         "aspects": [
           {
             "id": "acciones",
-            "label": "Componentes de carga y fuentes",
-            "max": 5,
+            "label": "Avalúo de cargas y fuentes",
+            "max": 4,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
             "id": "reparto",
-            "label": "Áreas tributarias y reparto a los nudos",
+            "label": "Áreas tributarias y asignación en nodos",
             "max": 4,
             "points": 0,
             "state": "pending",
@@ -91,7 +91,7 @@
           {
             "id": "viento",
             "label": "Casos de viento y signos",
-            "max": 4,
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -115,12 +115,12 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas.",
-        "max": 22,
+        "max": 30,
         "aspects": [
           {
             "id": "barra",
             "label": "Matriz de barra",
-            "max": 4,
+            "max": 6,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -128,7 +128,7 @@
           {
             "id": "ensamble",
             "label": "Ensamblaje y correspondencia de grados de libertad",
-            "max": 7,
+            "max": 10,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -136,7 +136,7 @@
           {
             "id": "restricciones",
             "label": "Condiciones de contorno y partición",
-            "max": 5,
+            "max": 6,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -144,7 +144,7 @@
           {
             "id": "solucion",
             "label": "Solución y procedimiento reproducible",
-            "max": 6,
+            "max": 8,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -166,7 +166,7 @@
           }
         ],
         "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo.",
-        "max": 14,
+        "max": 15,
         "aspects": [
           {
             "id": "caso",
@@ -178,7 +178,7 @@
           },
           {
             "id": "desplazamientos",
-            "label": "Desplazamientos por nudo y dirección",
+            "label": "Desplazamientos por nodo y dirección",
             "max": 2,
             "points": 0,
             "state": "pending",
@@ -211,7 +211,7 @@
           {
             "id": "contraste",
             "label": "Contraste independiente con el mismo modelo y caso",
-            "max": 4,
+            "max": 5,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -227,12 +227,12 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes.",
-        "max": 16,
+        "max": 15,
         "aspects": [
           {
             "id": "traccion",
             "label": "Resistencia a tracción",
-            "max": 4,
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -272,27 +272,19 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión.",
-        "max": 7,
+        "max": 5,
         "aspects": [
           {
             "id": "barras",
-            "label": "Identificación de barras críticas",
+            "label": "Barras críticas e inversión de esfuerzos",
             "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
-            "id": "inversion",
-            "label": "Inversión de esfuerzos",
-            "max": 2,
-            "points": 0,
-            "state": "pending",
-            "reference": null
-          },
-          {
             "id": "levantamiento",
-            "label": "Levantamiento y succión en apoyos",
+            "label": "Levantamiento de apoyos bajo succión",
             "max": 2,
             "points": 0,
             "state": "pending",
@@ -339,11 +331,11 @@
         "points": 0
       }
     ],
-    "scale": "Ponderación propuesta para el piloto. Un dato pertinente aporta el 25 % del apartado, un desarrollo documentado el 50 % y un resultado fundamentado el 75 %. El 100 % exige reproducir el control aplicable. Una discrepancia comprobada afecta a ese apartado. La evidencia ausente queda pendiente. La nota provisional mantiene el denominador de 100.",
-    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v2"
+    "scale": "Ponderación propuesta para el piloto sobre 100 puntos. Cada apartado usa una escala de puntos enteros para dato pertinente, desarrollo documentado, resultado fundamentado y control reproducido. Una discrepancia comprobada afecta a ese apartado. Los apartados sin evidencia quedan pendientes. El total conserva el denominador de 100.",
+    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v3"
   },
   "xlsx": {
-    "rubric": "cercha-escrito-2026-11-21-v1",
+    "rubric": "cercha-escrito-2026-11-22-v2",
     "official": false,
     "global": "1 / 100 · mínimo demostrado",
     "globalNote": "Revise el apartado con la discrepancia identificada y vuelva a contrastar su resultado.",
@@ -361,37 +353,37 @@
         "statusLabel": "Sin evidencia puntuable",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad.",
-        "max": 14,
+        "next": "Defina la tipología y el peralte. Presente el esquema acotado, las coordenadas de los nodos, la conectividad de las barras y los grados de libertad.",
+        "max": 10,
         "aspects": [
           {
             "id": "geometria",
-            "label": "Tipología, peralte y geometría justificados",
-            "max": 4,
+            "label": "Tipología y peralte",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "coordenadas",
+            "label": "Numeración y coordenadas de los nodos",
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
             "id": "conectividad",
-            "label": "Coordenadas, numeración y conectividad",
-            "max": 4,
+            "label": "Conectividad de las barras",
+            "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
-            "id": "apoyos",
-            "label": "Apoyos y grados de libertad",
-            "max": 3,
-            "points": 0,
-            "state": "pending",
-            "reference": null
-          },
-          {
-            "id": "estabilidad",
-            "label": "Estabilidad del modelo",
-            "max": 3,
+            "id": "esquema",
+            "label": "Esquema acotado y grados de libertad",
+            "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -401,10 +393,10 @@
       },
       {
         "id": "cargas",
-        "label": "Cargas y fuerzas nodales",
+        "label": "Avalúo de cargas y asignación en nodos",
         "status": "partial",
         "statusLabel": "Evidencia parcial",
-        "reason": "Las citas mencionan reparto a nudos. Por verificar en la evidencia: peso propio y componentes, casos de viento, combinaciones.",
+        "reason": "Las citas mencionan asignación en nodos. Por verificar en la evidencia: peso propio y componentes, casos de viento, combinaciones.",
         "evidence": [
           {
             "location": "Excel · hoja 1, A1:A1",
@@ -412,20 +404,20 @@
             "id": "e1"
           }
         ],
-        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones.",
-        "max": 17,
+        "next": "Realice el avalúo de cargas de la cubierta, el montaje solar, las correas y el peso propio. Incluya la carga viva y los casos de viento. Asigne las cargas a los nodos mediante las áreas tributarias e indique signos, unidades y combinaciones.",
+        "max": 15,
         "aspects": [
           {
             "id": "acciones",
-            "label": "Componentes de carga y fuentes",
-            "max": 5,
+            "label": "Avalúo de cargas y fuentes",
+            "max": 4,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
             "id": "reparto",
-            "label": "Áreas tributarias y reparto a los nudos",
+            "label": "Áreas tributarias y asignación en nodos",
             "max": 4,
             "points": 1,
             "state": "documented",
@@ -434,7 +426,7 @@
           {
             "id": "viento",
             "label": "Casos de viento y signos",
-            "max": 4,
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -458,12 +450,12 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas.",
-        "max": 22,
+        "max": 30,
         "aspects": [
           {
             "id": "barra",
             "label": "Matriz de barra",
-            "max": 4,
+            "max": 6,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -471,7 +463,7 @@
           {
             "id": "ensamble",
             "label": "Ensamblaje y correspondencia de grados de libertad",
-            "max": 7,
+            "max": 10,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -479,7 +471,7 @@
           {
             "id": "restricciones",
             "label": "Condiciones de contorno y partición",
-            "max": 5,
+            "max": 6,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -487,7 +479,7 @@
           {
             "id": "solucion",
             "label": "Solución y procedimiento reproducible",
-            "max": 6,
+            "max": 8,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -509,7 +501,7 @@
           }
         ],
         "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo.",
-        "max": 14,
+        "max": 15,
         "aspects": [
           {
             "id": "caso",
@@ -521,7 +513,7 @@
           },
           {
             "id": "desplazamientos",
-            "label": "Desplazamientos por nudo y dirección",
+            "label": "Desplazamientos por nodo y dirección",
             "max": 2,
             "points": 0,
             "state": "pending",
@@ -554,7 +546,7 @@
           {
             "id": "contraste",
             "label": "Contraste independiente con el mismo modelo y caso",
-            "max": 4,
+            "max": 5,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -570,12 +562,12 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes.",
-        "max": 16,
+        "max": 15,
         "aspects": [
           {
             "id": "traccion",
             "label": "Resistencia a tracción",
-            "max": 4,
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -615,27 +607,19 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión.",
-        "max": 7,
+        "max": 5,
         "aspects": [
           {
             "id": "barras",
-            "label": "Identificación de barras críticas",
+            "label": "Barras críticas e inversión de esfuerzos",
             "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
-            "id": "inversion",
-            "label": "Inversión de esfuerzos",
-            "max": 2,
-            "points": 0,
-            "state": "pending",
-            "reference": null
-          },
-          {
             "id": "levantamiento",
-            "label": "Levantamiento y succión en apoyos",
+            "label": "Levantamiento de apoyos bajo succión",
             "max": 2,
             "points": 0,
             "state": "pending",
@@ -682,19 +666,19 @@
         "points": 0
       }
     ],
-    "scale": "Ponderación propuesta para el piloto. Un dato pertinente aporta el 25 % del apartado, un desarrollo documentado el 50 % y un resultado fundamentado el 75 %. El 100 % exige reproducir el control aplicable. Una discrepancia comprobada afecta a ese apartado. La evidencia ausente queda pendiente. La nota provisional mantiene el denominador de 100.",
-    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v2"
+    "scale": "Ponderación propuesta para el piloto sobre 100 puntos. Cada apartado usa una escala de puntos enteros para dato pertinente, desarrollo documentado, resultado fundamentado y control reproducido. Una discrepancia comprobada afecta a ese apartado. Los apartados sin evidencia quedan pendientes. El total conserva el denominador de 100.",
+    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v3"
   },
   "pptx": {
-    "rubric": "cercha-escrito-2026-11-21-v1",
+    "rubric": "cercha-escrito-2026-11-22-v2",
     "official": false,
-    "global": "3,75 / 100 · mínimo demostrado",
+    "global": "4 / 100 · mínimo demostrado",
     "globalNote": "Se localizaron datos técnicos. Complete las comprobaciones indicadas por criterio.",
     "coverage": {
       "evaluated": 3,
       "total": 7,
       "pendingPoints": 85,
-      "openWithinObserved": 11.25
+      "openWithinObserved": 11
     },
     "criteria": [
       {
@@ -704,37 +688,37 @@
         "statusLabel": "Sin evidencia puntuable",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad.",
-        "max": 14,
+        "next": "Defina la tipología y el peralte. Presente el esquema acotado, las coordenadas de los nodos, la conectividad de las barras y los grados de libertad.",
+        "max": 10,
         "aspects": [
           {
             "id": "geometria",
-            "label": "Tipología, peralte y geometría justificados",
-            "max": 4,
+            "label": "Tipología y peralte",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "coordenadas",
+            "label": "Numeración y coordenadas de los nodos",
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
             "id": "conectividad",
-            "label": "Coordenadas, numeración y conectividad",
-            "max": 4,
+            "label": "Conectividad de las barras",
+            "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
-            "id": "apoyos",
-            "label": "Apoyos y grados de libertad",
-            "max": 3,
-            "points": 0,
-            "state": "pending",
-            "reference": null
-          },
-          {
-            "id": "estabilidad",
-            "label": "Estabilidad del modelo",
-            "max": 3,
+            "id": "esquema",
+            "label": "Esquema acotado y grados de libertad",
+            "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -744,25 +728,25 @@
       },
       {
         "id": "cargas",
-        "label": "Cargas y fuerzas nodales",
+        "label": "Avalúo de cargas y asignación en nodos",
         "status": "none",
         "statusLabel": "Sin evidencia puntuable",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones.",
-        "max": 17,
+        "next": "Realice el avalúo de cargas de la cubierta, el montaje solar, las correas y el peso propio. Incluya la carga viva y los casos de viento. Asigne las cargas a los nodos mediante las áreas tributarias e indique signos, unidades y combinaciones.",
+        "max": 15,
         "aspects": [
           {
             "id": "acciones",
-            "label": "Componentes de carga y fuentes",
-            "max": 5,
+            "label": "Avalúo de cargas y fuentes",
+            "max": 4,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
             "id": "reparto",
-            "label": "Áreas tributarias y reparto a los nudos",
+            "label": "Áreas tributarias y asignación en nodos",
             "max": 4,
             "points": 0,
             "state": "pending",
@@ -771,7 +755,7 @@
           {
             "id": "viento",
             "label": "Casos de viento y signos",
-            "max": 4,
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -795,12 +779,12 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas.",
-        "max": 22,
+        "max": 30,
         "aspects": [
           {
             "id": "barra",
             "label": "Matriz de barra",
-            "max": 4,
+            "max": 6,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -808,7 +792,7 @@
           {
             "id": "ensamble",
             "label": "Ensamblaje y correspondencia de grados de libertad",
-            "max": 7,
+            "max": 10,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -816,7 +800,7 @@
           {
             "id": "restricciones",
             "label": "Condiciones de contorno y partición",
-            "max": 5,
+            "max": 6,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -824,7 +808,7 @@
           {
             "id": "solucion",
             "label": "Solución y procedimiento reproducible",
-            "max": 6,
+            "max": 8,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -840,7 +824,7 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo.",
-        "max": 14,
+        "max": 15,
         "aspects": [
           {
             "id": "caso",
@@ -852,7 +836,7 @@
           },
           {
             "id": "desplazamientos",
-            "label": "Desplazamientos por nudo y dirección",
+            "label": "Desplazamientos por nodo y dirección",
             "max": 2,
             "points": 0,
             "state": "pending",
@@ -885,7 +869,7 @@
           {
             "id": "contraste",
             "label": "Contraste independiente con el mismo modelo y caso",
-            "max": 4,
+            "max": 5,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -907,12 +891,12 @@
           }
         ],
         "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes.",
-        "max": 16,
+        "max": 15,
         "aspects": [
           {
             "id": "traccion",
             "label": "Resistencia a tracción",
-            "max": 4,
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -921,7 +905,7 @@
             "id": "compresion",
             "label": "Compresión, longitud efectiva y arriostramiento",
             "max": 5,
-            "points": 1.25,
+            "points": 1,
             "state": "documented",
             "reference": "e1"
           },
@@ -942,7 +926,7 @@
             "reference": null
           }
         ],
-        "points": 1.25
+        "points": 1
       },
       {
         "id": "criticas",
@@ -958,34 +942,26 @@
           }
         ],
         "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión.",
-        "max": 7,
+        "max": 5,
         "aspects": [
           {
             "id": "barras",
-            "label": "Identificación de barras críticas",
+            "label": "Barras críticas e inversión de esfuerzos",
             "max": 3,
-            "points": 0.75,
+            "points": 1,
             "state": "documented",
             "reference": "e1"
           },
           {
-            "id": "inversion",
-            "label": "Inversión de esfuerzos",
-            "max": 2,
-            "points": 0,
-            "state": "pending",
-            "reference": null
-          },
-          {
             "id": "levantamiento",
-            "label": "Levantamiento y succión en apoyos",
+            "label": "Levantamiento de apoyos bajo succión",
             "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
           }
         ],
-        "points": 0.75
+        "points": 1
       },
       {
         "id": "perfiles",
@@ -1015,7 +991,7 @@
             "id": "peso",
             "label": "Actualización de masa y peso propio",
             "max": 3,
-            "points": 0.75,
+            "points": 1,
             "state": "documented",
             "reference": "e2"
           },
@@ -1028,14 +1004,14 @@
             "reference": null
           }
         ],
-        "points": 1.75
+        "points": 2
       }
     ],
-    "scale": "Ponderación propuesta para el piloto. Un dato pertinente aporta el 25 % del apartado, un desarrollo documentado el 50 % y un resultado fundamentado el 75 %. El 100 % exige reproducir el control aplicable. Una discrepancia comprobada afecta a ese apartado. La evidencia ausente queda pendiente. La nota provisional mantiene el denominador de 100.",
-    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v2"
+    "scale": "Ponderación propuesta para el piloto sobre 100 puntos. Cada apartado usa una escala de puntos enteros para dato pertinente, desarrollo documentado, resultado fundamentado y control reproducido. Una discrepancia comprobada afecta a ese apartado. Los apartados sin evidencia quedan pendientes. El total conserva el denominador de 100.",
+    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v3"
   },
   "empty": {
-    "rubric": "cercha-escrito-2026-11-21-v1",
+    "rubric": "cercha-escrito-2026-11-22-v2",
     "official": false,
     "global": null,
     "globalNote": "No hay evidencia puntuable en las partes visibles. Añada texto, celdas o una comprobación con unidades.",
@@ -1053,37 +1029,37 @@
         "statusLabel": "Sin evidencia puntuable",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Justifique la tipología y el peralte. Muestre esquema, coordenadas, conectividad, apoyos, grados de libertad y estabilidad.",
-        "max": 14,
+        "next": "Defina la tipología y el peralte. Presente el esquema acotado, las coordenadas de los nodos, la conectividad de las barras y los grados de libertad.",
+        "max": 10,
         "aspects": [
           {
             "id": "geometria",
-            "label": "Tipología, peralte y geometría justificados",
-            "max": 4,
+            "label": "Tipología y peralte",
+            "max": 3,
+            "points": 0,
+            "state": "pending",
+            "reference": null
+          },
+          {
+            "id": "coordenadas",
+            "label": "Numeración y coordenadas de los nodos",
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
             "id": "conectividad",
-            "label": "Coordenadas, numeración y conectividad",
-            "max": 4,
+            "label": "Conectividad de las barras",
+            "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
-            "id": "apoyos",
-            "label": "Apoyos y grados de libertad",
-            "max": 3,
-            "points": 0,
-            "state": "pending",
-            "reference": null
-          },
-          {
-            "id": "estabilidad",
-            "label": "Estabilidad del modelo",
-            "max": 3,
+            "id": "esquema",
+            "label": "Esquema acotado y grados de libertad",
+            "max": 2,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -1093,25 +1069,25 @@
       },
       {
         "id": "cargas",
-        "label": "Cargas y fuerzas nodales",
+        "label": "Avalúo de cargas y asignación en nodos",
         "status": "none",
         "statusLabel": "Sin evidencia puntuable",
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
-        "next": "Documente cubierta, montaje solar, correas, peso propio y carga viva. Obtenga fuerzas nodales con áreas tributarias, casos de viento y combinaciones.",
-        "max": 17,
+        "next": "Realice el avalúo de cargas de la cubierta, el montaje solar, las correas y el peso propio. Incluya la carga viva y los casos de viento. Asigne las cargas a los nodos mediante las áreas tributarias e indique signos, unidades y combinaciones.",
+        "max": 15,
         "aspects": [
           {
             "id": "acciones",
-            "label": "Componentes de carga y fuentes",
-            "max": 5,
+            "label": "Avalúo de cargas y fuentes",
+            "max": 4,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
             "id": "reparto",
-            "label": "Áreas tributarias y reparto a los nudos",
+            "label": "Áreas tributarias y asignación en nodos",
             "max": 4,
             "points": 0,
             "state": "pending",
@@ -1120,7 +1096,7 @@
           {
             "id": "viento",
             "label": "Casos de viento y signos",
-            "max": 4,
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -1144,12 +1120,12 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Exponga la matriz de barra, el ensamblaje manual y la matriz global. Muestre las condiciones de apoyo, la solución y las fórmulas utilizadas.",
-        "max": 22,
+        "max": 30,
         "aspects": [
           {
             "id": "barra",
             "label": "Matriz de barra",
-            "max": 4,
+            "max": 6,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -1157,7 +1133,7 @@
           {
             "id": "ensamble",
             "label": "Ensamblaje y correspondencia de grados de libertad",
-            "max": 7,
+            "max": 10,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -1165,7 +1141,7 @@
           {
             "id": "restricciones",
             "label": "Condiciones de contorno y partición",
-            "max": 5,
+            "max": 6,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -1173,7 +1149,7 @@
           {
             "id": "solucion",
             "label": "Solución y procedimiento reproducible",
-            "max": 6,
+            "max": 8,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -1189,7 +1165,7 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Presente desplazamientos, reacciones y fuerzas axiales. Compruebe el equilibrio y contraste con un cálculo independiente a mano o en hoja de cálculo.",
-        "max": 14,
+        "max": 15,
         "aspects": [
           {
             "id": "caso",
@@ -1201,7 +1177,7 @@
           },
           {
             "id": "desplazamientos",
-            "label": "Desplazamientos por nudo y dirección",
+            "label": "Desplazamientos por nodo y dirección",
             "max": 2,
             "points": 0,
             "state": "pending",
@@ -1234,7 +1210,7 @@
           {
             "id": "contraste",
             "label": "Contraste independiente con el mismo modelo y caso",
-            "max": 4,
+            "max": 5,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -1250,12 +1226,12 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Compruebe deflexiones de servicio y capacidad axial de los HSS a tracción y compresión. Identifique las longitudes no arriostradas y los casos gobernantes.",
-        "max": 16,
+        "max": 15,
         "aspects": [
           {
             "id": "traccion",
             "label": "Resistencia a tracción",
-            "max": 4,
+            "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
@@ -1295,27 +1271,19 @@
         "reason": "El contenido visible no permite juzgar este criterio. Puede estar en una imagen, otro soporte o un apartado aún sin documentar.",
         "evidence": [],
         "next": "Revise cordones, diagonales y montantes críticos, cambios de signo y posible levantamiento de apoyos bajo succión.",
-        "max": 7,
+        "max": 5,
         "aspects": [
           {
             "id": "barras",
-            "label": "Identificación de barras críticas",
+            "label": "Barras críticas e inversión de esfuerzos",
             "max": 3,
             "points": 0,
             "state": "pending",
             "reference": null
           },
           {
-            "id": "inversion",
-            "label": "Inversión de esfuerzos",
-            "max": 2,
-            "points": 0,
-            "state": "pending",
-            "reference": null
-          },
-          {
             "id": "levantamiento",
-            "label": "Levantamiento y succión en apoyos",
+            "label": "Levantamiento de apoyos bajo succión",
             "max": 2,
             "points": 0,
             "state": "pending",
@@ -1362,7 +1330,7 @@
         "points": 0
       }
     ],
-    "scale": "Ponderación propuesta para el piloto. Un dato pertinente aporta el 25 % del apartado, un desarrollo documentado el 50 % y un resultado fundamentado el 75 %. El 100 % exige reproducir el control aplicable. Una discrepancia comprobada afecta a ese apartado. La evidencia ausente queda pendiente. La nota provisional mantiene el denominador de 100.",
-    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v2"
+    "scale": "Ponderación propuesta para el piloto sobre 100 puntos. Cada apartado usa una escala de puntos enteros para dato pertinente, desarrollo documentado, resultado fundamentado y control reproducido. Una discrepancia comprobada afecta a ese apartado. Los apartados sin evidencia quedan pendientes. El total conserva el denominador de 100.",
+    "proposal": "cercha-ponderacion-propuesta-2026-11-22-v3"
   }
 }

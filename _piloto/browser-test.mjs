@@ -55,6 +55,10 @@ try{
   await cmd('Emulation.setDeviceMetricsOverride',{width,height:850,deviceScaleFactor:1,mobile:false});
   await go('index.html','document.querySelector(".course-cover h1")');assert.equal(await ev('document.querySelectorAll("#chapter-nav [data-chapter]").length'),8);
   await ev('document.querySelector(".course-nav a[href*=proyecto]").click()');await until('document.querySelector("#show-example")');
+  await ev('document.querySelector(".project-weights").open=true');
+  const weights=await ev('Array.from(document.querySelectorAll(".project-weights .criteria strong"),el=>Number(el.textContent.match(/(\\d+) puntos/)[1]))');
+  assert.deepEqual(weights,[10,15,30,15,15,5,10]);
+  assert.equal(await ev('Array.from(document.querySelectorAll(".points-levels tbody td"),cell=>cell.textContent).every(value=>/^\\d+$/.test(value))'),true);
   const dimensions=await ev('({viewport:innerWidth,contenido:document.documentElement.scrollWidth})');metrics.push({width,...dimensions});assert.ok(dimensions.contenido<=width+1,JSON.stringify(dimensions));
   assert.equal(await ev('!!document.querySelector("#entregar button:disabled")&&!document.querySelector("input[type=file]")'),true);
   for(const fmt of ['docx','xlsx','pptx','empty']){await ev('document.querySelector("#example-kind").value='+JSON.stringify(fmt)+';document.querySelector("#show-example").click()');await until('document.querySelector("#review-result li")&&!document.querySelector("#show-example").disabled');assert.equal(await ev('document.querySelectorAll("#review-result > ol > li").length'),7);}

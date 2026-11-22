@@ -8,19 +8,35 @@ import unicodedata
 ROOT = Path(__file__).resolve().parents[1]
 RUBRIC = json.loads((ROOT / "proyecto" / "rubrica.json").read_text(encoding="utf-8"))
 PROPOSAL = json.loads((ROOT / "proyecto" / "ponderacion-propuesta.json").read_text(encoding="utf-8"))
-PROPOSED_BY_ID = {c["id"]:c for c in PROPOSAL["criteria"]}
-if set(PROPOSED_BY_ID)!={c["id"] for c in RUBRIC["criteria"]} or sum(c["max"] for c in PROPOSED_BY_ID.values())!=100 or any(sum(a["max"] for a in c["aspects"])!=c["max"] for c in PROPOSED_BY_ID.values()):
-    raise ValueError("La propuesta debe cubrir exactamente los siete criterios y sumar 100 puntos.")
+PROPOSED_BY_ID = {criterion["id"]: criterion for criterion in PROPOSAL["criteria"]}
+LEVEL_NAMES = [level["id"] for level in PROPOSAL["levels"]]
+POINTS_BY_MAXIMUM = {int(cap): awards for cap, awards in PROPOSAL["pointsByMaximum"].items()}
+all_aspects = [part for criterion in PROPOSAL["criteria"] for part in criterion["aspects"]]
+
+if (set(PROPOSED_BY_ID) != {criterion["id"] for criterion in RUBRIC["criteria"]}
+        or sum(criterion["max"] for criterion in PROPOSAL["criteria"]) != 100
+        or any(sum(part["max"] for part in criterion["aspects"]) != criterion["max"]
+               for criterion in PROPOSAL["criteria"])):
+    raise ValueError("Los siete criterios y sus apartados deben distribuir exactamente 100 puntos.")
+if ({part["max"] for part in all_aspects} != set(POINTS_BY_MAXIMUM)
+        or any(type(part["max"]) is not int for part in all_aspects)
+        or LEVEL_NAMES != ["documented", "developed", "supported", "verified"]):
+    raise ValueError("Cada máximo entero debe tener una escala para los cuatro niveles de evidencia.")
+for cap, awards in POINTS_BY_MAXIMUM.items():
+    if (len(awards) != len(LEVEL_NAMES) or awards != sorted(awards) or awards[-1] != cap
+            or any(type(points) is not int or not 0 <= points <= cap for points in awards)):
+        raise ValueError("Los puntos por nivel deben ser enteros, crecientes o iguales, hasta el máximo.")
+
 TOPICS = {
-    "modelo": r"nudos?|coordenadas?|apoyos?|conectividad|grados de libertad|peralte|triangul",
-    "cargas": r"tributari|carga muerta|carga viva|fuerza nodal|cargas nodales|caso de viento|peso propio",
+    "modelo": r"n[ou]dos?|coordenada|conectiv|incidenc|grados? de libertad|gdl|peralte|tipolog|esquema acotad",
+    "cargas": r"avaluo de cargas|asignaci.{0,20}n[ou]do|tributari|carga muerta|carga viva|fuerza nodal|cargas? nodal|caso de viento|peso propio",
     "matrices": r"ensambl|matriz|rigidez|condici[oó]n de apoyo|mmult|minvers",
     "resultados": r"equilibrio|reaccion|desplazamiento|fuerza axial",
     "resistencia": r"deflexion|compresion|traccion|longitud no arriostrada|capacidad axial",
     "criticas": r"inversion de esfuerzos|levantamiento|succion|barra critica|cordon|diagonal|montante",
     "perfiles": r"alternativa|seleccion de perfil|peso propio|masa total|menor peso",
 }
-DATA = re.compile(r"[-+]?\d+(?:[.,]\d+)?\s*(?:kn(?:/m[²2]?)?|mm|cm|m(?:[²2])?|kg|mpa|%)\b|(?:nudo|barra|gdl)\s+[a-z]?\d+|formula visible\s*=\S+|\[\s*-?\d+\s*[,;]", re.I)
+DATA = re.compile(r"[-+]?\d+(?:[.,]\d+)?\s*(?:kn(?:/m[²2]?)?|mm|cm|m(?:[²2])?|kg|mpa|%)\b|(?:n[ou]do|barra|gdl)\s+[a-z]?\d+|formula visible\s*=\S+|\[\s*-?\d+\s*[,;]", re.I)
 BALANCE = re.compile(r"equilibrio\s+(?:vertical|horizontal)\s*:\s*([+-]?\d+(?:[.,]\d+)?)\s*kN\s*([+-])\s*(\d+(?:[.,]\d+)?)\s*kN\s*([+-])\s*(\d+(?:[.,]\d+)?)\s*kN\s*=\s*([+-]?\d+(?:[.,]\d+)?)\s*kN", re.I)
 STATUS = {"none":"Sin evidencia puntuable", "partial":"Evidencia parcial", "checked":"Comprobación reproducida", "error":"Discrepancia comprobada"}
 
@@ -88,7 +104,7 @@ def parcial_reason(cid, rows):
     first = ("Las citas mencionan " + ", ".join(found) + ".") if found else "Se localizaron datos técnicos vinculados a este criterio."
     return first + ((" Por verificar en la evidencia: " + ", ".join(pending) + ".") if pending else " Revise la coherencia y la suficiencia de esos datos en el modelo.")
 
-LEVEL={"pending":0,"documented":1,"developed":2,"supported":3,"verified":4,"error":0}
+LEVEL = {"pending": 0, "error": 0, **{state: rank for rank, state in enumerate(LEVEL_NAMES, 1)}}
 PROCEDURE=re.compile(r"mediante|a partir de|se (?:calcul|obtuvo|ensambl|resolv|distribuy|compar)|multiplicando|aplicando|usando")
 REASONING=re.compile(r"debido a|porque|por ser|se (?:adopt|elig|seleccion)|por lo tanto|por tanto")
 CHECK_SOURCE=re.compile(r"contraste|comprob|independiente|residual|referencia|segunda (?:solucion|alternativa)")
@@ -100,7 +116,7 @@ def numerical_control(cid,part,clause):
         return equilibrium(clause)
     if cid=="cargas" and part=="reparto":
         plain=normalize(clause)
-        if "tributari" in plain and re.search(r"(?:carga|fuerza) nodal",plain):
+        if "tributari" in plain and re.search(r"(?:carga|fuerza) nodal|asignacion (?:en|a) (?:los )?n[ou]dos?",plain):
             m=NODAL.search(clause)
             if m:
                 q,area,declared=(Decimal(n.replace(",",".")) for n in m.groups())
@@ -147,8 +163,10 @@ def proposed_points(criterion,fragments):
                 break
         if reason:
             notes.append((state,reason))
+        level = LEVEL[state]
+        points = POINTS_BY_MAXIMUM[part["max"]][level - 1] if level else 0
         breakdown.append({"id":part["id"],"label":part["label"],"max":part["max"],
-                          "points":part["max"]*LEVEL[state]/4,"state":state,"reference":reference})
+                          "points":points,"state":state,"reference":reference})
     return breakdown,notes
 
 def assemble(grouped, selections):
@@ -188,27 +206,22 @@ def assemble(grouped, selections):
     wrong=any(a["state"]=="error" for a in parts)
     checked=any(a["state"]=="verified" for a in parts)
     if not covered:
-        global_mark = None
         note = "No hay evidencia puntuable en las partes visibles. Añada texto, celdas o una comprobación con unidades."
         if any(tabular_balance(f) for f in grouped["resultados"]):
-            note="El libro contiene un control de equilibrio en varias celdas que el extractor no pudo verificar. No se puede estimar una nota con esa única evidencia."
+            note = "El libro contiene un control de equilibrio en varias celdas que el extractor no pudo verificar. No se puede estimar una nota con esa única evidencia."
     elif wrong:
-        global_mark, note = "Desarrollo parcial con una discrepancia comprobada", "Revise el apartado con la discrepancia identificada y vuelva a contrastar su resultado."
+        note = "Revise el apartado con la discrepancia identificada y vuelva a contrastar su resultado."
     elif checked:
-        global_mark, note = "Desarrollo parcial con una comprobación reproducida", "La comprobación respalda ese resultado. Revise la evidencia de los demás criterios."
+        note = "La comprobación respalda ese resultado. Revise la evidencia de los demás criterios."
     else:
-        global_mark, note = "Desarrollo parcial documentado", "Se localizaron datos técnicos. Complete las comprobaciones indicadas por criterio."
-    if covered == len(items):
-        global_mark = "Siete criterios documentados con una discrepancia comprobada" if wrong else "Siete criterios documentados, pendientes de validación integral"
-    pending_max=sum(a["max"] for i in items for a in i["aspects"] if a["state"]=="pending")
-    confirmed=sum(Decimal(str(i["points"])) for i in items)
-    open_within=sum(a["max"]-a["points"] for a in parts if a["state"] in ("documented","developed","supported"))
-    if covered:
-        global_mark=format(confirmed.normalize(),"f").replace(".",",")+" / 100 · mínimo demostrado"
-    scale="Ponderación propuesta para el piloto. Un dato pertinente aporta el 25 % del apartado, un desarrollo documentado el 50 % y un resultado fundamentado el 75 %. El 100 % exige reproducir el control aplicable. Una discrepancia comprobada afecta a ese apartado. La evidencia ausente queda pendiente. La nota provisional mantiene el denominador de 100."
+        note = "Se localizaron datos técnicos. Complete las comprobaciones indicadas por criterio."
+    pending_max = sum(a["max"] for a in parts if a["state"] == "pending")
+    open_within = sum(a["max"] - a["points"] for a in parts if a["state"] in ("documented","developed","supported"))
+    confirmed = sum(item["points"] for item in items)
+    global_mark = f"{confirmed} / 100 · mínimo demostrado" if covered else None
     return {"rubric":RUBRIC["version"], "proposal":PROPOSAL["version"], "official":False, "global":global_mark, "globalNote":note,
             "coverage":{"evaluated":covered, "total":len(items), "pendingPoints":pending_max,"openWithinObserved":open_within}, "criteria":items,
-            "scale":scale}
+            "scale":PROPOSAL["scaleNote"]}
 
 def review(fragments, select=mock_select):
     grouped = candidates(fragments)
